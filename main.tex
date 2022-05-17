@@ -78,6 +78,8 @@
   stringstyle=\color{blue}, % style of strings
 }
 
+\sloppy 
+
 \title{Draft of BNF HDDL2.1}
 
 \date{May 2022}
@@ -86,7 +88,11 @@
 
 \maketitle
 
-This proposed syntax for HDDL2.1 takes its roots in HDDL~\citep{holler:19}. From that initial definitions, we here describe its proposed extension.
+This paper presents a proposed BNF syntax to extend HDDL to deal with time and numeric. The proposed syntax, called HDDL2.1, takes its roots in HDDL~\citep{holler:19}. Two main extensions are proposed:
+\begin{enumerate}
+    \item Allow the expression of temporal methods by allowing the definition of temporal constraints between the tasks of a method.
+    \item  Allow the declaration of logical constraints on method decompositions inspired by the on-plane constraints defined in PDDL3.0.
+\end{enumerate}
 
 \section{Domain Description}
 
@@ -117,12 +123,12 @@ The domain definition has been extended to durative actions (line~\ref{l:durativ
 \noindent The definition of the basic domain elements is nearly unchanged.
 
 \begin{lstlisting}[firstnumber=last, escapechar=~]
-<require-def> ::= ~\linebreak~(:requirements <require-key>+)
+<require-def> ::= (:requirements <require-key>+)
 <require-key> ::= ~\textit{see below}~
 <types-def> ::= (:types ~\mbox{<typed-list(<primitive-type>))}~
-<predicates-def> ::= ~\linebreak~(:predicates <atomic-formula-skeleton>+)
-<function-def> ::= ~\linebreak~(:<function-typed-list (atomic-function-skeleton)>)
-<constants-def> ::= ~\linebreak~(:constants <typed-list (constant)>)
+<predicates-def> ::= (:predicates <atomic-formula-skeleton>+)
+<function-def> ::= (:<function-typed-list (atomic-function-skeleton)>)
+<constants-def> ::= (:constants <typed-list (constant)>)
 <atomic-formula-skeleton> ::= ~\linebreak~(<predicate> <typed-list(variable)>)
 <atomic-function-skeleton> ::= ~\linebreak~(<function>~\linebreak~ <typed-list (variable)>)
 <typed-list (x)> ::= x+ - <type> ~\linebreak~[<typed list (x)>]~\label{l:typedlist}~
@@ -144,7 +150,7 @@ The domain definition has been extended to durative actions (line~\ref{l:durativ
 % Task definition
 %
 % @HDDL 1.0
-\noindent Abstract tasks are defined similarly to actions.
+\noindent Abstract tasks are defined similarly to actions as in HDDL 1.0
 \begin{lstlisting}[firstnumber=last, escapechar=~]
 <tasks-def> ::= (:task <task-def>)
 <task-def> ::= <task-symbol> ~\linebreak~:parameters (<typed list (variable)>)~\label{l:compTask}~
@@ -435,7 +441,7 @@ duration of the method or the sub-tasks that compose it. Therefore, it is necess
 <f-exp-t> ::= #t
 \end{lstlisting}
 
-\subsection{Problem Description}
+\section{Problem Description}
 
 %
 % Problem Definition
