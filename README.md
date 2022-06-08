@@ -22,7 +22,7 @@ The main elements that have been proposed so far are:
 ## Contributing
 We use GitHub issues to track discussion subjects. Contributions are open to everyone who wants to suggest new features for HDDL2.1, propose improvements to existing language elements, or just raise some question. Discussion can happen informally through other media (chat, email, face-to-face...) but important talking points must must be posted in issues so everyone can keep track of the proposals.
 
-If you have something to say, first [check out existing issues](https://github.com/pellierd/BNF-HDDL2.1/issues) or if you don't find a corresponding topic [open a new issue](https://github.com/pellierd/BNF-HDDL2.1/issues/new). 
+If you have something to say, first [check out existing issues](https://github.com/pellierd/BNF-HDDL2.1/issues) or if you don't find a corresponding topic [open a new issue](https://github.com/pellierd/BNF-HDDL2.1/issues/new). Please use the label semantic, syntax or benchmarks to label your issue.
 
 You can send a [pull request](https://github.com/pellierd/BNF-HDDL2.1/pull/new/main) to submit changes to the language formulation once an issue discussion has been settled and the need for a change has been agreed upon. Pull requests must clearly list of what you've done and link to a related the issue or issues.
 
