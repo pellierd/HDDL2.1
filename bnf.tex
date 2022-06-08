@@ -63,7 +63,7 @@
   basicstyle=\small\ttfamily, % Global Code Style
   captionpos=b, % Position of the Caption (t for top, b for bottom)
   extendedchars=true, % Allows 256 instead of 128 ASCII characters
-  tabsize=2, % number of spaces indented when discovering a tab 
+  tabsize=2, % number of spaces indented when discovering a tab
   columns=fixed,
   keepspaces=true,
   showstringspaces=false,
@@ -78,7 +78,7 @@
   stringstyle=\color{blue}, % style of strings
 }
 
-\sloppy 
+\sloppy
 
 \title{Draft BNF HDDL2.1}
 
@@ -88,7 +88,7 @@
 
 \maketitle
 
-This paper proposes BNF syntax to extend HDDL to deal with time and numeric. The proposed syntax, called HDDL2.1, takes its roots in HDDL~\citep{holler:19}. 
+This paper proposes BNF syntax to extend HDDL to deal with time and numeric. The proposed syntax, called HDDL2.1, takes its roots in HDDL~\citep{holler:19}.
 \section{Domain Description}
 
 \newcommand{\specReq}[1]{\ensuremath{\mathtt{^{#1}}}}
@@ -152,7 +152,7 @@ The domain definition has been extended to durative actions (line~\ref{l:durativ
 <task-symbol> ::= <name>
 \end{lstlisting}
 
-\noindent The structure of a temporal HDDL domain is composed of durative and non-durative methods and actions. Durative and non-durative actions are defined as in PDDL and non-durative methods as in HDDL. 
+\noindent The structure of a temporal HDDL domain is composed of durative and non-durative methods and actions. Durative and non-durative actions are defined as in PDDL and non-durative methods as in HDDL.
 
 \begin{lstlisting}[firstnumber=last, escapechar=~]
 <structure-def> ::= <action-def>
@@ -197,7 +197,7 @@ Like methods, durative methods have parameters, the abstract task they decompose
 % @HDDL 1.0
 The definition of task networks is used in method definitions as well as in the problem definition to define the initial task network. It contains the definition of sub-tasks (line~\ref{l:tnsubtasks}), ordering constraints (line~\ref{l:tnordering}), and logical constraints (line~\ref{l:tnconstraints}) on the sub-tasks of the method. We keep here the same definition as in HDDL.
 
-When the key \verb+:ordered-subtasks+ is used, the network is considered totally ordered. In the other cases, ordering relations have to be defined explicitly. This is done by including ids into the task definition that can then be referenced in the ordering definition. 
+When the key \verb+:ordered-subtasks+ is used, the network is considered totally ordered. In the other cases, ordering relations have to be defined explicitly. This is done by including ids into the task definition that can then be referenced in the ordering definition.
 
 \begin{lstlisting}[firstnumber=last, escapechar=~]
 <tasknetwork-def> ::=
@@ -211,7 +211,7 @@ When the key \verb+:ordered-subtasks+ is used, the network is considered totally
 % Subtasks
 %
 % @HDDL 1.0
-\noindent The subtask definition can contain one or more subtasks. 
+\noindent The subtask definition can contain one or more subtasks.
 
 \begin{lstlisting}[firstnumber=last, escapechar=~]
 <subtask-defs> ::= () | <subtask-def> ~\linebreak~| (and <subtask-def>+)
@@ -234,16 +234,16 @@ The ordering constraints are defined via the task ids, and have to induce a part
 <d-task> ::=~\specReq{:durative-action}~<=
 <d-task> ::=~\specReq{:durative-action}~>
 <d-task> ::=~\specReq{:durative-action}~=
-<time-task-id> ::= (<time-specifier> ~\mbox{<task-id>)}~ 
+<time-task-id> ::= (<time-specifier> ~\mbox{<task-id>)}~
 <time-specifier> ::= start
 <time-specifier> ::= end
 \end{lstlisting}
 
 %
-% Constraints extensions 
+% Constraints extensions
 %
 % @HDDL 2.1
-HDDL only accepts equality constraints or inequality on method parameters in the task network. We have chosen to add 3 constraints based on the syntax of the constraints used on state trajectory constraints defined in PDDL 3.0 \citep{gerevini:05}, and that were first introduced by \cite{Erol94}. These constraints allow to express logical constraints on the decomposition of the method in addition to the ordering constraints. We will present later on % in section \ref{sec:constraints-semantic} 
+HDDL only accepts equality constraints or inequality on method parameters in the task network. We have chosen to add 3 constraints based on the syntax of the constraints used on state trajectory constraints defined in PDDL 3.0 \citep{gerevini:05}, and that were first introduced by \cite{Erol94}. These constraints allow to express logical constraints on the decomposition of the method in addition to the ordering constraints. We will present later on % in section \ref{sec:constraints-semantic}
 how to use these constraints to rewrite a durative method in a simple non-durative method. To allow the specification of such constraints, it is necessary to use \verb+:method-constraints+.
 
 \begin{lstlisting}[firstnumber=last, escapechar=~]
@@ -265,7 +265,7 @@ how to use these constraints to rewrite a durative method in a simple non-durati
 %
 % Action Definition
 %
-% HDDL 1.0 
+% HDDL 1.0
 The orginal action or durative action definitions defined in PDDL stay mainly unchanged. The only difference is that for simplicity, it is not possible to specify preferences. The non-durative actions are defined as follows:
 
 \begin{lstlisting}[firstnumber=last, escapechar=~]
@@ -282,7 +282,7 @@ The orginal action or durative action definitions defined in PDDL stay mainly un
 
 \begin{lstlisting}[firstnumber=last, escapechar=~]
 <durative-action-def> ::= ~\linebreak~(:durative-action <task-def>~\label{l:durative-actions}~
-      :duration <duration-constraint> 
+      :duration <duration-constraint>
       [:condition <da-gd)>]
       [:effect <da-effect>])
 \end{lstlisting}
@@ -290,7 +290,7 @@ The orginal action or durative action definitions defined in PDDL stay mainly un
 %
 %  Durative Action Constraints Definition
 %
-% PDDL 3.0 add to HDDL 2.1 
+% PDDL 3.0 add to HDDL 2.1
 As in PDDL, duration constraints with the \verb|:duration-inequalities| requirement allow to express duration inequalities. The definition of the duration constraints for durative actions does not change.
 
 \begin{lstlisting}[firstnumber=last, escapechar=~]
@@ -326,7 +326,7 @@ As in PDDL, duration constraints with the \verb|:duration-inequalities| requirem
 %
 %  Durative Method Constraints Definition
 %
-% @HDDL 2.1 
+% @HDDL 2.1
 The duration of a method is by default the sum of the durations of the sub-tasks that compose it. Optional constraints might be specified to restrict the allowed value for the
 duration of the method or the sub-tasks that compose it. Therefore, it is necessary to be able to refer explicitly to the duration of a subtask and not only to the duration of the method with the variable {\tt ?duration}.
 
@@ -336,18 +336,18 @@ duration of the method or the sub-tasks that compose it. Therefore, it is necess
 <method-duration-constraint> ::= ~\mbox{<simple-method-duration-constraint>}~
 <simple-method-duration-constraint>::= ~\linebreak~(<binary-comp> <duration> <td-value>)
 <simple-method-duration-constraint>::= ~\linebreak~(at <time-specifier> ~\mbox{<simple-method-duration-constraint>}~)
-<duration> :: = ?duration 
+<duration> :: = ?duration
 <duration> :: = <task-duration>
-<td-value> ::= <d-value> 
+<td-value> ::= <d-value>
 <td-value> ::= <task-duration>
 <task-duration> :: = (duration <task-id>)
 \end{lstlisting}
 
 %
 % Goal Description
-% 
+%
 % @HDDL 1.0
-\noindent Compared to HDDL 1.0 we allow to define numerical and temporal preconditions. The syntax used from numeric preconditions is the same as that of PDDL 3.0. For the sake of simplicity, we chose to not include the preferences. 
+\noindent Compared to HDDL 1.0 we allow to define numerical and temporal preconditions. The syntax used from numeric preconditions is the same as that of PDDL 3.0. For the sake of simplicity, we chose to not include the preferences.
 \begin{lstlisting}[firstnumber=last, escapechar=~]
 <gd> ::= ()
 <gd> ::= <literal (term)>
@@ -375,10 +375,10 @@ duration of the method or the sub-tasks that compose it. Therefore, it is necess
 
 %
 % Goal Description
-% 
+%
 % PDDL 3.0 add to HDDL 2.1
 
-\noindent The same approach is used for temporal precondition definition. The syntax used is the same as in PDDL 3.0. 
+\noindent The same approach is used for temporal precondition definition. The syntax used is the same as in PDDL 3.0.
 
 \begin{lstlisting}[firstnumber=last, escapechar=~]
 <da-gd> ::= <timed-gd>
@@ -391,7 +391,7 @@ duration of the method or the sub-tasks that compose it. Therefore, it is necess
 
 %
 % Effects
-% 
+%
 % @HDDL 1.0
 \noindent Symmetrically, we add to the effect definition the temporal and numeric aspect based on the same syntax as in PDDL 3.0.
 
@@ -411,7 +411,7 @@ duration of the method or the sub-tasks that compose it. Therefore, it is necess
 %
 %  Temporal Method Definition
 %
-% From PDDL 3.0 add to HDDL 2.1 
+% From PDDL 3.0 add to HDDL 2.1
 
 \noindent The temporal and numeric definitions of effects are as follows:
 
@@ -420,7 +420,7 @@ duration of the method or the sub-tasks that compose it. Therefore, it is necess
 <da-effect> ::= <timed-effect>
 <da-effect> ::=~\specReq{:conditional-effects}~ (forall ~\linebreak~(<typed list (variable)>) <da-effect>)
 <da-effect> ::=~\specReq{:conditional-effects}~ ~\linebreak~(when <da-gd> <timed-effect>)
-<timed-effect> ::= ~\linebreak~(at <time-specifier> <cond-effect>) 
+<timed-effect> ::= ~\linebreak~(at <time-specifier> <cond-effect>)
 <timed-effect> ::=~\specReq{:numeric-fluents}~ ~\linebreak~(at <time-specifier> <f-assign-da>)
 <timed-effect> ::=~\specReq{:continuous-effects + :numeric-fluents}~ ~\linebreak~(<assign-op-t> <f-head> <f-exp-t>)
 <f-assign-da> ::= (<assign-op> <f-head> <f-exp-da>)
@@ -440,8 +440,8 @@ duration of the method or the sub-tasks that compose it. Therefore, it is necess
 
 %
 % Problem Definition
-% 
-% @HDDL 1.0 + initial timed literal + initial function values + metric spec 
+%
+% @HDDL 1.0 + initial timed literal + initial function values + metric spec
 The problem definition includes as additional element the initial task network (line~\ref{l:tnihtn}) as in HDDL 1.0. But now, it is possible to define in the initial state of the problem initial function values and initial time literals. It is also possible to define metric specs on solution plans. We have chosen here not to allow the definition of preferences. But preferences could be added in a next extension of the language. Likewise we have also chosen not to allow the definition of constraints on plans although it is possible in PDDL. We believe that it is preferable to add constraints on plans by adding logical constraints associated with task networks. This allows for a more unified language.
 
 \begin{lstlisting}[firstnumber=last, escapechar=~]
@@ -469,36 +469,36 @@ The problem definition includes as additional element the initial task network (
 The initial task network contains the definition of the problem class.
 
 \begin{lstlisting}[firstnumber=last, escapechar=~]
-<htn> ::= (:htn 
+<htn> ::= (:htn
     [:parameters (<typed list (variable)>)] ~\label{l:tniparams}~
     <tasknetwork-def>)~\label{l:tnitasks}~
 \end{lstlisting} %| :tihtn~\specReq{:tihtn}~
 
 %
-% Metric spec 
+% Metric spec
 %
 % @HDDL 2.1
 
 The optional metric spec can be defined using the same syntax as in PDDL 3.0.
 
 \begin{lstlisting}[firstnumber=last, escapechar=~]
-<metric-spec> ::=~\specReq{:numeric-fluents}~ 
+<metric-spec> ::=~\specReq{:numeric-fluents}~
     (:metric <optimization> <metric-f-exp>)
 <optimization> ::= minimize
 <optimization> ::= maximize
 <metric-f-exp> ::= (<binary-op>
     <metric-f-exp> <metric-f-exp>)
-<metric-f-exp> ::= (<multi-op> 
+<metric-f-exp> ::= (<multi-op>
     <metric-f-exp> <metric-f-exp>+)
 <metric-f-exp> ::= (- <metric-f-exp>)
 <metric-f-exp> ::= <number>
-<metric-f-exp> ::= ( <function-symbol> 
+<metric-f-exp> ::= ( <function-symbol>
     <name>* )
 <metric-f-exp> ::= <function-symbol>
 <metric-f-exp> ::= total-time
 \end{lstlisting}
 
-\bibliographystyle{aaai}
+\bibliographystyle{styles/aaai}
 \bibliography{ref}
 
 
