@@ -26,6 +26,8 @@ If you have something to say, first [check out existing issues](https://github.c
 
 You can send a [pull request](https://github.com/pellierd/BNF-HDDL2.1/pull/new/main) to submit changes to the language formulation once an issue discussion has been settled and the need for a change has been agreed upon. Pull requests must clearly list of what you've done and link to a related the issue or issues.
 
+If you have a benchmark to propose, follow the same step: create a new issue and after discussion send a [pull request](https://github.com/pellierd/BNF-HDDL2.1/pull/new/main). The benchmarks proposed has to be set in the benchmarks directory of the projet.
+
 Any contribution intentionally submitted for inclusion in the work by you is under the [Creative Commons Attribution 4.0 International (CC BY 4.0) licence](https://creativecommons.org/licenses/by/4.0/).
 
 ## How to cite this work
