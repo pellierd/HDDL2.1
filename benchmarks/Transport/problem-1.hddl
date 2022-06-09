@@ -1,0 +1,43 @@
+(define (problem p)
+  (:domain  transport)
+  (:objects
+    city-loc-0 city-loc-1 city-loc-2 - location
+    truck-0 - vehicle
+    package-0 package-1 - package
+  )
+  (:htn
+    :tasks (and
+      (deliver package-0 city-loc-0)
+      (deliver package-1 city-loc-2)
+    )
+  :ordering ( )
+  :constraints ( ))
+  (:init
+    (road city-loc-0 city-loc-1)
+    (= (road-length city-loc-0 city-loc-1) 22)
+    (= (fuel-demand city-loc-0 city-loc-1) 43)
+    (road city-loc-1 city-loc-0)
+    (= (road-length city-loc-1 city-loc-0) 22)
+    (= (fuel-demand city-loc-1 city-loc-0) 43)
+  
+    (road city-loc-1 city-loc-2)
+    (= (road-length city-loc-1 city-loc-2) 50)
+    (= (fuel-demand city-loc-1 city-loc-2) 99)
+    (road city-loc-2 city-loc-1)
+    (= (road-length city-loc-2 city-loc-1) 50)
+    (= (fuel-demand city-loc-2 city-loc-1) 99)
+  
+    (has-petrol-station city-loc-1)
+  
+    (at package-0 city-loc-1)
+    (= (package-size package-0) 23)
+    (at package-1 city-loc-1)
+    (= (package-size package-1) 55)
+  
+    (at truck-0 city-loc-2)
+    (ready-loading truck-0)
+    (= (capacity truck-0) 100)
+    (= (fuel-left truck-0) 424)
+    (= (fuel-max truck-0) 424)
+  )
+)

@@ -1,0 +1,183 @@
+(define (domain transport)
+  (:requirements :method-constraints :numeric-fluents :timed-initial-literals :durative-actions :method-preconditions :negative-preconditions :hierarchy :typing)
+  (:types
+    location target locatable - object
+    vehicle package - locatable
+  )
+
+  (:predicates 
+    (road ?l1 ?l2 - location)
+    (at ?x - locatable ?v - location)
+    (in ?x - package ?v - vehicle)
+    ; capacity predecesor is trick to circumvent a lack of numeric fluents
+    ;(capacity-predecessor ?s1 ?s2 - capacity-number)
+    
+    ; The addition of fuel requires the inclusion of predicate has-petrol-station
+    (has-petrol-station ?l - location)
+    (ready-loading ?v - vehicle) ; Blocks a vehicle into a position while loading/unloading
+  )
+  
+  (:functions
+    (road-length ?l1 ?l2 - location)
+    (fuel-demand ?l1 ?l2 - location)
+    (fuel-left ?v - vehicle)  ; Current amount of fuel in the vehicle fuel tank
+    (fuel-max ?v - vehicle) ; Fuel tank total capacity
+    (capacity ?v - vehicle)
+    (package-size ?p - package) ; Add package size to complement vehicle capacity
+  )
+
+  (:task deliver :parameters (?p - package ?l - location))
+  (:task get-to :parameters (?v - vehicle ?l - location))
+  (:task load :parameters (?v - vehicle ?l - location ?p - package))
+  (:task unload :parameters (?v - vehicle ?l - location ?p - package))
+
+  (:method m-deliver
+    :parameters (?p - package ?l1 ?l2 - location ?v - vehicle)
+    :task (deliver ?p ?l2)
+    :ordered-subtasks (and
+      (get-to ?v ?l1)
+      (load ?v ?l1 ?p)
+      (get-to ?v ?l2)
+      (unload ?v ?l2 ?p)
+    )
+  )
+
+  (:method m-unload
+    :parameters (?v - vehicle ?l - location ?p - package)
+    :task (unload ?v ?l ?p)
+    :subtasks (drop ?v ?l ?p)
+  )
+  
+  (:method m-unload-and-refuel
+    :parameters (?v - vehicle ?l - location ?p - package)
+    :task (unload  ?v ?l ?p)
+    :subtasks (and 
+      (drop ?v ?l ?p)
+      (refuel ?v ?l)
+    )
+    ; They can be done in whatever order (even in paralell?)
+  )
+
+  (:method m-load
+    :parameters (?v - vehicle ?l - location ?p - package)
+    :task (load  ?v ?l ?p)
+    :subtasks (pick-up ?v ?l ?p)
+  )
+  
+  (:method m-load-and-refuel
+    :parameters (?v - vehicle ?l - location ?p - package)
+    :task (load  ?v ?l ?p)
+    :subtasks (and 
+      (pick-up ?v ?l ?p)
+      (refuel ?v ?l)
+    )
+    ; They can be done in whatever order
+  )
+  
+  (:method m-drive-to
+    :parameters (?v - vehicle ?l1 ?l2 - location)
+    :task (get-to ?v ?l2)
+    :subtasks (and
+      (drive ?v ?l1 ?l2)
+    )
+  )
+
+  (:method m-drive-to-via
+    :parameters (?v - vehicle ?l2 ?l3 - location)
+    :task (get-to  ?v ?l3)
+    :ordered-subtasks (and
+      (get-to ?v ?l2)
+      (drive ?v ?l2 ?l3)
+    )
+  )
+  
+  (:method m-drive-to-via-with-refueling
+    :parameters (?v - vehicle ?l2 ?l3 - location)
+    :task (get-to  ?v ?l3)
+    :ordered-subtasks (and
+      (get-to ?v ?l2)
+      (refuel ?v ?l2)
+      (drive ?v ?l2 ?l3)
+    )
+  )
+
+  (:method m-i-am-there
+    :parameters (?v - vehicle ?l - location)
+    :task (get-to  ?v ?l)
+    :subtasks (and
+      (noop ?v ?l)
+    )
+  )
+  
+  (:durative-action drive
+    :parameters (?v - vehicle ?l1 ?l2 - location)
+    :duration (= ?duration (road-length ?l1 ?l2))
+    :condition (and
+      (at start (at ?v ?l1))
+      (at start (road ?l1 ?l2))
+      (at start (>= (fuel-left ?v) (fuel-demand ?l1 ?l2)))  ; Check wether the truck has enough fuel to reach its destination
+    )
+    :effect (and
+      (at start (not (at ?v ?l1)))
+      (at start (at ?v ?l2))
+      (at start (decrease (fuel-left ?v) (fuel-demand ?l1 ?l2)))  ; Consume fuel
+    )
+  )
+
+  (:action noop
+    :parameters (?v - vehicle ?l2 - location)
+    :precondition (at ?v ?l2)
+    :effect ()
+  )
+
+  (:durative-action pick-up
+    :parameters (?v - vehicle ?l - location ?p - package)
+    :duration (= ?duration 1)
+    :condition (and
+      (at start (at ?v ?l))
+      (over all (at ?v ?l))
+      (at start (at ?p ?l))
+      (at start (>= (capacity ?v) (package-size ?p)))
+      (at start (ready-loading ?v))
+    )
+    :effect (and
+      (at start (not (at ?p ?l)))
+      (at end (in ?p ?v))
+      (at start (decrease (capacity ?v) (package-size ?p)))
+      ; The vehicle must be hold to a position during loading and unloading operations
+      (at start (not (ready-loading ?v)))
+      (at end (ready-loading ?v))
+    )
+  )
+
+  (:durative-action drop
+    :parameters (?v - vehicle ?l - location ?p - package)
+    :duration (= ?duration 1)
+    :condition (and
+      (at start (at ?v ?l))
+      (over all (at ?v ?l))
+      (at start (in ?p ?v))
+      (at start (ready-loading ?v))
+    )
+    :effect (and
+      (at start (not (in ?p ?v)))
+      (at end (at ?p ?l))
+      (at end (increase (capacity ?v) (package-size ?p)))
+      ; vehicle locking
+      (at start (not (ready-loading ?v)))
+      (at end (ready-loading ?v))
+    )
+  )
+  
+  (:durative-action refuel
+    :parameters (?v - vehicle ?l - location)
+    :duration (= ?duration 10)
+    :condition (and
+      (at start (at ?v ?l))
+      (over all (at ?v ?l))
+      (at start (has-petrol-station ?l))
+    )
+    :effect (at end (assign (fuel-left ?v) (fuel-max ?v)))
+  )
+
+)
