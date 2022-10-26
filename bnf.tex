@@ -165,14 +165,13 @@ A snap action is an action in the sense of classical planning.
 \end{definition}
 
 \begin{definition}[Durative Action]
-A {\em durative action} $a$ is a tuple $(\name(a), \tstart(a), \tend(a),$ $\tinv(a), d)$: $\name(a)$ is the name of $a$, $\tstart(a)$ and $\tend(a)$ are snap actions ; $\tinv(a)$ is a first-order formula that must hold in the states after the execution of $start(a)$ until $end(a)$, and $d$ is the duration of $a$.
+A {\em durative action} $a$ is a tuple $(\name(a), \tstart(a), \tend(a),$ $\tinv(a), d)$: $\name(a)$ is the name of $a$, $\tstart(a)$ and $\tend(a)$ are snap actions ; $\tinv(a)$ is a first-order formula that must hold in all the states after the execution of $start(a)$ and until $end(a)$, and $d$ is the duration of $a$. $start(a)$ and $end(a)$ are time events.
 \end{definition}
 Hence, actions do change the state of the world. How states change will formerly defined in Section \ref{THTN}.
 
-Unlike a primitive task (i.e. a snap or durative action), a {\it compound task} does not change the world state. It is a name referring to other tasks (either primitive or compound) that must be achieved with respect to some constraints in order to achieve it. For instance, {\it deliver-dinner(?food-style, ?place)} is the compound task consisting in performing first the task {\it serve-starters(?food-style, ?place)}, then the main course etc. This mapping between tasks is achieved by the Temporal Task Networks and the methods.
- %\begin{definition}[A Temporal Event]
- %A {\it temporal event} $e$ is either the start of a task $t$ noted $\tstart(t)$ or its end noted $\tend(t)$.
- %\end{definition}
+Unlike a primitive task (i.e. a snap or durative action), a {\it compound task} does not change the world state. It is a name referring to other tasks (either primitive or compound) that must be achieved with respect to some constraints in order to achieve it. For instance, {\it deliver-dinner(?food-style, ?place)} is the compound task consisting in performing first the task {\it serve-starters(?food-style, ?place)}, then the main course etc. This mapping between tasks is achieved by the Temporal Task Networks and the methods as defined above. Like primitive tasks, compound tasks have also a start event and a end event, which will be associated to a time point in Section \ref{THTN}.
+
+ 
 
 %To formally define a method and define how break down a task into subtasks, it is necessary to define first the concept of {\it temporal task networks}. 
 \begin{definition}[Temporal Task Network]
@@ -185,30 +184,32 @@ A temporal task network $w = ({\cal{I}}, \alpha, {\cal{C}}_o, {\cal{C}}_v, {\cal
     
     \item ${\cal{C}}_o$ is a set of temporal qualitative ordering constraints over the start or the end events of the tasks in $\cal{I}$. The possible qualitative temporal ordering are those from the classical point algebra \cite{broxvall03}: $<$, $\leq$, $>$, $\geq$, $=$ and $\neq$. For instance, the temporal ordering constraint $\tstart(t_1) < \tend(t_2)$ expresses that the start of the task $t_1$ must strictly occurred before the end of $t_2$. 
     
-    \item ${\cal{C}}_v$ is a set of variable constraints. Each constraints can bind two task parameters to be equal or non-equals to an other one or a constant. % Peut être rajouter un exemple pour être symetrique
+    \item ${\cal{C}}_v$ is a set of parameter constraints. Each constraint can bind two variables to be equal or non-equals, or a variable to a constant. % Peut être rajouter un exemple pour être symetrique
     
-    \item ${\cal{C}}_d$ is a set of durative constraints over the duration of the tasks $\cal{I}$. For instance, let $t_1, t_2 \in I$ and $w$ a task network, the durative constraints $\duration(t_1) < \duration(t_2)$ expresses that the duration of $t_1$ must be strictly less that $t_2$, and the constraints $\duration(w) \geq \duration(t_1) * \duration(t_2)$ expresses that greater or equal to the product of duration of $t_1$ and $t_2$. Durative constraints can be expressed in terms of starting and ending of a task. For instance the previous constraint $\duration(t_1) < \duration(t_2)$ can be expressed as  $\tend(t_1) - \tstart(t_1) < \tend(t_2) - \tstart(t_2)$.
+    \item ${\cal{C}}_d$ is a set of durative constraints over the duration of the tasks $\cal{I}$. For instance, let $t_1, t_2 \in I$ and $w$ a task network, the durative constraints $\duration(t_1) < \duration(t_2)$ expresses that the duration of $t_1$ must be strictly less that $t_2$, and the constraint $\duration(w) \geq \duration(t_1) * \duration(t_2)$ expresses that the duration of $w$ is greater or equal to the product of the durations of $t_1$ and $t_2$. Durative constraints can be expressed in terms of start and end event of a task. For instance the previous constraint $\duration(t_1) < \duration(t_2)$ can be expressed as  $\tend(t_1) - \tstart(t_1) < \tend(t_2) - \tstart(t_2)$.
     
-    \item ${\cal{C}}_t$ is a set of decomposition trajectory constraints of the form $(\at \ e \ \phi)$. This constraint expresses that some properties defined by the logical formula $\phi$ must hold in the state at the time event $e$. We will show in section~\ref{Sec:Decomposition-Constraints-Semantics}, how extends this simple constraint to more expressive ones proposed in HDDL~2.1.
+    \item ${\cal{C}}_t$ is a set of decomposition trajectory constraints of the form $(\at \ e \ \phi)$. This constraint expresses that some properties defined by the logical formula $\phi$ must hold in the state at the time event $e$. We will show in section~\ref{Sec:Decomposition-Constraints-Semantics}, how to extend this simple constraint to more expressive ones proposed in HDDL~2.1.
    \end{itemize}
 \end{definition}
 
-Note that a temporal task network is ground if all its typed variables are bound to constant in $C$ and primitive if all its tasks ${\cal{I}}$ are primitive. It is now possible to formally defined a method. 
-\begin{definition}[Method]
-A {\em method} $m$ is a tuple $(\name(m), \task(m),$ $\tn(m))$, where $\name(m)$ is the name of the method, $\task(m)$ refined by the method and the $\tn(m))$ that defines the decomposition of the task $\task(m)$ into subtasks.
-\end{definition}
+Note that a temporal task network is ground if all its variables are bound to constants, and primitive if all its tasks ${\cal{I}}$ are primitive. 
 
+Methods allow to refer tasks to temporal task networks. 
+\begin{definition}[Method]
+A {\em method} $m$ is a tuple $(\name(m), \task(m), \tn(m))$, where $\name(m)$ is the name of the method, $\task(m)$ is the task refined by the method, and $\tn(m))$ is the temporal task network decomposing $\task(m)$ into the subtasks ${\cal{I}} \in \tn(m)$.
+\end{definition}
+ We can now define the planning domain and problem.
 \begin{definition}
- A {\em planning domain} $\cal{D}$ is a tuple $({\cal{L}}, {\cal{T}}, {\cal{A}}, {\cal{M}})$, where $\cal{L}$ is the underlying first order predicate logic, $\cal{T}$ is the set of tasks primitive and abstract, $\cal{A}$ a set of durative actions and $\cal{M}$ a set of methods. We note ${\cal{T}}_p$ the set of primitive tasks and ${\cal{T}}_a$ the set of abstract tasks, s.t.  ${\cal{T}} = {\cal{T}}_p \cup {\cal{T}}_a$.
+ A {\em planning domain} $\cal{D}$ is a tuple $({\cal{L}}, {\cal{T}}, {\cal{M}})$, where $\cal{L}$ is the first-order logic, $\cal{T}$ is the set of tasks, and $\cal{M}$ is the set of methods. %We note ${\cal{T}}_p$ the set of primitive tasks and ${\cal{T}}_a$ the set of abstract tasks, s.t.  ${\cal{T}} = {\cal{T}}_p \cup {\cal{T}}_a$.
  \end{definition}
  
  The domain implicitly defines the set of all states $S$, being defined over all subsets of all ground predicates in $\cal{L}$.
  
  \begin{definition}
- A {\em planning problem} $\cal{P}$ is a tuple $({\cal{D}}, {s_0}, w_0, g)$, where $\cal{D}$ is a planning domain, $s_0 \in S$ is the initial state, a ground conjunction of positive literals over the predicates of ${\cal{D}}$, $w_0$ the initial temporal task network not necessary ground and $g$ the goal description, a first order formula not necessary ground. 
+ A {\em planning problem} $\cal{P}$ is a tuple $({\cal{D}}, {s_0}, w_0, g)$, where $\cal{D}$ is a planning domain, $s_0 \in S$ is the initial state, $w_0$ is the initial temporal task network (not necessary ground), and $g$ is a formula (not necessary ground) describing the goal. 
  \end{definition}
  
- \section{Temporal HTN planning Semantic}
+ \section{Temporal HTN planning Semantics}
  \label{THTN}
  The solution of a temporal HTN planning problem is an executable, ground, primitive temporal task networks that can be obtained from the problem's initial task network via applying ground actions and methods, adding temporal ordering constraints, durative constraints and decomposition constraints. Lifted problems are just a compact representation of their ground instantiations. With ground representation, it is not need to represent variables constraints anymore since they are represented in the grounding. Therefore in this section, for simplicity, we define the semantics of a lifted problem in terms of its ground instantiation. For details on the grounding process, reader has to refer to \cite{behnke20,ramoul17}.
  
