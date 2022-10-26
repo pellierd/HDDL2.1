@@ -212,8 +212,8 @@ A {\em method} $m$ is a tuple $(\name(m), \task(m), \tn(m))$, where $\name(m)$ i
  
  \section{Temporal HTN planning Semantics}
  \label{THTN}
- xxx
- %The solution of a temporal HTN planning problem is an executable, ground, primitive temporal task networks that can be obtained from the problem's initial task network via applying ground actions and methods, adding temporal ordering constraints, durative constraints and decomposition constraints. Lifted problems are just a compact representation of their ground instantiations. With ground representation, it is not need to represent variables constraints anymore since they are represented in the grounding. Therefore in this section, for simplicity, we define the semantics of a lifted problem in terms of its ground instantiation. For details on the grounding process, reader has to refer to \cite{behnke20,ramoul17}.
+ 
+ The solution of a temporal HTN planning problem is an {\it executable} temporal task networks that is obtained from the problem initial task network by applying method decompositions and constraint satisfaction. Lifted problems are just a compact representation of their ground instances. With ground instances, there is not need to use variable constraints since they are satisfied by the grounding. Therefore, in this section, for the sake of simplicity, we define the semantics of a lifted problem in terms of its ground instances. For details on the grounding process, the reader is referred to \cite{behnke20,ramoul17}.
  
  % Definition d'un sequence temporel de tâches
 Let us start by defining what is a temporal sequence of tasks. 
