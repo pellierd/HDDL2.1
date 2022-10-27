@@ -111,7 +111,8 @@
 \newcommand{\tinv}{\text{\it inv}}
 \newcommand{\task}{\text{\it task}}
 \newcommand{\tn}{\text{\it tn}}
-
+\newcommand{\hbefore}{\text{\it xx }}
+\newcommand{\hafter}{\text{\it xx }}
 
 \setcounter{secnumdepth}{2}
 
@@ -201,7 +202,7 @@ A {\em method} $m$ is a tuple $(\name(m), \task(m), \tn(m))$, where $\name(m)$ i
 \end{definition}
  We can now define the planning domain and problem.
 \begin{definition}
- A {\em planning domain} $\cal{D}$ is a tuple $({\cal{L}}, {\cal{T}}, {\cal{M}})$, where $\cal{L}$ is the first-order logic, $\cal{T}$ is the set of tasks, and $\cal{M}$ is the set of methods. %We note ${\cal{T}}_p$ the set of primitive tasks and ${\cal{T}}_a$ the set of abstract tasks, s.t.  ${\cal{T}} = {\cal{T}}_p \cup {\cal{T}}_a$.
+ A {\em planning domain} $\cal{D}$ is a tuple $({\cal{L}}, {\cal{T}}, {\cal{A}}, {\cal{M}})$, where $\cal{L}$ is the first-order logic, $\cal{T}$ is the set of tasks, ${\cal{A}}$ is a set of actions and $\cal{M}$ is the set of methods. %We note ${\cal{T}}_p$ the set of primitive tasks and ${\cal{T}}_a$ the set of abstract tasks, s.t.  ${\cal{T}} = {\cal{T}}_p \cup {\cal{T}}_a$.
  \end{definition}
  
  The domain implicitly defines the set of all states $S$, being defined over all subsets of all ground predicates in $\cal{L}$.
@@ -263,40 +264,42 @@ Let $m = (\name(m),$ $\task(m), tn(m))$ be a method with a task network $tn(m) =
 Now we can formally define what is a temporal task network solution.
 
 \begin{definition}[Temporal Task Network Solution]
-Let ${\cal{P}} = ({\cal{D}}, s_0, w_0, g)$ be a planning problem with $\cal{D} = ({\cal{L}}, {\cal{T}}, {\cal{M}})$. A task network $w_s = ({\cal{I}}, \alpha, {\cal{C}}_o, {\cal{C}}_d, {\cal{C}}_t)$ is solution to a temporal HTN planning problem ${\cal{P}}$ if and only if:
+Let ${\cal{P}} = ({\cal{D}}, s_0, w_0, g)$ be a planning problem with $\cal{D} = ({\cal{L}}, {\cal{T}}, {\cal{A}}, {\cal{M}})$. A task network $w_s = ({\cal{I}}, \alpha, {\cal{C}}_o, {\cal{C}}_d, {\cal{C}}_t)$ is solution to a temporal HTN planning problem ${\cal{P}}$ if and only if:
 \begin{itemize}
     \item There is a sequence of decompositions from $w_o$ to $w_s$ resulting from the application of the methods ${\cal{M}}$ of ${\cal{D}}$ and
-\item $w_s$ is executable and generates an executable temporal sequence of tasks from $s_0$ to a state $s \models g$.
+%\item $w_s$ is executable and generates an executable temporal sequence of tasks from $s_0$ to a state $s \models g$.
+\item $w_s$ is executable and the temporal sequence of states resulting from its execution starts with $s_0$ and leads to a state $s \models g$.
 \end{itemize}
 \end{definition}
 
-\section{Decomposition Constraints Semantics}
+\section{Decomposition Constraint Semantics}
 \label{Sec:Decomposition-Constraints-Semantics}
 
-Decomposition constraints assert conditions that must be met by the entire sequence of states visited during the execution of a solution task network. They are expressed through temporal modal operators over first order formulae involving state predicates as in PDDL. The semantics of the decomposition constraints can be formally specified in a similar way to what has been done by \citep{gerevini05}. Let a ground task network $w = ({\cal{I}}, \alpha, {\cal{C}}_o, {\cal{C}}_d, {\cal{C}}_t)$, a state $s_0$ and a temporal sequence of tasks $\pi = \langle (t_0, e_0, d_0), \ldots, (t_n, e_n, d_n) \rangle $ with $t_0 = \alpha(i_0), \ldots, t_n = \alpha(i_n)$ where $\pi$ is the result of the decomposition of $w$ into primitive tasks by applying method decompositions of the planning problem. We denote $\langle (s_0, e_0, d_0), \ldots, (s_n, e_n, d_n) \rangle$ the sorted temporal sequence of states produced by the execution of $\pi$ in $s_0$ according to its happening event $e_i$ with $i \leq 0 \leq n$. $w$ satisfies a constraint $(\at \ e_i, \phi) \in {\cal{C}}_t$ iff   $\exists s_i \in \langle (s_0, e_0, d_0), \ldots, (s_n, e_n, d_n) \rangle$ such that $s_i \models \phi$. Each decomposition constraint defined in HDDL~2.1 can be rewritten in terms of constraints of the form $(\at \ e_i, \phi)$. The proposed HDDL extension distinguishes two types of decomposition constraints: 
+Decomposition constraints assert conditions that must be met by the entire sequence of states visited during the execution of a solution task network. They are expressed through temporal modal operators over first-order formulas involving state predicates as in PDDL. The semantics of the decomposition constraints can be formally specified in a similar way to what has been done by \citep{gerevini05}. Let $w = ({\cal{I}}, \alpha, {\cal{C}}_o, {\cal{C}}_d, {\cal{C}}_t)$ be a ground task network, a state $s_0$ and a temporal sequence of tasks $\pi = \langle (t_0, e_0, d_0), \ldots, (t_n, e_n, d_n) \rangle $ with $t_0 = \alpha(i_0), \ldots, t_n = \alpha(i_n)$ where $\pi$ is the result of the decomposition of $w$ into primitive tasks by applying method decompositions of the planning problem. We denote by $\langle (s_0, e_0, d_0), \ldots, (s_n, e_n, d_n) \rangle$ the sorted temporal sequence of states produced by the execution of $\pi$ in $s_0$ according to its happening event $e_i$ with $i \leq 0 \leq n$. $w$ satisfies a constraint $(\at \ e \ \phi) \in {\cal{C}}_t$ iff $\exists s_i \in \langle (s_0, e_0, d_0), \ldots, (s_n, e_n, d_n) \rangle$ such that $s_i \models \phi$. Each decomposition constraint defined in HDDL~2.1 can be rewritten in terms of constraints of the form $(\at \ e_i\ \phi)$. The proposed HDDL extension distinguishes two types of decomposition constraints: 
 \begin{itemize}
-    \item the {\em temporal decomposition constraints} that define the constraints that must hold at specific happening event whose semantics is based on the plan trajectory constraint from PDDL~3.0. We have made the choice to keep the same constraints as introduced in PDDL~3.0 to stay consistent with PDDL. 
+    \item the {\em temporal decomposition constraints} that define the constraints that must hold at specific happening event whose semantics is based on the plan trajectory constraints from PDDL~3.0. We have made the choice to keep the same constraints as introduced in PDDL~3.0 to stay consistent with PDDL. 
     \item the {\em classical decomposition constraints} ($\before$, $\after$, $\between$) used in HTN planning introduced first by \citep{erol94} to represent constraints between tasks. We will show how the latter can be expressed with the former at the end of this section.
 \end{itemize}
-     
-\subsection{Temporal Constraints Semantic}
 
-The semantic of temporal decomposition constraints are given below.
+We conclude this section by building the semantics of the durative method preconditions on the semantics of the introduced decomposition constraints.
 
-%
+\subsection{Temporal Constraints Semantics}
+
+The semantics of temporal decomposition constraints are given below.
+
 Constraint \holdduring~ expresses that some properties must always remain true during a time interval. It allows to specify temporal ``envelops''. 
 %
 \begin{multline*}
-\langle (s_0, e_0, d_0), \ldots, (s_i, e_i_d_i), \ldots, (s_n, e_n, d_n) \rangle \models \\
-(\holdduring \ e_1 e_2 \ \phi) \text{iff} \ \forall e_i : e^1 \leq e_i \leq e^2 \ \text{such as} \ (\at \ e_i \ \phi)
+\langle (s_0, e_0, d_0), \ldots, (s_i, e_i, d_i), \ldots, (s_n, e_n, d_n) \rangle \models \\
+(\holdduring \ e_1 \ e_2 \ \phi)\ \text{iff} \ \forall e_i : e_1 \leq e_i \leq e_2 \ \text{such as} \ (\at \ e_i \ \phi)
 \end{multline*}
 %
 Constraint \within~ says that some properties must be verified sometime before the begin of the execution of a specific event.
 %
 \begin{multline*}
 \langle (s_0, e_0, d_0), \ldots, (s_i, e_i, d_i), \ldots, (s_n, e_n, d_n) \rangle \models   \\ 
-\left(\within \ e \ \phi\right) \text{iff} \; \exists e_i: e_0 \leq e_i \leq e \; \text{such as} \\
-(\at \ e_i \ \phi) \: \ \text{and} \; e_i \leq e \qquad\qquad\quad\quad\quad
+\left(\within \ e \ \phi\right) \text{iff} \; \exists e_i: e_0 \leq e_i \leq e \; \text{such as}\ (\at \ e_i \ \phi) 
+%\: \ \text{and} \; e_i \leq e \qquad\qquad\quad\quad\quad
 \end{multline*}
 %
 %
@@ -304,25 +307,26 @@ The pending constraint \holdafter \ says \ that some properties must be verified
 %
 \begin{multline*}
 \langle (s_0, e_0, d_0), \ldots, (s_i, e_i, d_i), \ldots, (s_n, e_n, d_n) \rangle \models   \\ 
-\left(\holdafter \ e \ \phi\right) \text{iff} \; \exists e_i: e \leq e_i \leq n \ \text{such as} \\ 
- (\at \ e_i \ \phi) \: \ \text{and} \; e_i \geq e \qquad\qquad\quad\quad
+\left(\holdafter \ e \ \phi\right) \text{iff} \; \exists e_i: e \leq e_i \leq e_n \ \text{such as}\ (\at \ e_i \ \phi) %\: \ \text{and} \; e_i \geq e 
+% \qquad\qquad\quad\quad
 \end{multline*}
 %
- The constraints \atstart~ (repectively {\atend}) expresses that a specified logical formula $\phi$ must be true before  (respectively after) the start of the first task of a task network (respectively the end of the last task). Both constraints was added to simplify the expression of the preconditions and the effects of the methods. These two constraints can easily be rewritten in \hbefore and \hafter constraints by adding a dummy task representing the first task and the last task of the task network.
+ The constraints \atstart~ (respectively {\atend}) expresses that a specified logical formula $\phi$ must be true before  (respectively after) the start of the first task of a task network (respectively the end of the last task). Both constraints were added to simplify the expression of preconditions and effects of methods. %These two constraints can easily be rewritten in \before~ and \after~ constraints by adding a dummy task representing the first task and the last task of the task network.
 %
 \begin{multline*}
 \langle (s_0, e_0, d_0), (s_1, e_1, d_1), \ldots, (s_n, e_n, d_n) \rangle \models\\
-     (\atstart \ \phi) \;\; \text{iff} \; (\at \ e_0 \ \phi) \models \phi 
-\\
-\shoveleft\langle (s_0, e_0, d_0), (s_1, e_1, d_1), \ldots, (s_n, e_n, d_n) \rangle \models \\ 
-    (\atend \ \phi) \;\; \text{iff} \; (\at \ e_n \ \phi) \models \phi \qquad\qquad\quad\quad\quad
+     (\atstart \ \phi)\ \text{iff}\ (\at \ e_0 \ \phi)
+\end{multline*}
+\begin{multline*}
+\langle (s_0, e_0, d_0), (s_1, e_1, d_1), \ldots, (s_n, e_n, d_n) \rangle \models\\ 
+    (\atend \ \phi)\ \text{iff}\ (\at \ e_n \ \phi)
 \end{multline*}
 %
 As \cite{gerevini05}, we propose to add also modal operators : \always, \sometimes, \atmostonce. A constraint \always~ expresses that some properties $\phi$ must be satisfied whatever the decomposition of the task network. 
 %
 \begin{multline*}
 \langle (s_0, e_0, d_0), \ldots, (s_i, e_i, d_i), \ldots, (s_n, e_n, d_n) \rangle \models \\
- (\always \ \phi) \ \text{iff} \ \forall e_i : e_0 \leq e_i \leq e_n \ (\at \ e_i \ \phi)
+ (\always \ \phi) \ \text{iff} \ \forall e_i : e_0 \leq e_i \leq e_n \: \text{such as} \ (\at \ e_i \ \phi)
 \end{multline*}
 %
 A constraint \sometimes~ say that some properties must be verified sometimes in the decomposition of the task network.
@@ -338,34 +342,34 @@ Constraint \atmostonce~ indicates that some properties must be satisfied at most
 \langle (s_0, e_0, d_0), \ldots, (s_n, e_n, d_n) \rangle \models (\atmostonce \ \phi) \\ 
  \text{iff} \ \forall e_i: e_0 \leq e_i \leq e_n \ \text{if} \ (\at~ e_i \ \phi) \ \text{then} \\
  \exists e_j: e_j \geq e_i \ \text{such as} \ \forall e_k: e_i \leq e_k \leq e_j \\ 
-(\at \ e_k \ \phi) \text{ and} \ \forall e_k : e_k > e_j \ (\at \ e_k \ \neg\phi) \qquad\quad
+(\at \ e_k \ \phi) \text{ and} \ \forall e_k : e_k > e_j \: \text{such as} \ (\at \ e_k \ \neg\phi) \qquad\quad
 \end{multline*}
 %
-Finally, we have the three last constraints introduced in PDDL~3.0: \sometimebefore, \sometimeafter and \alwayswithin. A constraint \sometimebefore~ (respectively \sometimeafter~) says that if some properties $\phi$ occurs at $e_i$ then $\psi$ must be verified sometime before (respectively after) $e_i$ in the sequence of state produce by the decomposition of the task network. 
+Finally, we have the three last constraints introduced in PDDL~3.0: \sometimebefore, \sometimeafter~ and \alwayswithin. A constraint \sometimebefore~ (respectively \sometimeafter~) says that if some properties $\phi$ occurs at $e_i$ then $\psi$ must be verified sometime before (respectively after) $e_i$ in the sequence of states produced by the decomposition of the task network. 
 %
 \begin{multline*}
 \langle (s_0, e_0, d_0), \ldots, (s_i, e_i, d_i), \ldots, (s_n, e_n, d_n) \rangle \models   \\ 
 (\sometimebefore \ \phi \ \psi) \ \text{iff} \; \forall e_i \ \text{if} \ (\at \ e_i \ \phi)\\
-\exists e_j : 0 \leq e_j \leq e_i \; (\at \ e_j \ \psi) \qquad\qquad\quad\quad
+\exists e_j : 0 \leq e_j \leq e_i \: \text{such as} \ (\at \ e_j \ \psi) \qquad\qquad\quad\quad
 \end{multline*}
 %
 \begin{multline*}
 \langle (s_0, e_0, d_0), \ldots, (s_i, e_i, d_i), \ldots, (s_n, e_n, d_n) \rangle \models   \\ 
 (\sometimeafter \ \phi \ \psi) \ \text{iff} \; \forall e_i \ \text{if} \ (\at \ e_i \ \phi)\\
-\exists e_j : e_i \leq e_j \leq e_n \; (\at \ e_j \ \psi) \qquad\qquad\quad\quad
+\exists e_j : e_i \leq e_j \leq e_n \: \text{such as} \ (\at \ e_j \ \psi) \qquad\qquad\quad\quad
 \end{multline*}
 %
-A constraint \alwayswithin~ says that if some properties $\phi$ occurs at $e_i$ then some properties $\psi$ must be verified after $e_i$ at the latest after a certain time $d$ in the sequence of state produce by the decomposition of the task network. 
+A constraint \alwayswithin~ says that if some properties $\phi$ occurs at $e_i$ then some properties $\psi$ must be verified after $e_i$ at the latest after a certain time $d$ in the sequence of states produced by the decomposition of the task network. 
 %
 \begin{multline*}
 \langle (s_0, e_0, d_0), \ldots, (s_i, e_i, d_i), \ldots, (s_n, e_n, d_n) \rangle \models   \\ 
 (\alwayswithin \ \phi \ \psi \ d) \ \text{iff} \; \forall e_i \ \text{if} \ (\at \ e_i \ \phi)\\
-\exists e_j : e_i \leq e_j \leq e_n \; (\at \ e_j \ \psi) \ \text{and} \ e_j - e_i \leq d \qquad
+\exists e_j : e_i \leq e_j \leq e_n \: \text{such as} \ (\at \ e_j \ \psi) \ \text{and} \ e_j - e_i \leq d \qquad
 \end{multline*}
 
 \subsection{Classical Decomposition Constraints}
 
-The {\em classical decomposition constraints} used in HTN planning introduced first by \citep{erol94} are $\before$, $\after$, and $\between$. The \before~ constraints are a generalisation of the classical notion of precondition. It has the form $\before(t, \phi)$ where $t$ is a task and $\phi$ a first order formula that represents the properties that must be satisfied before $t$. The \after~ constraints are a generalisation of the classical notion of effects  for a task network. It has the form $\after(t, \phi)$ where $t$ is a task $t$ and $\phi$ a first order formula that represents the properties that must be satisfied after $t$. Finally, the \between constraints are a generalisation of the notion of causal link in plan space planning. It has the form $\hbetween(t_1, t_2, \phi)$ where $t_1$ and $t_2$ are tasks and $\phi$ a first order formula that represents the properties that must hold between the end of $t_1$ and the begin of $t_2$. We give below the formal semantic of the constraints based on the semantics of the previously introduced temporal constraints.
+The {\em classical decomposition constraints} used in HTN planning introduced first by \citep{erol94} are $\before$, $\after$ and $\between$. The \before~ constraints are a generalisation of the classical notion of precondition. It has the form $\before(t, \phi)$ where $t$ is a task and $\phi$ a first-order formula that represents the properties that must be satisfied before $t$. The \after~ constraints are a generalisation of the classical notion of effects for a task network. It has the form $\after(t, \phi)$ where $t$ is a task $t$ and $\phi$ a first-order formula that represents the properties that must be satisfied after $t$. Finally, the \between~ constraints are a generalisation of the notion of causal link in plan space planning. It has the form $between(t_1\ t_2\ \phi)$ where $t_1$ and $t_2$ are tasks and $\phi$ is a first-order formula that represents the properties that must hold between the end of $t_1$ and the begin of $t_2$. We give below the formal semantics of these constraints based on the semantics of the previously introduced temporal constraints:
 \begin{multline*}
 \langle (s_0, e_0, d_0), \ldots, (s_n, e_n, d_n) \rangle \models  \\
 (\before \ t \ \phi) \  \text{iff} \ (\at \ e_{\tstart(t)} \ \phi) \\
@@ -376,11 +380,11 @@ The {\em classical decomposition constraints} used in HTN planning introduced fi
 \tend(t_1) \leq e_i \leq \tstart(t_2) \ \text{such as} \ (\at \ e_i \ \phi) \qquad \quad 
 \end{multline*}
 
-\subsection{Method Preconditions Semantic}
+\subsection{Method Preconditions Semantics}
 
-Durative methods may have preconditions and their preconditions are temporally annotated to given the time at which it’s supposed to happen. As durative actions, a method can have three type of annotated preconditions: (1) $(\atstart \ \phi)$ its means that $\phi$ must be true or happen at the start of the the method; (2) $(\atend \ \phi)$ means that $\phi$ must be true or happen at the end of the method and $(\overall \ \phi)$ means that $\phi$ must be true for the full duration of the method.
+Durative methods may have preconditions and their preconditions are temporally annotated to give the time at which they are supposed to happen. As durative actions, methods can have three types of annotated preconditions: (1) $(\atstart \ \phi)$ meaning that $\phi$ must be true or happen at the start of the method; (2) $(\atend \ \phi)$ meaning that $\phi$ must be true or happen at the end of the method, and $(\overall \ \phi)$ meaning that $\phi$ must be true for the full duration of the method.
 
-Formally, these three temporal preconditions can be rewritten in terms of decomposition constraints previously introduced. A precondition of type $(\atstart \ \phi)$ (respectively $(\atend \ \phi)$ is equivalent to adding a decomposition constraint $(\atstart \ \phi)$ (respectively $(\atend \ \phi)$ and A precondition of type $(\overall \ \phi)$ is equivalent to adding a decomposition constraint $(\always \ \phi)$. The preconditions of the methods can be seen as syntactic glue to express decomposition constraints of type $\atstart$, $\atend$ and $\always$.
+Formally, these three temporal preconditions can be rewritten in terms of decomposition constraints previously introduced. A precondition of type $(\atstart \ \phi)$ (respectively $(\atend \ \phi)$) is equivalent to adding a decomposition constraint $(\atstart \ \phi)$ (respectively $(\atend \ \phi)$), and a precondition of type $(\overall \ \phi)$ is equivalent to adding a decomposition constraint $(\always \ \phi)$. The preconditions of the methods can be seen as syntactic glue to express decomposition constraints of type $\atstart$, $\atend$ and $\always$.
 
 \section{HDDL 2.1 Syntax} 
 
@@ -638,7 +642,7 @@ duration of the method or the sub-tasks that compose it. Therefore, it is necess
 <method-duration-constraint> ::=~\specReq{:duration-inequalities}~ (and~\linebreak~ <method-simple-duration-constraint>+)
 <method-duration-constraint> ::= ()
 <method-duration-constraint> ::= ~\mbox{<simple-method-duration-constraint>}~
-<simple-method-duration-constraint>::= ~\linebreak~(<binary-comp> <duration> <td-value>)
+<simple-method-duration-constraint>::= ~\linebreak~(<binary-comp> <duration> <td-value>)~
 <simple-method-duration-constraint>::= ~\linebreak~(at <time-specifier> ~\mbox{<simple-method-duration-constraint>}~)
 <duration> :: = ?duration
 <duration> :: = <task-duration>
@@ -821,10 +825,6 @@ But now, the following requirement flags are also compatible with HDDL 2.1:
 \begin{description}
 \item \verb+:method-constraints+ requires to specify decomposition trajectory constraints in methods. 
  \end{description}
- 
- *** réecriture des préconditions des méthodes sous la forme de contraintes
-
-
 
 \section{Conclusion}
 
