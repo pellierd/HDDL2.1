@@ -163,11 +163,11 @@ A {\it state} $s$ is a set of ground predicates. For the sake of conciseness, we
  Let us start by defining the concepts of {\it snap} and {\it durative actions}, which are the primnitive taks, based on the concepts of \cite{abdulaziz22}.
  
 A snap action is an action, which execution is instantaneous, in the sense of classical planning. % duration \epsilon << d
-\begin{definition}[Snap Action] A {\em snap action} $a$ is a tuple $(\name(a), \pre(a),$ $\effect(a))$: $\name(a)$ is the name of $a$, the precondition $\pre(a)$ is a first-order formula $s \models \phi$ in state $s$ to execute $a$, and the effects \effect(a) produced by the execution of $a$. $\effect(a) = \add(a) \cup \del(a)$ ($\add(a) \cap \del(a) = \emptyset$), $\add(a)$ and $\del(a)$ are conjunctions of predicates, respectively true and false after the execution of $a$. 
+\begin{definition}[Snap Action] A {\em snap action} $a$ is a tuple $\bigl(\name(a), \pre(a), \effect(a) \bigr)$: $\name(a)$ is the name of $a$, the precondition $\pre(a)$ is a first-order formula $s \models \phi$ in state $s$ to execute $a$, and the effects \effect(a) produced by the execution of $a$. $\effect(a) = \add(a) \cup \del(a)$ ($\add(a) \cap \del(a) = \emptyset$), $\add(a)$ and $\del(a)$ are conjunctions of predicates, respectively true and false after the execution of $a$. 
 \end{definition}
 
 \begin{definition}[Durative Action]
-A {\em durative action} $a$ is a tuple $(\name(a), \tstart(a), \tend(a),$ $\tinv(a), d)$: $\name(a)$ is the name of $a$, $\tstart(a)$ and $\tend(a)$ are snap actions ; $\tinv(a)$ is a first-order formula that must hold in all the states after the execution of $start(a)$ and until $end(a)$, and $d$ is the duration of $a$. $start(a)$ and $end(a)$ are time events.
+A {\em durative action} $a$ is a tuple $\bigl(\name(a), \tstart(a), \tend(a), \tinv(a), d\bigr)$: $\name(a)$ is the name of $a$, $\tstart(a)$ and $\tend(a)$ are snap actions; $\tinv(a)$ is a first-order formula that must hold in all the states after the execution of $start(a)$ and until $end(a)$, and $d$ is the duration of $a$. $start(a)$ and $end(a)$ are time events.
 \end{definition}
 Hence, actions do change the state of the world. How states change will be formally defined in Section \ref{THTN}.
 
@@ -201,7 +201,7 @@ Note that a temporal task network is ground if all its variables are bound to co
 
 Methods allow to refer tasks to temporal task networks. 
 \begin{definition}[Method]
-A {\em method} $m$ is a tuple $\left(\name(m), \task(m), \tn(m)\right)$, where $\name(m)$ is the name of the method, $\task(m)$ is the task refined by the method, and $\tn(m)$ is the temporal task network decomposing $\task(m)$ into the subtasks $\{\tn(m) \in \cal{I}\}$.
+A {\em method} $m$ is a tuple $\bigl(\name(m), \task(m), \tn(m)\bigr)$, where $\name(m)$ is the name of the method, $\task(m)$ is the task refined by the method, and $\tn(m)$ is the temporal task network decomposing $\task(m)$ into the subtasks $\{\tn(m) \in \cal{I}\}$.
 \end{definition}
  We can now define the planning domain and problem for Temporal HTN Planning.
 \begin{definition}
@@ -229,28 +229,32 @@ A temporal sequence of tasks is primitive if and only if every task $t_i \in \pi
 % Definition de l'executabilité d'une sequences de tâches dans un état
 It is now necessary to define under which conditions such a sequence is {\it executable}. A central notion for that is the notion of snap action {\it non-interference}.
 \begin{definition}[Non-Interference]
-Two snap actions $a$ and $b$ are not interfering if and only if (i) $\pre(a) \cap (\add(b) \cup \del(b)) = \emptyset$, (ii) $\pre(b) \cap (\add(a) \cup \del(a)) = \emptyset$, (iii) $\add(a) \cap \del(b) = \emptyset$ and  $\add(b) \cap \del(a) = \emptyset$. 
+Two snap actions $a$ and $b$ are not interfering if and only if (i) $\pre(a) \cap \bigl(\add(b) \cup \del(b)\bigr) = \emptyset$, (ii) $\pre(b) \cap \bigl(\add(a) \cup \del(a)\bigr) = \emptyset$, (iii) $\add(a) \cap \del(b) = \emptyset$ and  $\add(b) \cap \del(a) = \emptyset$. 
 \end{definition}
-Two snap actions or more can be executed at the same time, if they are not interfering. Execution semantics of snap actions are similar to the semantics of $\forall$-step parallel plans \cite{rintanen06}, and used in PDDL~2.1 \cite{fox03}. With this notion, it is now possible to formally define what is an executable temporal sequence of tasks.
+Two snap actions or more can be executed at the same time, if they are not interfering. Execution semantics of snap actions are similar to the semantics of $\forall$-step parallel plans \cite{rintanen06}, and used in PDDL~2.1 \cite{fox03}. With this notion, it is now possible to formally define what an executable temporal sequence of tasks is.
 
 \begin{definition}[Executable Temporal Sequence of Tasks]
-A temporal sequence of tasks $\pi = \langle (t_0, e_0, d_0), \ldots,$ $(t_n, e_n, d_n) \rangle$ is executable in a state $s_0$ if and only for every happening event $e_i$ of $\pi$ with $i \leq 0 \leq n$: (i) all $t_i$ refer to ground actions $a_i$, (ii) $s_i \models \tinv(a_i)$ for every $\tinv(a_i) \in I_{e_i}$, (iii) $s_i \models \pre(a_i)$ for every $a_i \in B_{e_i}$, (iv) $B_{e_i}$ is {\em pairwise non-interfering}, (v) $s_{i+1} = (s_i - \cup_{a \in B_{e_i}} \del(a)) \cup_{a \in B_{e_i}} \add(a)$
+A temporal sequence of tasks $\pi = \langle (t_0, e_0, d_0), \ldots,$ $(t_n, e_n, d_n) \rangle$ is executable in a state $s_0$ if and only if for every happening event $e_i$ of $\pi$ with $0 \leq i \leq n$:
+(i) all $t_i$ refer to ground actions $a_i$,
+(ii) $s_{i+1} = (s_i - \cup_{a \in B_{e_i}} \del(a)) \cup_{a \in B_{e_i}} \add(a)$
  where:
 \begin{itemize}
  \item $B_{e_i} = \{ \tstart(a_i) \ | \ \langle a_i, e_i, d_i \rangle \in \pi\} \ \cup  \{\tend(a_i) \ | \ \langle a_i, e_i - d_i, d_i \rangle \in \pi\}$ 
  \item $I_{e_i} = \{ \tinv(a_i) \ | \ \langle a_i,e',d_i\rangle \in \pi \wedge e' < e_i < e' + d_i\}$.
  \end{itemize}
+(iii) $B_{e_i}$ is {\em pairwise non-interfering}, 
+(iv) $s_i \models \tinv(a_i)$ for every $\tinv(a_i) \in I_{e_i}$, (v) $s_i \models \pre(a_i)$ for every $a_i \in B_{e_i}$.
  \end{definition}
  
  This definition can easily be extended to a temporal task network.
  
-  \begin{definition}[Executable Temporal Task Network] A temporal task network $w = ({\cal{I}}, \alpha, {\cal{C}}_o, {\cal{C}}_d, {\cal{C}}_t)$ is executable in a state $s_0$ if and only if there is an executable temporal sequence of tasks $\pi = \langle (\alpha(i_0), e_0, d_0), \ldots,$ $(\alpha(i_n), e_n, d_n)\rangle$ in $s_0$ where $i_1, \ldots, i_n$ are task identifiers in $\cal{I}$ that matches the following conditions: (i) $\pi$ matches the temporal constraints ${\cal{C}}_o$, (ii) $\pi$ matches the duration constraints ${\cal{C}}_d$, and (iii) the sequence of states $\langle (s_0, e_0, d_0), \ldots,$ $(s_n, e_n, d_n) \rangle$ resulting from the execution of $\pi$ matches the constraints ${\cal{C}}_t$.
+  \begin{definition}[Executable Temporal Task Network] A temporal task network $w = ({\cal{I}}, \alpha, {\cal{C}}_o, {\cal{C}}_d, {\cal{C}}_t)$ is executable in a state $s_0$ if and only if there is an executable temporal sequence of tasks $\pi = \langle (\alpha(i_0), e_0, d_0), \ldots,$ $(\alpha(i_n), e_n, d_n)\rangle$ in $s_0$ where $i_0, \ldots, i_n$ are task identifiers in $\cal{I}$ that matches the following conditions: (i) $\pi$ matches the temporal constraints ${\cal{C}}_o$, (ii) $\pi$ matches the duration constraints ${\cal{C}}_d$, and (iii) the sequence of states $\langle (s_0, e_0, d_0), \ldots,$ $(s_n, e_n, d_n) \rangle$ resulting from the execution of $\pi$ matches the constraints ${\cal{C}}_t$.
   \end{definition}
   
 It remains to define how to transform one temporal task network into another one by using method decomposition in order to obtain an executable task network. 
 
 \begin{definition}[Decomposition]
-Let $m = (\name(m),$ $\task(m), tn(m))$ be a method with a task network $tn(m) = ({\cal{I}}^m, \alpha^m, {\cal{C}}_{o}^{m},{\cal{C}}_{d}^{m}, {\cal{C}}_{t}^{m}))$ and a task network to decompose $w_1= ({\cal{I}}^1, \alpha^1, {\cal{C}}_{o}^{1},{\cal{C}}_{d}^{1}, {\cal{C}}_{t}^{1}))$. We suppose ${\cal{I}}^m \cap {\cal{I}}^1 = \emptyset$. The latter case can be achieved by renaming. Then, $m$ decomposes a task identifier $i \in {\cal{I}}^1$ into a task network $w_2= ({\cal{I}}^2, \alpha^2, {\cal{C}}_{o}^{2},{\cal{C}}_{d}^{2}, {\cal{C}}_{t}^{2}))$ if and only if $\alpha^1(i) = task(m)$ and 
+Let be a method \mbox{$m = \bigl(\name(m),$ $\task(m), tn(m)\bigr)$} with a task network $tn(m) = ({\cal{I}}^m, \alpha^m, {\cal{C}}_{o}^{m},{\cal{C}}_{d}^{m}, {\cal{C}}_{t}^{m})$ and a task network to decompose $w_1= ({\cal{I}}^1, \alpha^1, {\cal{C}}_{o}^{1},{\cal{C}}_{d}^{1}, {\cal{C}}_{t}^{1})$. We suppose ${\cal{I}}^m \cap {\cal{I}}^1 = \emptyset$. The latter case can be achieved by renaming. Then, $m$ decomposes a task identifier $i \in {\cal{I}}^1$ into a task network $w_2= ({\cal{I}}^2, \alpha^2, {\cal{C}}_{o}^{2},{\cal{C}}_{d}^{2}, {\cal{C}}_{t}^{2})$ if and only if $\alpha^1(i) = task(m)$ and 
 \begin{equation*} \label{eq1}
 \begin{aligned}
 {\cal{I}}^2 = & ({\cal{I}}^1 - \{i\}) \cup {\cal{I}}^m\\
@@ -264,7 +268,7 @@ Let $m = (\name(m),$ $\task(m), tn(m))$ be a method with a task network $tn(m) =
 \end{equation*}
 \end{definition}
 
-Now we can formally define what is a temporal task network solution.
+Now we can formally define a temporal task network solution.
 
 \begin{definition}[Temporal Task Network Solution]
 Let ${\cal{P}} = ({\cal{D}}, s_0, w_0, g)$ be a planning problem with $\cal{D} = ({\cal{L}}, {\cal{T}}, {\cal{A}}, {\cal{M}})$. A task network $w_s = ({\cal{I}}, \alpha, {\cal{C}}_o, {\cal{C}}_d, {\cal{C}}_t)$ is solution to a temporal HTN planning problem ${\cal{P}}$ if and only if:
