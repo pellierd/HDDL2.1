@@ -76,7 +76,7 @@
 %}
 
 \pdfinfo{
-/Title (HDDL2.1 Semantics)
+/Title (HDDL2.1 Semantics and Syntax)
 /Author (Paper \#)
 }
 
@@ -149,29 +149,32 @@ Throughout this section, we will use common notations from first-order logic, wh
 
 We can now define {\it formulas} in a function-free first-order logic \cite{ghallab}: (i) a predicate is a formula ; (ii) if ${\phi}$ and ${\psi}$ are formulas, then $\neg \phi$, $\phi \vee \psi$ and $\phi \wedge \psi$ are formulas ; (iii) if $\phi$ is a formula and $x$ is a variable, then $\forall x \phi$ is a formula. We define $\exists x \phi$ as $\neg \forall x \neg \phi$, and $\phi \rightarrow \psi$ as $\neg \phi \vee \psi$. $\forall$ and $\exists$ are respectively the universal and the existential quantifier. 
 
-Conceptually, grounding a formula consists in generating a set of variable-free i.e. {\it ground} formulas \cite{helmer} as follows: a variable $x$ in a quantifier-free formula $\phi$ is eliminated by replacing $\phi$ with $|C|$ copies, one for each $c \in C$, where $x$ is substituted with $c$ in the respective copy. This substitution is denoted by $\phi[x/c]$. Regarding quantified formulas, $\forall x \phi$ is replaced by $\bigwedge_{c \in C} \phi[x/c]$ and $\exists x \phi$ by $\bigvee_{c \in C} \phi[x/c]$. We refer the reader to \cite{xx} for further details on grounding implementation. Suffice to say it is always possible to transform a formula in function-free first-order logic into a finite set of ground formulas in propositional logic.
+Conceptually, grounding a formula consists in generating a set of variable-free i.e. {\it ground} formulas \cite{helmert} as follows: a variable $x$ in a quantifier-free formula $\phi$ is eliminated by replacing $\phi$ with $|C|$ copies, one for each $c \in C$, where $x$ is substituted with $c$ in the respective copy. This substitution is denoted by $\phi[x/c]$. Regarding quantified formulas, $\forall x \phi$ is replaced by $\bigwedge_{c \in C} \phi[x/c]$ and $\exists x \phi$ by $\bigvee_{c \in C} \phi[x/c]$. We refer the reader to \cite{behnke20,ramoul17} for further details on grounding implementation. Suffice to say it is always possible to transform a formula in function-free first-order logic into a finite set of ground formulas in propositional logic.
 
 A {\it state} $s$ is a set of ground predicates. For the sake of conciseness, we will also consider $s$ as a Herbrand interpretation that assigns $true$ to all ground predicates in $s$, and $false$ to all ground predicates not in $s$. From this, a truth value can be computed for every {\it ground} formula from ${\cal{L}}$ by using the usual rules for logical composition. For instance, $\phi \wedge \psi$ is true in $s$ if and only if both $\phi$ and $\psi$ are true in $s$. Without loss of generality, a formula (not necessarily ground) $\phi$ is true in $s$ if and only if grounding $\phi$ generates at least one ground formula true in $s$. We will use the notation $s \models \phi$ to mean that the formula $\phi$ is true in $s$.
 %A first-order formula is defined over $\cal{L}$ is either (i) an atomic formula $\phi \in P$, (ii) a negated formula $\neg\phi$, (iii) a conjunction of formulas $\phi_1 \wedge \phi_2$, (iv) a disjunction of formulas $\phi_1 \vee \phi_2$, (v) an implication of formulas $\phi_1 \rightarrow \phi_2$ or (vi) a quantified formula $\forall x \phi$ or $\exists x \phi$ where $x$ is a freexxx typed variable in $V$. 
 
 %set of ground atomic formulas defined over the $\cal{L}'$ predicates where all parameters are bound, i.e., replaced by a constants from $C$. A state $s$ is a model that assign {\it true} to all ground atomic formulas in $s$, and {\it false} to all ground atomic formulas not in $s$. Thus, a negated formula $\neg\phi$ is {\it true} in a state $s$, noted $s \models \neg \phi$, if only $\phi$ is not in $s$;  $s \models \phi_1 \wedge \phi_2$ if only both $\phi_1$ and $\phi_2$ is {\it true} in $s$; $s \models \phi_1 \vee \phi_2$ if $\phi_1$ or $\phi_2$ is {\it true} in $s$ and $s \models \phi_1 \rightarrow \phi_2$ if  $s \models \phi_1 \vee \neg \phi_2$; $\forall x \phi$ if for all possible values of $x$ in $C$ $s \models \phi$ and $\exists x \phi$ if it exists at least one value of $x$ in $C$ s.t $s \models \phi$.
 
- A key concept in HTN planning and a fortiori in temporal HTN planning is the concept of task. Each task is given by a name and a list of parameters. We distinguish two kinds of tasks: the actions, also called primitive tasks, and the abstract tasks (or coumpound tasks).
+ A key concept in HTN planning and a fortiori in temporal HTN planning is the concept of {\it task}. Each task is given by a name and a list of parameters. We distinguish two kinds of tasks: the actions, also called primitive tasks, and the abstract tasks (or coumpound tasks).
  
  %A {\it task} is defined as an atomic formula given by its name followed by a parameter sequence that could be either a typed variable in $V$ or typed constant in $C$. There are two kinds of tasks: primitive tasks that could be carried out by a durative action in the sense of classical temporal planning \cite{fox03} and abstract tasks that could be refined by applying methods that define how to decompose the task into subtasks. The purpose of abstract task is not to induce state transition unlike action, but to reference a predefined mapping to one or more tasks which that abstract task can be refined. This mapping is given by a set of decomposition methods. 
  
- Let us start by defining the concepts of {\it snap} and {\it durative actions} based on the concepts of \cite{abdulaziz22}.
+ Let us start by defining the concepts of {\it snap} and {\it durative actions}, which are the primnitive taks, based on the concepts of \cite{abdulaziz22}.
  
-A snap action is an action in the sense of classical planning.
+A snap action is an action, which execution is instantaneous, in the sense of classical planning. % duration \epsilon << d
 \begin{definition}[Snap Action] A {\em snap action} $a$ is a tuple $(\name(a), \pre(a),$ $\effect(a))$: $\name(a)$ is the name of $a$, the precondition $\pre(a)$ is a first-order formula $s \models \phi$ in state $s$ to execute $a$, and the effects \effect(a) produced by the execution of $a$. $\effect(a) = \add(a) \cup \del(a)$ ($\add(a) \cap \del(a) = \emptyset$), $\add(a)$ and $\del(a)$ are conjunctions of predicates, respectively true and false after the execution of $a$. 
 \end{definition}
 
 \begin{definition}[Durative Action]
 A {\em durative action} $a$ is a tuple $(\name(a), \tstart(a), \tend(a),$ $\tinv(a), d)$: $\name(a)$ is the name of $a$, $\tstart(a)$ and $\tend(a)$ are snap actions ; $\tinv(a)$ is a first-order formula that must hold in all the states after the execution of $start(a)$ and until $end(a)$, and $d$ is the duration of $a$. $start(a)$ and $end(a)$ are time events.
 \end{definition}
-Hence, actions do change the state of the world. How states change will formerly defined in Section \ref{THTN}.
+Hence, actions do change the state of the world. How states change will be formally defined in Section \ref{THTN}.
 
-Unlike a primitive task (i.e. a snap or durative action), a {\it compound task} does not change the world state. It is a name referring to other tasks (either primitive or compound) that must be achieved with respect to some constraints in order to achieve it. For instance, {\it deliver-dinner(?food-style, ?place)} is the compound task consisting in performing first the task {\it serve-starters(?food-style, ?place)}, then the main course etc. This mapping between tasks is achieved by the Temporal Task Networks and the methods as defined above. Like primitive tasks, compound tasks have also a start event and a end event, which will be associated to a time point in Section \ref{THTN}.
+Unlike a primitive task, % (i.e. a snap or durative action),
+a {\it compound task} does not change the world state.
+A compound task is identified by a name and defines the way other --possibly ordered-- tasks (either primitive or compound) must be achieved with respect to some constraints in order to refine it.
+For instance, in the task of serving a dinner, {\it deliver-dinner(?food-style, ?place)} is the compound task consisting in performing first the task of serving the starters, then the main course, etc. In that sense,  {\it deliver-dinner(?food-style, ?place)} can be refined in: {\it serve-starters(?food-style, ?place)},  {\it serve-main-course(?food-style, ?place)}, etc. This mapping between tasks is achieved by the Temporal Task Networks and the methods as defined above. Like primitive tasks, compound tasks have also a start event and a end event, which will be associated to a time point in Section \ref{THTN}.
 
  
 
@@ -184,13 +187,13 @@ A temporal task network $w = ({\cal{I}}, \alpha, {\cal{C}}_o, {\cal{C}}_v, {\cal
     
     \item $\alpha: {\cal{I}} \rightarrow {\cal{T}}$ maps task identifiers to tasks,
     
-    \item ${\cal{C}}_o$ is a set of temporal qualitative ordering constraints over the start or the end events of the tasks in $\cal{I}$. The possible qualitative temporal ordering are those from the classical point algebra \cite{broxvall03}: $<$, $\leq$, $>$, $\geq$, $=$ and $\neq$. For instance, the temporal ordering constraint $\tstart(t_1) < \tend(t_2)$ expresses that the start of the task $t_1$ must strictly occurred before the end of $t_2$. 
+    \item ${\cal{C}}_o$ is a set of temporal qualitative ordering constraints over the start or the end events of the tasks in $\cal{I}$. The possible qualitative temporal ordering are those from the classical point algebra \cite{broxvall03}: $<$, $\leq$, $>$, $\geq$, $=$ and $\neq$. For instance, the temporal ordering constraint $\tstart(t_1) < \tend(t_2)$ expresses that the start of the task $t_1$ must occur strictly  before the end of the task $t_2$. 
     
-    \item ${\cal{C}}_v$ is a set of parameter constraints. Each constraint can bind two variables to be equal or non-equals, or a variable to a constant. % Peut être rajouter un exemple pour être symetrique
+    \item ${\cal{C}}_v$ is a set of parameter constraints. Each constraint can bind two variables to be equal or non-equals, or similarly bind a variable to a constant. % TODO Peut être rajouter un exemple pour être symetrique
     
-    \item ${\cal{C}}_d$ is a set of durative constraints over the duration of the tasks $\cal{I}$. For instance, let $t_1, t_2 \in I$ and $w$ a task network, the durative constraints $\duration(t_1) < \duration(t_2)$ expresses that the duration of $t_1$ must be strictly less that $t_2$, and the constraint $\duration(w) \geq \duration(t_1) * \duration(t_2)$ expresses that the duration of $w$ is greater or equal to the product of the durations of $t_1$ and $t_2$. Durative constraints can be expressed in terms of start and end event of a task. For instance the previous constraint $\duration(t_1) < \duration(t_2)$ can be expressed as  $\tend(t_1) - \tstart(t_1) < \tend(t_2) - \tstart(t_2)$.
+    \item ${\cal{C}}_d$ is a set of durative constraints over the duration of the tasks $\cal{I}$. For instance, let $t_1, t_2 \in {\cal{I}}$ and $w$ a task network; the durative constraints $\duration(t_1) < \duration(t_2)$ expresses that the duration of $t_1$ must be strictly lower that $t_2$, and the constraint $\duration(w) \geq \duration(t_1) * \duration(t_2)$ expresses that the duration of $w$ is greater or equal to the product of the durations of $t_1$ and $t_2$. Durative constraints can be expressed in terms of start and end event of a task. For instance the previous constraint $\duration(t_1) < \duration(t_2)$ can be expressed as  $\tend(t_1) - \tstart(t_1) < \tend(t_2) - \tstart(t_2)$.
     
-    \item ${\cal{C}}_t$ is a set of decomposition trajectory constraints of the form $(\at \ e \ \phi)$. This constraint expresses that some properties defined by the logical formula $\phi$ must hold in the state at the time event $e$. We will show in section~\ref{Sec:Decomposition-Constraints-Semantics}, how to extend this simple constraint to more expressive ones proposed in HDDL~2.1.
+    \item ${\cal{C}}_t$ is a set of decomposition trajectory constraints of the form $(\at \ e \ \phi)$. This constraint expresses that some properties defined by the logical formula $\phi$ must hold in the state at the time event $e$. We will show in Section~\ref{Sec:Decomposition-Constraints-Semantics}, how to extend this simple constraint to more expressive ones proposed in HDDL~2.1.
    \end{itemize}
 \end{definition}
 
@@ -198,9 +201,9 @@ Note that a temporal task network is ground if all its variables are bound to co
 
 Methods allow to refer tasks to temporal task networks. 
 \begin{definition}[Method]
-A {\em method} $m$ is a tuple $(\name(m), \task(m), \tn(m))$, where $\name(m)$ is the name of the method, $\task(m)$ is the task refined by the method, and $\tn(m))$ is the temporal task network decomposing $\task(m)$ into the subtasks ${\cal{I}} \in \tn(m)$.
+A {\em method} $m$ is a tuple $\left(\name(m), \task(m), \tn(m)\right)$, where $\name(m)$ is the name of the method, $\task(m)$ is the task refined by the method, and $\tn(m)$ is the temporal task network decomposing $\task(m)$ into the subtasks $\{\tn(m) \in \cal{I}\}$.
 \end{definition}
- We can now define the planning domain and problem.
+ We can now define the planning domain and problem for Temporal HTN Planning.
 \begin{definition}
  A {\em planning domain} $\cal{D}$ is a tuple $({\cal{L}}, {\cal{T}}, {\cal{A}}, {\cal{M}})$, where $\cal{L}$ is the first-order logic, $\cal{T}$ is the set of tasks, ${\cal{A}}$ is a set of actions and $\cal{M}$ is the set of methods. %We note ${\cal{T}}_p$ the set of primitive tasks and ${\cal{T}}_a$ the set of abstract tasks, s.t.  ${\cal{T}} = {\cal{T}}_p \cup {\cal{T}}_a$.
  \end{definition}
