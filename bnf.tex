@@ -347,6 +347,27 @@ A constraint \sometimes~ say that some properties must be verified sometimes in 
 (\sometimes \: \phi) \ \text{iff} \ \exists e_i: e_0 \leq e_i \leq e_n \: \text{such as} \ (\at \ e_i \ \phi)
 \end{multline*}
 %
+\begin{figure}[!h]
+	\begin{lstlisting}[language=pddl]
+		(:durative-action take_image
+		:parameters (?ti_s - satellite 
+		?ti_d - image_direction 
+		?ti_i - instrument ?ti_m - mode)
+		:duration (= ?duration 1.00000)
+		:precondition (and
+		(over all (observable ?ti_d))
+		(at start (calibrated ?ti_i))
+		(at start (pointing ?ti_s ?ti_d))
+		(over all (on_board ?ti_i ?ti_s))
+		(over all (power_on ?ti_i))
+		(at start (supports ?ti_i ?ti_m)))
+		:effect	(and
+		(at end (have_image ?ti_d ?ti_m))
+		(at end (increase
+		(image-quality ?ti_s) 2))) )
+	\end{lstlisting}
+	\caption{\texttt{take\_image} conditions depend on site observability.\label{pddl_take-image}}
+\end{figure}
 Constraint \atmostonce~ indicates that some properties must be satisfied at most once in the state sequence produced by the decomposition of the task network.
 %
 \begin{multline*}
@@ -422,6 +443,23 @@ Figure \ref{pddl_durative_m_con} depicting the \textit{observe} method illustrat
 		)~\label{l:mhb}~
 	\end{lstlisting}
 	\caption{\texttt{method\_observe} uses a duration inequality and a constraint over literals to constrain an ordering. Similarly, a decomposition can be constrained at method-level.\label{pddl_durative_m_con}}
+\end{figure}
+
+
+\begin{figure}[!h]
+	\begin{lstlisting}[language=pddl,mathescape]
+		(:durative-action calibrate
+		:parameters (?c_s - satellite ?c_i - instrument ?c_d - calib_direction)
+		:duration (= ?duration (calib-time ?c_i))
+		:condition 	(and
+		(at start (on_board ?c_i ?c_s))
+		(at start (calib_target ?c_i ?c_d))
+		(at start (pointing ?c_s ?c_d))
+		(at start (power_on ?c_i))	)
+		:effect
+		(and  (at end (calibrated ?c_i))) )
+	\end{lstlisting}
+	\caption{The calibrate action has a duration depending on the instrument calibration time\label{pddl_calibrate}}
 \end{figure}
 
 \section{HDDL 2.1 Syntax} 
