@@ -39,11 +39,11 @@
     :negative-preconditions,:disjunctive-preconditions,
     :existential-preconditions,:universal-preconditions,:ordered-subtasks,:ordering
   },
-  keywords=[2]{object,at,start,over,all,end,always,at-most-once,sometime-before,sometime,sometime-after,hold-during,hold-between,hold-after,hold-before,minimize,maximize,total-time}, % Objects, temporal elmts
-  keywords=[3]{calib_direction,image_direction,instrument,satellite,mode}, % Types
-  keywords=[4]{calibrate,turn_approx,turn_precise,take_image,turn_to,activate_instrument,point_to,take_video,method_stereo,do_observation_stereo, do_observation,decrease_overall_quality,nethod_observe}, % Actions, Methods
-  keywords=[5]{observable,calibrated,pointing,supports,power_on,power_avail,on_board,calib_target,have_image,
-  image-quality,calib-time,turn-time} % Functions and predicetes
+%  keywords=[2]{object,at,start,over,all,end,always,at-most-once,sometime-before,sometime,sometime-after,hold-during,hold-between,hold-after,hold-before,minimize,maximize,total-time}, % Objects, temporal elmts
+%  keywords=[3]{calib_direction,image_direction,instrument,satellite,mode}, % Types
+%  keywords=[4]{calibrate,turn_approx,turn_precise,take_image,turn_to,activate_instrument,point_to,take_video,method_stereo,do_observation_stereo, do_observation,decrease_overall_quality,nethod_observe}, % Actions, Methods
+%  keywords=[5]{observable,calibrated,pointing,supports,power_on,power_avail,on_board,calib_target,have_image,
+%  image-quality,calib-time,turn-time} % Functions and predicetes
 }
 
 \lstset
@@ -141,6 +141,9 @@ We propose to fill the gap between HDDL and these operational needs and to exten
 \section{Introduction}
 
 TO DO
+
+
+Our reflection on HTN planning with time are based on a commercial optical Earth Observing Satellite (EOS) study case, which delimits our requirements for this new language, namely \emph{durative actions} and \emph{durative methods}, \emph{method preconditions}, \emph{numeric preconditions}, and \emph{timed ordering constraints}. The examples provided to illustrate HDDL~2.1 are shaped on the International Planning Competition hierarchical satellite domain~\citep{schattenberg2020}, extended to utilize the temporal features, as well as the orderings and the hierarchical constraints of the proposed language extension.
 
 \section{Lifted Temporal HTN planning}
 
@@ -291,6 +294,7 @@ Decomposition constraints assert conditions that must be met by the entire seque
 We conclude this section by building the semantics of the durative method preconditions on the semantics of the introduced decomposition constraints.
 
 \subsection{Temporal Constraints Semantics}
+\label{ssec:temporal-constraints-semantics}
 
 The semantics of temporal decomposition constraints are given below.
 
@@ -392,6 +396,33 @@ The {\em classical decomposition constraints} used in HTN planning introduced fi
 Durative methods may have preconditions and their preconditions are temporally annotated to give the time at which they are supposed to happen. As durative actions, methods can have three types of annotated preconditions: (1) $(\atstart \ \phi)$ meaning that $\phi$ must be true or happen at the start of the method; (2) $(\atend \ \phi)$ meaning that $\phi$ must be true or happen at the end of the method, and $(\overall \ \phi)$ meaning that $\phi$ must be true for the full duration of the method.
 
 Formally, these three temporal preconditions can be rewritten in terms of decomposition constraints previously introduced. A precondition of type $(\atstart \ \phi)$ (respectively $(\atend \ \phi)$) is equivalent to adding a decomposition constraint $(\atstart \ \phi)$ (respectively $(\atend \ \phi)$), and a precondition of type $(\overall \ \phi)$ is equivalent to adding a decomposition constraint $(\always \ \phi)$. The preconditions of the methods can be seen as syntactic glue to express decomposition constraints of type $\atstart$, $\atend$ and $\always$.
+
+Figure \ref{pddl_durative_m_con} depicting the \textit{observe} method illustrates the temporal constraints semantics introduced in section \ref{ssec:temporal-constraints-semantics} by the use of \textit{hold-before}.
+
+\begin{figure}[th]
+	\begin{lstlisting}[language=pddl, escapechar=~]
+		(:durative-method method_observe
+		:parameters (?ta_d_prev - image_direction 
+		?ta_s - satellite 
+		?ta_d - image_direction 
+		?ta_i - instrument ?m - mode)
+		:task (do_observation ?ta_d ?m)
+		:duration
+		(< (duration task1) (calib-time ?ta_i))~\label{l:mdur}~
+		:subtasks (and
+		(task0 (activate_instrument ?ta_s ?ta_i))
+		(task1 (turn_to ?ta_s ?ta_d ?ta_d_prev))
+		(task2 (take_image ?ta_s ?ta_d ?ta_i ?m)))
+		:ordering (and
+		(< task0 task2)
+		(< task1 task2)	)
+		:constraints (and
+		(not (= ?ta_d ?ta_d_prev))
+		(hold-before task1 (power_on ?ta_i)))
+		)~\label{l:mhb}~
+	\end{lstlisting}
+	\caption{\texttt{method\_observe} uses a duration inequality and a constraint over literals to constrain an ordering. Similarly, a decomposition can be constrained at method-level.\label{pddl_durative_m_con}}
+\end{figure}
 
 \section{HDDL 2.1 Syntax} 
 
