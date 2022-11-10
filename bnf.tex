@@ -140,7 +140,32 @@ We propose to fill the gap between HDDL and these operational needs and to exten
 
 \section{Introduction}
 
-TO DO
+
+
+Real world applications of Automated Planning, like in industry and robotics, require modelling rich and diverse scenarios. 
+In several cases, such  planning problems are naturally decomposed in a hierarchical way, with compound tasks that refine in different ways their execution model.
+These real world applications of planning use both numerical and temporal constraints to define the agents synchronisation on collaborative tasks, and sub-tasks decomposition. In fact, concurrency between actions, their duration, and agents coordination in HTN problems are needed to find solutions for nontrivial tasks in complex scenarios and require to make explicit the representation of time \citep{ghallabnautraverso2016}.
+
+The Hierarchical Task Network (HTN) formalism \citep{Erol94} is used to express a wide variety of planning problems in many real-world applications, e.g., in task allocation for robot fleets \citep{Milot21}, video games \citep{Menif14} or industrial contexts such as software deployment \citep{Georgievski17}. Over the last years, much progress has been made in the field of hierarchical planning \citep{bercher19}. Novel systems based on the traditional, search-based techniques have been introduced~\citep{Bit-Monnot:16,Ramoul17,Shivashankar17,Bercher17,Holler19,Holler20,Holler21}, but also new techniques like the translation to STRIPS/ADL~\citep{Alford09,Alford16,behnke2022}, or revisited approaches like the translation to propositional logic~\citep{Behnke2018totSAT,Behnke2019orderchaos,Schreiber2019SAT,Schreiber21,behnke2021}. 
+
+Despite these advances, not all these systems use the same formalism to represent hierarchical task decomposition. This makes difficult to compare the different approaches and to promote HTN planning techniques, even if some formalism are more adopted than others. For these reasons, an extension of the PDDL (Planning Domain Description Language)~\citep{mcdermott98},  used in the International Planning Competitions (IPC), has been proposed. This extension \citep{Holler20}, called HDDL (Hierarchical Planning Domain Description Language), is based on PDDL 2.1 \citep{Fox03} and is the result of several discussions within the planning community \citep{Holler19b} to fill the need of a standard language for the first Hierarchical Planning track of IPC 2020. In this first version, it was decided that, considering the efforts to develop the language and related tools, none of the temporal and numerical features of PDDL would be included. In this paper, we propose the semantics and syntax for a temporal extension of HDDL, to match the needs of the planning community and the applications of planning.
+
+Our motivation is grounded on the compelling need to devise applications involving autonomous systems, i.e. agents, which must coordinate to fulfil hierarchical tasks containing both numerical and temporal constraints.
+%As a matter of fact, action concurrency and agent coordination are needed in HTN problems to find solutions for nontrivial tasks in complex scenarios, like collaborative robotic missions \citep{weser2010htn}.
+% TODO Revoir la fin, si ça change en cours de route
+Starting from a real satellite application example, we propose to extend HDDL including elements of PDDL 2.1 and ANML to express temporal and numerical expressions.
+This is intended to initiate discussions within HTN community on establishing a standard -- HDDL 2.1~-- aimed at filling the gaps between existing hierarchical-temporal planning approaches. To that end, we make this preliminary extension of HDDL an open source project with a publicly available repository.
+
+The rest of the paper is organised as follows. In Section 2 we define the basic concepts of the proposed extension. In Sections 3 and 4 we set down the semantics for Temporal HTN planning. Section 5 describes our extension of the HDDL 1.0 syntax to deal with time, numeric and constraints in method declaration. We conclude discussing the main features of the proposed language. % The full syntax of our HDDL dialect is presented in the appendix. 
+
+
+%dealing with temporal and numeric expressions, for which we will made public a parser,
+%The link to the git repository created to animate the discussions on the extension of the language will also be added in the final version of the paper. % https://github.com/pellierd/BNF-HDDL2.1
+
+% The contribution of this paper is twofold: (1) an extension of HDDL inspired from PDDL 2.1 and ANML to express temporal and numerical expressions, and (2) a parser implementation of the language. The parser is built upon the PDDL4J library \citep{Pellier18} available online\footnote{\url{https://github.com/pellierd/pddl4j}} and will be made public in the camera ready version of this paper.
+%  DOUBLE BLIND REVIEW
+% part of the PDDL4J library \citep{Pellier18} available online\footnote{\url{https://github.com/pellierd/pddl4j/tree/hddl2.1}}.
+
 
 
 Our reflection on HTN planning with time are based on a commercial optical Earth Observing Satellite (EOS) study case, which delimits our requirements for this new language, namely \emph{durative actions} and \emph{durative methods}, \emph{method preconditions}, \emph{numeric preconditions}, and \emph{timed ordering constraints}. The examples provided to illustrate HDDL~2.1 are shaped on the International Planning Competition hierarchical satellite domain~\citep{schattenberg2020}, extended to utilize the temporal features, as well as the orderings and the hierarchical constraints of the proposed language extension.
