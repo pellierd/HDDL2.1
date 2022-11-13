@@ -22,6 +22,14 @@
 \usepackage{bbm}
 \usepackage{subfiles}
 \usepackage{listings}
+\usepackage{xcolor}
+
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\definecolor{myred}{rgb}{0.9,0.2,0.2}
+
 
 \lstdefinelanguage{pddl}
 {
@@ -39,11 +47,11 @@
     :negative-preconditions,:disjunctive-preconditions,
     :existential-preconditions,:universal-preconditions,:ordered-subtasks,:ordering
   },
-%  keywords=[2]{object,at,start,over,all,end,always,at-most-once,sometime-before,sometime,sometime-after,hold-during,hold-between,hold-after,hold-before,minimize,maximize,total-time}, % Objects, temporal elmts
-%  keywords=[3]{calib_direction,image_direction,instrument,satellite,mode}, % Types
-%  keywords=[4]{calibrate,turn_approx,turn_precise,take_image,turn_to,activate_instrument,point_to,take_video,method_stereo,do_observation_stereo, do_observation,decrease_overall_quality,nethod_observe}, % Actions, Methods
-%  keywords=[5]{observable,calibrated,pointing,supports,power_on,power_avail,on_board,calib_target,have_image,
-%  image-quality,calib-time,turn-time} % Functions and predicetes
+  keywords=[2]{object,at,start,over,all,end,always,at-most-once,sometime-before,sometime,sometime-after,hold-during,hold-between,hold-after,within,minimize,maximize,total-time} % Objects, temporal elmts
+  keywords=[3]{calib_direction,image_direction,instrument,satellite,mode}, % Types
+  keywords=[4]{calibrate,turn_approx,turn_precise,take_image,turn_to,activate_instrument,point_to,take_video,method_stereo,do_observation_stereo, do_observation,decrease_overall_quality,method_observe}, % Actions, Methods
+  keywords=[5]{observable,calibrated,pointing,supports,power_on,power_avail,on_board,calib_target,have_image,
+  image-quality,calib-time,turn-time} % Functions and predicetes
 }
 
 \lstset
@@ -200,6 +208,47 @@ Unlike a primitive task, % (i.e. a snap or durative action),
 a {\it compound task} does not change the world state.
 A compound task is identified by a name and defines the way other --possibly ordered-- tasks (either primitive or compound) must be achieved with respect to some constraints in order to refine it.
 For instance, in the task of serving a dinner, {\it deliver-dinner(?food-style, ?place)} is the compound task consisting in performing first the task of serving the starters, then the main course, etc. In that sense,  {\it deliver-dinner(?food-style, ?place)} can be refined in: {\it serve-starters(?food-style, ?place)},  {\it serve-main-course(?food-style, ?place)}, etc. This mapping between tasks is achieved by the Temporal Task Networks and the methods as defined above. Like primitive tasks, compound tasks have also a start event and a end event, which will be associated to a time point in Section \ref{THTN}.
+
+%% Satellite example
+
+
+
+We will continue our description of HTN planning with time using a commercial optical Earth Observing Satellite (EOS) study case.
+%, which delimits our requirements for this new language, namely \emph{durative actions} and \emph{durative methods}, \emph{method preconditions}, \emph{numeric preconditions}, and \emph{timed ordering constraints}.
+%We present thereafter this real use case of an EOS with the mission of observing areas on the surface of the planet and embedding the capacity of producing and executing autonomous plans.
+This example is shaped on the International Planning Competition hierarchical satellite domain~\citep{schattenberg2020}, and is intended to illustrate the temporal features, as well as the orderings and the hierarchical constraints of the proposed language extension.
+
+New generations of commercial EOSs guarantee better performances by embedding a certain degree of autonomy on-board~\citep{pralet2019}. An automated planner is expected to produce new observation mission plans whenever environment changes or new requests are sent from ground control. Because observation tasks depend on the environment ---which is not known in advance--- this is a planning problem and not just a scheduling matter~\citep{rodriguez-moreno2004}. 
+%
+The EOS mission goal is then to fulfil a set of \emph{Acquisition Requests} of images of the Earth surface.
+%Requests can be single images, which can be obtained by powering on sensors, and pointing at the sites of interest.
+The different modalities of fulfilling those requests require the extension of the satellite domain to a temporal model.
+
+Considering the structure of the requests that must be completed,
+the action specifications have a \emph{duration} to reflect the warming up of certain instruments and the time to modify the attitude of the satellite. Figure \ref{pddl_calibrate} shows the calibrate action having a duration specific to the used instrument and defined in the problem initial state.
+%
+% explication basique
+The action has conditions that, if set \texttt{at start} are equivalent to the Classical planning PDDL preconditions. In a similar way, effects set to happen \texttt{at end} are applied at the end of the action duration, similarly to classical planning effects.
+
+
+\begin{figure}[!h]
+	\begin{lstlisting}[language=pddl,mathescape]
+(:durative-action calibrate
+	:parameters (?s - satellite ?i - instrument ?d - calib_direction)
+	:duration (= ?duration (calib-time ?i))
+	:condition 	(and
+			(at start (on_board ?i ?s))
+			(at start (calib_target ?i ?d))
+			(at start (pointing ?s ?d))
+			(at start (power_on ?i)))
+	:effect
+		(and  (at end (calibrated ?i))) )
+	\end{lstlisting}
+	\caption{The calibrate action has a duration depending on the instrument calibration time\label{pddl_calibrate}}
+\end{figure}
+
+
+%%%%
 
 %To formally define a method and define how break down a task into subtasks, it is necessary to define first the concept of {\it temporal task networks}.
 \begin{definition}[Temporal Task Network]
@@ -370,27 +419,6 @@ A constraint \sometimes~ say that some properties must be verified sometimes in 
 (\sometimes \: \phi) \ \text{iff} \ \exists e_i: e_0 \leq e_i \leq e_n \: \text{such as} \ (\at \ e_i \ \phi)
 \end{multline*}
 %
-\begin{figure}[!h]
-	\begin{lstlisting}[language=pddl]
-		(:durative-action take_image
-		:parameters (?ti_s - satellite
-		?ti_d - image_direction
-		?ti_i - instrument ?ti_m - mode)
-		:duration (= ?duration 1.00000)
-		:precondition (and
-		(over all (observable ?ti_d))
-		(at start (calibrated ?ti_i))
-		(at start (pointing ?ti_s ?ti_d))
-		(over all (on_board ?ti_i ?ti_s))
-		(over all (power_on ?ti_i))
-		(at start (supports ?ti_i ?ti_m)))
-		:effect	(and
-		(at end (have_image ?ti_d ?ti_m))
-		(at end (increase
-		(image-quality ?ti_s) 2))) )
-	\end{lstlisting}
-	\caption{\texttt{take\_image} conditions depend on site observability.\label{pddl_take-image}}
-\end{figure}
 
 Constraint \atmostonce~ indicates that some properties must be satisfied at most once in the state sequence produced by the decomposition of the task network.
 %
@@ -423,6 +451,39 @@ A constraint \alwayswithin~ says that if some properties $\phi$ occurs at $e_i$ 
 \exists e_j : e_i \leq e_j \leq e_n \: \text{such as} \ (\at \ e_j \ \psi) \ \text{and} \ e_j - e_i \leq d \qquad
 \end{multline*}
 
+%%% SAT example
+
+
+Figure \ref{pddl_durative_m_con} depicting the \textit{observe} method illustrates some temporal constraints semantics introduced here.
+% section \ref{ssec:temporal-constraints-semantics}.
+In this case, \texttt{pointing} at an observation site can be achieved by different subtasks. By requiring that this precondition of \mbox{\small\lstinline[language={pddl},basicstyle=\ttfamily]|durative-action take_image|} is performed  at most once, avoids useless satellite movements. 
+Note that, besides the explicit subtask ordering, an implicit ordering between tasks 0 and 1 could have been forced by adding the constraint  \mbox{\small\lstinline[language={pddl},basicstyle=\ttfamily]|(within task1 (power_on ?i))|}, requiring that the instrument must be powered on \emph{before} turning towards the observation site.
+%
+\begin{figure}[h!]
+	\begin{lstlisting}[language=pddl, basicstyle=\fontsize{8.5}{10}\selectfont\ttfamily, escapechar=~]
+	(:durative-method method_observe
+		:parameters (?d_prev - image_direction
+      		   ?d - image_direction
+		   ?s - satellite
+		   ?i - instrument   ?m - mode)
+		:task (do_observation ?d ?m)
+		:duration
+		   (< (duration task1) (calib-time ?i))~\label{l:mdur}~
+		:subtasks (and
+		   (task0 (activate_instrument ?s ?i))
+		   (task1 (turn_to ?s ?d ?d_prev))
+		   (task2 (take_image ?s ?d ?i ?m)))
+		:ordering (and
+		   (< task0 task2)
+		   (< task1 task2))
+		:constraints (and
+		   (not (= ?d ?d_prev))
+		   (at-most-once (pointing ?s ?d))) )~\label{l:mhb}~
+	\end{lstlisting}
+	\caption{\texttt{method\_observe} uses a duration inequality and a constraint over literals to constrain an ordering. Similarly, a decomposition can be constrained at method-level.\label{pddl_durative_m_con}}
+\end{figure}
+%%%%%%
+
 \subsection{Classical Decomposition Constraints}
 
 The {\em classical decomposition constraints} used in HTN planning introduced first by \citep{erol94} are $\before$, $\after$ and $\between$. The \before~ constraints are a generalisation of the classical notion of precondition. It has the form $\before(t, \phi)$ where $t$ is a task and $\phi$ a first-order formula that represents the properties that must be satisfied before $t$. The \after~ constraints are a generalisation of the classical notion of effects for a task network. It has the form $\after(t, \phi)$ where $t$ is a task $t$ and $\phi$ a first-order formula that represents the properties that must be satisfied after $t$. Finally, the \between~ constraints are a generalisation of the notion of causal link in plan space planning. It has the form $between(t_1\ t_2\ \phi)$ where $t_1$ and $t_2$ are tasks and $\phi$ is a first-order formula that represents the properties that must hold between the end of $t_1$ and the begin of $t_2$. We give below the formal semantics of these constraints based on the semantics of the previously introduced temporal constraints:
@@ -440,51 +501,8 @@ The {\em classical decomposition constraints} used in HTN planning introduced fi
 
 Durative methods may have preconditions and their preconditions are temporally annotated to give the time at which they are supposed to happen. As durative actions, methods can have three types of annotated preconditions: (1) $(\atstart \ \phi)$ meaning that $\phi$ must be true or happen at the start of the method; (2) $(\atend \ \phi)$ meaning that $\phi$ must be true or happen at the end of the method, and $(\overall \ \phi)$ meaning that $\phi$ must be true for the full duration of the method.
 
+
 Formally, these three temporal preconditions can be rewritten in terms of decomposition constraints previously introduced. A precondition of type $(\atstart \ \phi)$ (respectively $(\atend \ \phi)$) is equivalent to adding a decomposition constraint $(\atstart \ \phi)$ (respectively $(\atend \ \phi)$), and a precondition of type $(\overall \ \phi)$ is equivalent to adding a decomposition constraint $(\always \ \phi)$. The preconditions of the methods can be seen as syntactic glue to express decomposition constraints of type $\atstart$, $\atend$ and $\always$.
-
-Figure \ref{pddl_durative_m_con} depicting the \textit{observe} method illustrates the temporal constraints semantics introduced in section \ref{ssec:temporal-constraints-semantics} by the use of \textit{hold-before}.
-
-\begin{figure}[th]
-	\begin{lstlisting}[language=pddl, escapechar=~]
-		(:durative-method method_observe
-		:parameters (?ta_d_prev - image_direction
-		?ta_s - satellite
-		?ta_d - image_direction
-		?ta_i - instrument ?m - mode)
-		:task (do_observation ?ta_d ?m)
-		:duration
-		(< (duration task1) (calib-time ?ta_i))~\label{l:mdur}~
-		:subtasks (and
-		(task0 (activate_instrument ?ta_s ?ta_i))
-		(task1 (turn_to ?ta_s ?ta_d ?ta_d_prev))
-		(task2 (take_image ?ta_s ?ta_d ?ta_i ?m)))
-		:ordering (and
-		(< task0 task2)
-		(< task1 task2)	)
-		:constraints (and
-		(not (= ?ta_d ?ta_d_prev))
-		(hold-before task1 (power_on ?ta_i)))
-		)~\label{l:mhb}~
-	\end{lstlisting}
-	\caption{\texttt{method\_observe} uses a duration inequality and a constraint over literals to constrain an ordering. Similarly, a decomposition can be constrained at method-level.\label{pddl_durative_m_con}}
-\end{figure}
-
-
-\begin{figure}[!h]
-	\begin{lstlisting}[language=pddl,mathescape]
-		(:durative-action calibrate
-		:parameters (?c_s - satellite ?c_i - instrument ?c_d - calib_direction)
-		:duration (= ?duration (calib-time ?c_i))
-		:condition 	(and
-		(at start (on_board ?c_i ?c_s))
-		(at start (calib_target ?c_i ?c_d))
-		(at start (pointing ?c_s ?c_d))
-		(at start (power_on ?c_i))	)
-		:effect
-		(and  (at end (calibrated ?c_i))) )
-	\end{lstlisting}
-	\caption{The calibrate action has a duration depending on the instrument calibration time\label{pddl_calibrate}}
-\end{figure}
 
 \section{HDDL 2.1 Syntax}
 
@@ -694,6 +712,7 @@ The orginal action or durative action definitions defined in PDDL stay mainly un
       [:condition <da-gd)>]
       [:effect <da-effect>])
 \end{lstlisting}
+
 
 %
 %  Durative Action Constraints Definition
