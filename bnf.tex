@@ -67,12 +67,12 @@
   breaklines=true,
   numberstyle=\tiny\ttfamily, % style of the line numbers
   commentstyle=\color{mygrey}, % style of comments
-  keywordstyle=\bfseries, % style of keywords
   keywordstyle=[2]\color{mymauve},
   keywordstyle=[3]\color{mygreen},
   keywordstyle=[4]\color{blue},
   keywordstyle=[5]\color{myred},
   stringstyle=\color{blue}, % style of strings
+  keywordstyle=\bfseries, % style of keywords
 }
 
 \sloppy
@@ -228,7 +228,7 @@ Considering the structure of the requests that must be completed,
 the action specifications have a \emph{duration} to reflect the warming up of certain instruments and the time to modify the attitude of the satellite. Figure \ref{pddl_calibrate} shows the calibrate action having a duration specific to the used instrument and defined in the problem initial state.
 %
 % explication basique
-The action has conditions that, if set \texttt{at start} are equivalent to the Classical planning PDDL preconditions. In a similar way, effects set to happen \texttt{at end} are applied at the end of the action duration, similarly to classical planning effects.
+The action has conditions that, if set \texttt{at start} are equivalent to the classical planning PDDL preconditions. In a similar way, effects set to happen \texttt{at end} are applied at the end of the action duration, similarly to classical planning effects.
 
 
 \begin{figure}[!h]
@@ -244,7 +244,8 @@ The action has conditions that, if set \texttt{at start} are equivalent to the C
 	:effect
 		(and  (at end (calibrated ?i))) )
 	\end{lstlisting}
-	\caption{The calibrate action has a duration depending on the instrument calibration time\label{pddl_calibrate}}
+	\caption{The calibrate action has a duration depending on the instrument calibration time\label{pddl_calibrate}, which are defined in the initial state, e.g.
+{\small\lstinline[language={pddl},basicstyle=\ttfamily]|(= (calib-time instrument0) 20)|}.}
 \end{figure}
 
 
