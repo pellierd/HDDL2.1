@@ -152,7 +152,7 @@ Real world applications of Automated Planning, like in industry and robotics, re
 In several cases, such  planning problems are naturally decomposed in a hierarchical way, with compound tasks that refine in different ways their execution model.
 These real world applications of planning use both numerical and temporal constraints to define the agents synchronisation on collaborative tasks, and sub-tasks decomposition. In fact, concurrency between actions, their duration, and agents coordination in HTN problems are needed to find solutions for nontrivial tasks in complex scenarios and require to make explicit the representation of time \citep{ghallabnautraverso2016}.
 
-The Hierarchical Task Network (HTN) formalism \citep{erol94} is used to express a wide variety of planning problems in many real-world applications, e.g., in task allocation for robot fleets \citep{Milot21}, video games \citep{Menif14} or industrial contexts such as software deployment \citep{Georgievski17}. Over the last years, much progress has been made in the field of hierarchical planning \citep{bercher19}. Novel systems based on the traditional, search-based techniques have been introduced~\citep{Bit-Monnot:16,ramoul17,Shivashankar17,Bercher17,Holler19,holler20,Holler21}, but also new techniques like the translation to STRIPS/ADL~\citep{Alford09,Alford16,behnke2022}, or revisited approaches like the translation to propositional logic~\citep{Behnke2018totSAT,Behnke2019orderchaos,Schreiber2019SAT,Schreiber21,behnke2021}.
+The Hierarchical Task Network (HTN) formalism \citep{erol94} is used to express a wide variety of planning problems in many real-world applications, e.g., in task allocation for robot fleets \citep{Milot21}, video games \citep{Menif14} or industrial contexts such as software deployment \citep{Georgievski17}. Over the last years, much progress has been made in the field of hierarchical planning \citep{bercher19}. Novel systems based on the traditional, search-based techniques have been introduced~\citep{Bit-Monnot:16,ramoul17,Shivashankar17,Bercher17,Holler19,holler20,Holler21}, but also new techniques like the translation to STRIPS/ADL~\citep{Alford09,Alford16,behnke2022}, or revisited approaches like the translation to propositional logic~\citep{behnke2018totsat,Behnke2019orderchaos,Schreiber2019SAT,Schreiber21,behnke2021}.
 
 Despite these advances, not all these systems use the same formalism to represent hierarchical task decomposition. This makes difficult to compare the different approaches and to promote HTN planning techniques, even if some formalism are more adopted than others. For these reasons, an extension of the PDDL (Planning Domain Description Language)~\citep{mcdermott98},  used in the International Planning Competitions (IPC), has been proposed. This extension \citep{holler20}, called HDDL (Hierarchical Planning Domain Description Language), is based on PDDL 2.1 \citep{fox03} and is the result of several discussions within the planning community \citep{Holler19b} to fill the need of a standard language for the first Hierarchical Planning track of IPC 2020. In this first version, it was decided that, considering the efforts to develop the language and related tools, none of the temporal and numerical features of PDDL would be included. In this paper, we propose the semantics and the syntax for a temporal extension of HDDL, to match the needs of the planning community and the applications of planning. This work was accomplished collectively after the ICAPS workshop HPlan in 2022.
 
@@ -733,7 +733,7 @@ As in PDDL, duration constraints with the \verb|:duration-inequalities| requirem
 <action-duration-constraint> ::= ()
 <action-duration-constraint> ::= ~\mbox{<simple-action-duration-constraint>}~
 <action-simple-duration-constraint>::= ~\linebreak~(<d-op> ?duration <d-value>)
-<action-simple-duration-constraint>::= ~\linebreak~ (~{at}~<time-specifier> ~\mbox{\hspace{2em}<simple-duration-constraint>}~)
+<action-simple-duration-constraint>::= ~\linebreak~ (~{at}~ <time-specifier> ~\mbox{\hspace{2em}<simple-duration-constraint>}~)
 <d-op> :: <=
 <d-op> :: >=
 <d-op> :: =
@@ -770,7 +770,7 @@ duration of the method or the sub-tasks that compose it. Therefore, it is necess
 <method-duration-constraint> ::= ()
 <method-duration-constraint> ::= ~\mbox{<simple-method-duration-constraint>}~
 <simple-method-duration-constraint>::= ~\linebreak~(<binary-comp> <duration> <td-value>)
-<simple-method-duration-constraint>::= ~\linebreak~(at <time-specifier> ~\mbox{\hspace{2em}<simple-method-duration-constraint>}~)
+<simple-method-duration-constraint>::= ~\linebreak~(~{at}~ <time-specifier> ~\mbox{\hspace{2em}<simple-method-duration-constraint>}~)
 <duration> :: = ?duration
 <duration> :: = <task-duration>
 <td-value> ::= <d-value>
@@ -954,11 +954,46 @@ But now, the following requirement flags are also compatible with HDDL 2.1:
  \end{description}
 
 \section{Conclusion}
+\label{sec:conclusion}
+
+% With the assistance of an EOS planning problem inspired from an IPC benchmark and grounded on a real application,
+%The generation of EOS mission plans is highly combinatorial as multiple activity types --- instrument operation, payload data download and maintenance --- are to be planned under strict resource and time constraints. 
+%In order to reflect the temporal constraints present in satellite operations, we have adopted a problem formulation that includes elements of temporal planning, besides the usual HDDL 1.0 formulation for expressing hierarchical planning problems~\citep{holler:19}.
 
 
+In the previous pages we have illustrated the main features of HDDL 2.1 for hierarchical temporal planning tasks.
+This effort aims at ferrying HTN planning towards domains close to real world applications, where the temporal elements, like concurrent actions, coordination, and a hierarchical distribution of tasks, are prominent.
+
+The lack of a unified language featuring both temporal and numerical constraints in the continuity of the works done on PDDL is, in our view, an obstacle and a need to address. The automated planning community has produced in the past several approaches for modelling complex planning problems including temporal aspects and a hierarchical decomposition of tasks, but the variety of language solutions is also a hindrance for having common tools and solvers.
+
+%%%
+ANML  \citep{smith08} has an expressivity close to what we seek here. 
+In ANML effects that happen at time intervals during an action duration can be specified. This  can also be represented in HDDL~2.1 by using constraints semantics and dividing actions with intermediate effects into separate durative actions.
+
+FAPE proposes benchmarks where ordering constraints are delayed.\footnote{E.g. \url{https://github.com/laas/fape/blob/master/planning/domains/rovers_ipc5-hier/rovers_ipc5-hier.dom.anml#L180}.} For instance in ANML it is possible to specify that an action must happen at least some amount of time after the end of a previous action. With the proposed syntax and semantics, such expressivity can be reached by using auxiliary tasks that decompose in a durative primitive task (of the desired duration) with no effects.
+
+Time sampling represents another open question for this extension of HDDL with time.
+Basically, two approaches exist. Sampling can be either constant ---when time is divided into regular-spaced discrete steps--- or with variable time steps instantiated when effects and preconditions are applied. The latter can benefit from the Simple Temporal Problem formalism to model the temporal aspects of the plan and to include timed initial effects, and Interval Temporal Logics can be used to define truth of formulas relative to time intervals, rather than time points \citep{BRESOLIN2014269}.
+
+% TODO À rajouter dans la version finale.
+% Joined with the suggested HDDL 2.1 language grammar, we propose a parser and an illustrative benchmark part of the PDDL4J librarie \cite{Pellier18} available online\footnote{\url{https://github.com/pellierd/pddl4j}}.
 
 
-\section{Temporal HTN planning Semantics}
+To be fully compatible with PDDL 3.0 features, the language HDDL 2.1 needs to include axioms and preferences, besides the associated parsing, and validating tools.
+Future works include, 
+\begin{itemize}
+\item To define constraints on solution plans, e.g. put a max time linit to plans
+\item To allow  defining delays for ordering constraints with point algebra 
+\item All other aspects not detailed here, e.g. continuous effects
+\end{itemize}
+
+
+% Benchmarks in HDDL 2.1 are also something we plan to provide as challenges for future solvers and the International Planning Competition (IPC). To provide a rich variety of HTN temporal instances, we plan to decompose hierarchically the already existing benchmarks of the temporal IPC track or to translate existing ANML domains from the FAPE distribution~\citep{dvorak2014}.  Such collection of planning domains can be the kernel of a future IPC for HDDL 2.1 solvers.
+
+% More work lies ahead to provide the planning community with the tools it needs to deal with hierarchical temporal planning problems. As for instance developing a plan validator and a set of meaningful benchmarks for HDDL 2.1.
+
+
+\section*{Temporal HTN planning Semantics}
  \label{THTN}
  
  The solution of a temporal HTN planning problem is a time-triggered plan that might be obtained from the problem initial task network by a series of method decompositions. Lifted problems are just a compact representation of their ground instances. With ground instances, there is no need to use variable constraints since they are satisfied by the grounding. Therefore, in this section, for the sake of simplicity, we define the semantics of a lifted problem in terms of its ground instances. For details on the grounding process, the reader is referred to \cite{behnke20,ramoul17}.
