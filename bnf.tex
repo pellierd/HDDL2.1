@@ -209,47 +209,6 @@ a {\it compound task} does not change the world state.
 A compound task is identified by a name and defines the way other --possibly ordered-- tasks (either primitive or compound) must be achieved with respect to some constraints in order to refine it.
 For instance, in the task of serving a dinner, {\it deliver-dinner(?food-style, ?place)} is the compound task consisting in performing first the task of serving the starters, then the main course, etc. In that sense,  {\it deliver-dinner(?food-style, ?place)} can be refined in: {\it serve-starters(?food-style, ?place)},  {\it serve-main-course(?food-style, ?place)}, etc. This mapping between tasks is achieved by the Temporal Task Networks and the methods as defined above. Like primitive tasks, compound tasks have also a start event and a end event, which will be associated to a time point in Section \ref{THTN}.
 
-%% Satellite example
-
-
-
-We will continue our description of HTN planning with time using a commercial optical Earth Observing Satellite (EOS) study case.
-%, which delimits our requirements for this new language, namely \emph{durative actions} and \emph{durative methods}, \emph{method preconditions}, \emph{numeric preconditions}, and \emph{timed ordering constraints}.
-%We present thereafter this real use case of an EOS with the mission of observing areas on the surface of the planet and embedding the capacity of producing and executing autonomous plans.
-This example is shaped on the International Planning Competition hierarchical satellite domain~\citep{schattenberg2020}, and is intended to illustrate the temporal features, as well as the orderings and the hierarchical constraints of the proposed language extension.
-
-New generations of commercial EOSs guarantee better performances by embedding a certain degree of autonomy on-board~\citep{pralet2019}. An automated planner is expected to produce new observation mission plans whenever environment changes or new requests are sent from ground control. Because observation tasks depend on the environment ---which is not known in advance--- this is a planning problem and not just a scheduling matter~\citep{rodriguez-moreno2004}. 
-%
-The EOS mission goal is then to fulfil a set of \emph{Acquisition Requests} of images of the Earth surface.
-%Requests can be single images, which can be obtained by powering on sensors, and pointing at the sites of interest.
-The different modalities of fulfilling those requests require the extension of the satellite domain to a temporal model.
-
-Considering the structure of the requests that must be completed,
-the action specifications have a \emph{duration} to reflect the warming up of certain instruments and the time to modify the attitude of the satellite. Figure \ref{pddl_calibrate} shows the calibrate action having a duration specific to the used instrument and defined in the problem initial state.
-%
-% explication basique
-The action has conditions that, if set \texttt{at start} are equivalent to the classical planning PDDL preconditions. In a similar way, effects set to happen \texttt{at end} are applied at the end of the action duration, similarly to classical planning effects.
-
-
-\begin{figure}[!h]
-	\begin{lstlisting}[language=pddl,mathescape]
-(:durative-action calibrate
-	:parameters (?s - satellite ?i - instrument ?d - calib_direction)
-	:duration (= ?duration (calib-time ?i))
-	:condition 	(and
-			(at start (on_board ?i ?s))
-			(at start (calib_target ?i ?d))
-			(at start (pointing ?s ?d))
-			(at start (power_on ?i)))
-	:effect
-		(and  (at end (calibrated ?i))) )
-	\end{lstlisting}
-	\caption{The calibrate action has a duration depending on the instrument calibration time\label{pddl_calibrate}, which are defined in the initial state, e.g.
-{\small\lstinline[language={pddl},basicstyle=\ttfamily]|(= (calib-time instrument0) 20)|}.}
-\end{figure}
-
-
-%%%%
 
 %To formally define a method and define how break down a task into subtasks, it is necessary to define first the concept of {\it temporal task networks}.
 \begin{definition}[Temporal Task Network]
@@ -452,38 +411,6 @@ A constraint \alwayswithin~ says that if some properties $\phi$ occurs at $e_i$ 
 \exists e_j : e_i \leq e_j \leq e_n \: \text{such as} \ (\at \ e_j \ \psi) \ \text{and} \ e_j - e_i \leq d \qquad
 \end{multline*}
 
-%%% SAT example
-
-
-Figure \ref{pddl_durative_m_con} depicting the \textit{observe} method illustrates some temporal constraints semantics introduced here.
-% section \ref{ssec:temporal-constraints-semantics}.
-In this case, \texttt{pointing} at an observation site can be achieved by different subtasks. By requiring that this precondition of \mbox{\small\lstinline[language={pddl},basicstyle=\ttfamily]|durative-action take_image|} is performed  at most once, avoids useless satellite movements. 
-Note that, besides the explicit subtask ordering, an implicit ordering between tasks 0 and 1 could have been forced by adding the constraint  \mbox{\small\lstinline[language={pddl},basicstyle=\ttfamily]|(within task1 (power_on ?i))|}, requiring that the instrument must be powered on \emph{before} turning towards the observation site.
-%
-\begin{figure}[h!]
-	\begin{lstlisting}[language=pddl, basicstyle=\fontsize{8.5}{10}\selectfont\ttfamily, escapechar=~]
-	(:durative-method method_observe
-		:parameters (?d_prev - image_direction
-		   ?d - image_direction
-		   ?s - satellite
-		   ?i - instrument   ?m - mode)
-		:task (do_observation ?d ?m)
-		:duration
-		   (< (duration task1) (calib-time ?i))~\label{l:mdur}~
-		:subtasks (and
-		   (task0 (activate_instrument ?s ?i))
-		   (task1 (turn_to ?s ?d ?d_prev))
-		   (task2 (take_image ?s ?d ?i ?m)))
-		:ordering (and
-		   (< task0 task2)
-		   (< task1 task2))
-		:constraints (and
-		   (not (= ?d ?d_prev))
-		   (at-most-once (pointing ?s ?d))) )~\label{l:mhb}~
-	\end{lstlisting}
-	\caption{\texttt{method\_observe} uses a duration inequality and a constraint over literals to constrain an ordering. Similarly, a decomposition can be constrained at method-level.\label{pddl_durative_m_con}}
-\end{figure}
-%%%%%%
 
 \subsection{Classical Decomposition Constraints}
 
@@ -538,19 +465,19 @@ The domain definition has been extended to durative actions (line~\ref{l:durativ
 \noindent The definition of the basic domain elements is nearly unchanged.
 
 \begin{lstlisting}[firstnumber=last, escapechar=~]
-<require-def> ::= (:requirements <require-key>+)
+<require-def> ::= (:requirements  ~\mbox{<require-key>+}~)
 <require-key> ::= ~\textit{(see \S\ref{Sec:Requirements})}~
-<types-def> ::= (:types ~\mbox{<typed-list(<primitive-type>))}~
-<predicates-def> ::= (:predicates <atomic-formula-skeleton>+)
-<function-def> ::= (:<function-typed-list (atomic-function-skeleton)>)
+<types-def> ::= (:types ~\mbox{<typed-list(<primitive-type>)>}~)
+<predicates-def> ::= (:predicates  ~\mbox{<atomic-formula-skeleton>+}~)
+<function-def> ::= (<function-typed-list  ~\mbox{(<atomic-function-skeleton>)}~>)
 <constants-def> ::= (:constants <typed-list (constant)>)
 <atomic-formula-skeleton> ::= ~\linebreak~(<predicate> <typed-list(variable)>)
-<atomic-function-skeleton> ::= ~\linebreak~(<function>~\linebreak~ <typed-list (variable)>)
+<atomic-function-skeleton> ::= ~\linebreak~(<function> <typed-list (variable)>)
 <typed-list (x)> ::= x+ - <type> ~\linebreak~[<typed list (x)>]~\label{l:typedlist}~
 <type> ::= (either <primitive-type>+)
 <type> ::= <primitive-type>
 <function-typed-list (x)> ::= x+ - ~\linebreak~<function-type> <function-typed-list(x)>
-<function typed list (x)> ::=
+<function-typed-list (x)> ::=
 <function-type> ::=~\specReq{:numeric-fluents}~number
 <function-type> ::=~\specReq{:typing} \specReq{+} \specReq{:object-fluents}~<type>
 <predicate> ::= <name>
@@ -580,6 +507,51 @@ The domain definition has been extended to durative actions (line~\ref{l:durativ
 <structure-def> ::= <method-def>
 <structure-def> ::=~\specReq{:durative-methods}~ ~\mbox{<durative-method-def>}~
 \end{lstlisting}
+
+
+
+%% Satellite example
+
+
+
+% We will continue our description of HTN planning with time using a commercial optical Earth Observing Satellite (EOS) study case.
+%, which delimits our requirements for this new language, namely \emph{durative actions} and \emph{durative methods}, \emph{method preconditions}, \emph{numeric preconditions}, and \emph{timed ordering constraints}.
+%We present thereafter this real use case of an EOS with the mission of observing areas on the surface of the planet and embedding the capacity of producing and executing autonomous plans.
+The example below, grounded in a commercial optical Earth Observing Satellite (EOS) study case, is shaped on the International Planning Competition hierarchical satellite domain~\citep{schattenberg2020}, and is intended to illustrate the temporal features, as well as the orderings and the hierarchical constraints of the proposed language extension.
+
+New generations of commercial EOSs guarantee better performances by embedding a certain degree of autonomy on-board~\citep{pralet2019}. An automated planner is expected to produce new observation mission plans whenever environment changes or new requests are sent from ground control. Because observation tasks depend on the environment ---which is not known in advance--- this is a planning problem and not just a scheduling matter~\citep{rodriguez-moreno2004}. 
+%
+The EOS mission goal is then to fulfil a set of \emph{Acquisition Requests} of images of the Earth surface.
+%Requests can be single images, which can be obtained by powering on sensors, and pointing at the sites of interest.
+The different modalities of fulfilling those requests require the extension of the satellite domain to a temporal model.
+
+Considering the structure of the requests that must be completed,
+the action specifications have a \emph{duration} to reflect the warming up of certain instruments and the time to modify the attitude of the satellite. Figure \ref{pddl_calibrate} shows the calibrate action having a duration specific to the used instrument and defined in the problem initial state.
+%
+% explication basique
+The action has conditions that, if set \texttt{at start} are equivalent to the classical planning PDDL preconditions. In a similar way, effects set to happen \texttt{at end} are applied at the end of the action duration, similarly to classical planning effects.
+
+
+\begin{figure}[!h]
+	\begin{lstlisting}[language=pddl,mathescape]
+(:durative-action calibrate
+	:parameters (?s - satellite ?i - instrument ?d - calib_direction)
+	:duration (= ?duration (calib-time ?i))
+	:condition 	(and
+			(at start (on_board ?i ?s))
+			(at start (calib_target ?i ?d))
+			(at start (pointing ?s ?d))
+			(at start (power_on ?i)))
+	:effect
+		(and  (at end (calibrated ?i))) )
+	\end{lstlisting}
+	\caption{The calibrate action has a duration depending on the instrument calibration time\label{pddl_calibrate}, which are defined in the initial state, e.g.
+{\small\lstinline[language={pddl},basicstyle=\ttfamily]|(= (calib-time instrument0) 20)|}.}
+\end{figure}
+
+
+%%%%
+
 
 %
 % Method Definition
@@ -611,6 +583,41 @@ Like methods, durative methods have parameters, the abstract task they decompose
     <tasknetwork-def>~\label{l:msubtasks2}~)
 \end{lstlisting}
 
+
+%%% SAT example
+
+
+Figure \ref{pddl_durative_m_con} depicting the \textit{observe} method illustrates some temporal constraints semantics introduced here.
+% section \ref{ssec:temporal-constraints-semantics}.
+In this case, \texttt{pointing} at an observation site can be achieved by different subtasks. By requiring that this precondition of \mbox{\small\lstinline[language={pddl},basicstyle=\ttfamily]|durative-action take_image|} is performed  at most once, avoids useless satellite movements. 
+Note that, besides the explicit subtask ordering, an implicit ordering between tasks 0 and 1 could have been forced by adding the constraint  \mbox{\small\lstinline[language={pddl},basicstyle=\ttfamily]|(within task1 (power_on ?i))|}, requiring that the instrument must be powered on \emph{before} turning towards the observation site.
+%
+\begin{figure}[h!]
+	\begin{lstlisting}[language=pddl, basicstyle=\fontsize{8.5}{10}\selectfont\ttfamily, escapechar=~]
+	(:durative-method method_observe
+		:parameters (?d_prev - image_direction
+		   ?d - image_direction
+		   ?s - satellite
+		   ?i - instrument   ?m - mode)
+		:task (do_observation ?d ?m)
+		:duration
+		   (< (duration task1) (calib-time ?i))~\label{l:mdur}~
+		:subtasks (and
+		   (task0 (activate_instrument ?s ?i))
+		   (task1 (turn_to ?s ?d ?d_prev))
+		   (task2 (take_image ?s ?d ?i ?m)))
+		:ordering (and
+		   (< task0 task2)
+		   (< task1 task2))
+		:constraints (and
+		   (not (= ?d ?d_prev))
+		   (at-most-once (pointing ?s ?d))) )~\label{l:mhb}~
+	\end{lstlisting}
+	\caption{\texttt{method\_observe} uses a duration inequality and a constraint over literals to constrain an ordering. Similarly, a decomposition can be constrained at method-level.\label{pddl_durative_m_con}}
+\end{figure}
+
+
+%%%%%%
 %
 % Task Definition
 %
@@ -684,8 +691,8 @@ HDDL~1.0 only accepts equality constraints or inequality on method parameters in
 <timed-constraint-def> ::= ~\linebreak~(~at-most-once <gd>)~
 <timed-constraint-def> ::= ~\linebreak~(~sometime <gd>)~
 <timed-constraint-def> ::= ~\linebreak~(~sometime-before <gd> <gd>)~
-<timed-constraint-def> ::= ~\linebreak~(~sometime-after <gd>> <gd>)~
-<timed-constraint-def> ::= ~\linebreak~(~always-within number <gd>> <gd>)~
+<timed-constraint-def> ::= ~\linebreak~(~sometime-after <gd> <gd>)~
+<timed-constraint-def> ::= ~\linebreak~(~always-within number <gd> <gd>)~
 \end{lstlisting}
 
 
@@ -726,7 +733,7 @@ As in PDDL, duration constraints with the \verb|:duration-inequalities| requirem
 <action-duration-constraint> ::= ()
 <action-duration-constraint> ::= ~\mbox{<simple-action-duration-constraint>}~
 <action-simple-duration-constraint>::= ~\linebreak~(<d-op> ?duration <d-value>)
-<action-simple-duration-constraint>::= ~\linebreak~ (~{at}~<time-specifier> ~\mbox{<simple-duration-constraint>}~)
+<action-simple-duration-constraint>::= ~\linebreak~ (~{at}~<time-specifier> ~\mbox{\hspace{2em}<simple-duration-constraint>}~)
 <d-op> :: <=
 <d-op> :: >=
 <d-op> :: =
@@ -762,8 +769,8 @@ duration of the method or the sub-tasks that compose it. Therefore, it is necess
 <method-duration-constraint> ::=~\specReq{:duration-inequalities}~ (and~\linebreak~ <method-simple-duration-constraint>+)
 <method-duration-constraint> ::= ()
 <method-duration-constraint> ::= ~\mbox{<simple-method-duration-constraint>}~
-<simple-method-duration-constraint>::= ~\linebreak~(<binary-comp> <duration> <td-value>)~
-<simple-method-duration-constraint>::= ~\linebreak~(at <time-specifier> ~\mbox{<simple-method-duration-constraint>}~)
+<simple-method-duration-constraint>::= ~\linebreak~(<binary-comp> <duration> <td-value>)
+<simple-method-duration-constraint>::= ~\linebreak~(at <time-specifier> ~\mbox{\hspace{2em}<simple-method-duration-constraint>}~)
 <duration> :: = ?duration
 <duration> :: = <task-duration>
 <td-value> ::= <d-value>
