@@ -228,7 +228,7 @@ A temporal task network $w = ({\cal{I}}, \alpha, {\cal{C}}_o, {\cal{C}}_v, {\cal
 
     \item ${\cal{C}}_d$ is a set of durative constraints over the duration of the tasks $\cal{I}$. For instance, let $t_1, t_2 \in {\cal{I}}$ and $w$ a task network; the durative constraints $\duration(t_1) < \duration(t_2)$ expresses that the duration of $t_1$ must be strictly lower that $t_2$, and the constraint $\duration(w) \geq \duration(t_1) * \duration(t_2)$ expresses that the duration of $w$ is greater or equal to the product of the durations of $t_1$ and $t_2$. Durative constraints can be expressed in terms of start and end event of a task. For instance the previous constraint $\duration(t_1) < \duration(t_2)$ can be expressed as  $\tend(t_1) - \tstart(t_1) < \tend(t_2) - \tstart(t_2)$.
 
-    \item ${\cal{C}}_t$ is a set of decomposition trajectory constraints of the form $(\at \ e \ \phi)$. This constraint expresses that some properties defined by the logical formula $\phi$ must hold in the state at the time event $e$. We will show in Section~\ref{Sec:Decomposition-Constraints-Semantics}, how to extend this simple constraint to more expressive ones proposed in HDDL~2.1.
+    \item ${\cal{C}}_t$ is a set of temporal decomposition constraints of the form $(\at \ e \ \phi)$. This constraint expresses that some properties defined by the logical formula $\phi$ must hold in the state at the time event $e$. We will show in Section~\ref{Sec:Decomposition-Constraints-Semantics}, how to extend this simple constraint to more expressive ones proposed in HDDL~2.1.
    \end{itemize}
 \end{definition}
 
@@ -317,7 +317,7 @@ Let ${\cal{P}} = ({\cal{D}}, s_0, w_0, g)$ be a planning problem with $\cal{D} =
 \section{Decomposition Constraint Semantics}
 \label{Sec:Decomposition-Constraints-Semantics}
 
-Decomposition constraints assert conditions that must be met by the entire sequence of states visited during the execution of a solution task network. They are expressed through temporal modal operators over first-order formulas involving state predicates as in PDDL. The semantics of the decomposition constraints can be formally specified in a similar way to what has been done by \citep{gerevini05}. Let $w = ({\cal{I}}, \alpha, {\cal{C}}_o, {\cal{C}}_d, {\cal{C}}_t)$ be a ground task network, a state $s_0$ and a temporal sequence of tasks $\pi = \langle (t_0, e_0, d_0), \ldots, (t_n, e_n, d_n) \rangle $ with $t_0 = \alpha(i_0), \ldots, t_n = \alpha(i_n)$ where $\pi$ is the result of the decomposition of $w$ into primitive tasks by applying method decompositions of the planning problem. We denote by $\langle (s_0, e_0, d_0), \ldots, (s_n, e_n, d_n) \rangle$ the sorted temporal sequence of states produced by the execution of $\pi$ in $s_0$ according to its happening event $e_i$ with $i \leq 0 \leq n$. $w$ satisfies a constraint $(\at \ e \ \phi) \in {\cal{C}}_t$ iff $\exists s_i \in \langle (s_0, e_0, d_0), \ldots, (s_n, e_n, d_n) \rangle$ such that $s_i \models \phi$. Each decomposition constraint defined in HDDL~2.1 can be rewritten in terms of constraints of the form $(\at \ e_i\ \phi)$. The proposed HDDL extension distinguishes two types of decomposition constraints:
+Decomposition constraints assert conditions that must be met by the entire sequence of states visited during the execution of a solution task network. They are expressed through temporal modal operators over first-order formulas involving state predicates as in PDDL. The semantics of the decomposition constraints can be formally specified in a similar way to what has been done by \citep{gerevini05}. Let $w = ({\cal{I}}, \alpha, {\cal{C}}_o, {\cal{C}}_d, {\cal{C}}_t)$ be a ground task network, a state $s_0$ and a temporal sequence of tasks $\pi = \langle (t_0, e_0, d_0), \ldots, (t_n, e_n, d_n) \rangle $ with $t_0 = \alpha(i_0), \ldots, t_n = \alpha(i_n)$ where $\pi$ is the result of the decomposition of $w$ into primitive tasks by applying method decompositions of the planning problem. We denote by $\langle (s_0, e_0, d_0), \ldots, (s_n, e_n, d_n) \rangle$ the sorted temporal sequence of states produced by the execution of $\pi$ in $s_0$ according to its happening event $e_i$ with $i \leq 0 \leq n$. $w$ satisfies a constraint $(\at \ e \ \phi) \in {\cal{C}}_t$ iff $\exists s_i \in \langle (s_0, e_0, d_0), \ldots, (s_n, e_n, d_n) \rangle$ such that $s_i \models \phi$. Note that we constraint that every temporal constraint of the form $(\at \ e_i \ \phi) \in {\cal{C}}_t$ to be defined with $0 \leq i \leq n$ to avoid definition of constraint out of scope of the temporal task network $w$. Each decomposition constraint defined in HDDL~2.1 can be rewritten in terms of constraints of the form $(\at \ e\ \phi)$. The proposed HDDL extension distinguishes two types of decomposition constraints:
 \begin{itemize}
     \item the {\em temporal decomposition constraints} that define the constraints that must hold at specific happening event whose semantics is based on the plan trajectory constraints from PDDL~3.0. We have made the choice to keep the same constraints as introduced in PDDL~3.0 to stay consistent with PDDL.
     \item the {\em classical decomposition constraints} ($\before$, $\after$, $\between$) used in HTN planning introduced first by \citep{erol94} to represent constraints between tasks. We will show how the latter can be expressed with the former at the end of this section.
@@ -327,9 +327,6 @@ We conclude this section by building the semantics of the durative method precon
 
 \subsection{Temporal Constraints Semantics}
 \label{ssec:temporal-constraints-semantics}
-
-% Dire explicitement que les contraintes ne concerne que le task netwok par conséquent le s0 et l'état initial de la séquence d'états du taskntwork. Ce chois a été fait pour ne limiter les effects de bord.
-
 
 The semantics of temporal decomposition constraints are given below.
 
@@ -413,7 +410,6 @@ A constraint \alwayswithin~ says that if some properties $\phi$ occurs at $e_i$ 
 (\alwayswithin \ \phi \ \psi \ d) \ \text{iff} \; \forall e_i \ \text{if} \ (\at \ e_i \ \phi)\\
 \exists e_j : e_i \leq e_j \leq e_n \: \text{such as} \ (\at \ e_j \ \psi) \ \text{and} \ e_j - e_i \leq d \qquad
 \end{multline*}
-
 
 \subsection{Classical Decomposition Constraints}
 
@@ -953,7 +949,7 @@ But now, the following requirement flags are also compatible with HDDL 2.1:
  \end{description}
  We add the following requirement flag:
 \begin{description}
-\item \verb+:method-constraints+ requires to specify decomposition trajectory constraints in methods.
+\item \verb+:method-constraints+ requires to specify decomposition constraints in methods.
  \end{description}
 
 \section{Conclusion}
@@ -962,7 +958,6 @@ But now, the following requirement flags are also compatible with HDDL 2.1:
 % With the assistance of an EOS planning problem inspired from an IPC benchmark and grounded on a real application,
 %The generation of EOS mission plans is highly combinatorial as multiple activity types --- instrument operation, payload data download and maintenance --- are to be planned under strict resource and time constraints.
 %In order to reflect the temporal constraints present in satellite operations, we have adopted a problem formulation that includes elements of temporal planning, besides the usual HDDL 1.0 formulation for expressing hierarchical planning problems~\citep{holler:19}.
-
 
 In the previous pages we have illustrated the main features of HDDL 2.1 for hierarchical temporal planning tasks.
 This effort aims at ferrying HTN planning towards domains close to real world applications, where the temporal elements, like concurrent actions, coordination, and a hierarchical distribution of tasks, are prominent.
@@ -991,6 +986,9 @@ Future works include,
 \end{itemize}
 
 
+\bibliography{ref}
+
+\appendix
 % Benchmarks in HDDL 2.1 are also something we plan to provide as challenges for future solvers and the International Planning Competition (IPC). To provide a rich variety of HTN temporal instances, we plan to decompose hierarchically the already existing benchmarks of the temporal IPC track or to translate existing ANML domains from the FAPE distribution~\citep{dvorak2014}.  Such collection of planning domains can be the kernel of a future IPC for HDDL 2.1 solvers.
 
 % More work lies ahead to provide the planning community with the tools it needs to deal with hierarchical temporal planning problems. As for instance developing a plan validator and a set of meaningful benchmarks for HDDL 2.1.
