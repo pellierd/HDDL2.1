@@ -856,7 +856,6 @@ duration of the method or the sub-tasks that compose it. Therefore, it is necess
 <da-effect> ::=~\specReq{:conditional-effects}~ ~\linebreak~(when <da-gd> <timed-effect>)
 <timed-effect> ::= ~\linebreak~(~at <time-specifier> <cond-effect>)~
 <timed-effect> ::=~\specReq{:numeric-fluents}~ ~\linebreak~(~at <time-specifier> <f-assign-da>)~
-<timed-effect> ::=~\specReq{:continuous-effects + :numeric-fluents}~ ~\linebreak~(<assign-op-t> <f-head> <f-exp-t>)
 <f-assign-da> ::= (<assign-op> <f-head>~\linebreak ~<f-exp-da>)
 <f-exp-da> ::= (<binary-op> <f-exp-da>~\linebreak ~ <f-exp-da>)
 <f-exp-da> ::= (<multi-op> <f-exp-da>~\linebreak ~ <f-exp-da>+)
@@ -865,10 +864,13 @@ duration of the method or the sub-tasks that compose it. Therefore, it is necess
 <f-exp-da> ::= <f-exp>
 <assign-op-t> ::= increase
 <assign-op-t> ::= decrease
-<f-exp-t> ::= (* <f-exp> #t)
-<f-exp-t> ::= (* #t <f-exp>)
-<f-exp-t> ::= #t
 \end{lstlisting}
+
+% continuous-effects rules removed
+%<timed-effect> ::=~\specReq{:continuous-effects + :numeric-fluents}~ ~\linebreak~(<assign-op-t> <f-head> <f-exp-t>)
+%<f-exp-t> ::= (* <f-exp> #t)
+%<f-exp-t> ::= (* #t <f-exp>)
+%<f-exp-t> ::= #t
 
 \subsection{Problem Description}
 
@@ -945,7 +947,7 @@ But now, the following requirement flags are also compatible with HDDL 2.1:
  \item \verb+:duration-inequalities+ requires the applied system to support duration inequalities in durative actions declarations. Implies \verb+:durative-actions+.
  \item \verb+:timed-initial-literals+ requires the applied system to support initial state with literals that become true at a specified time point. Implies \verb+:durative-actions+.
  \item \verb+:numeric-fluent+ requires the applied system to support numeric fluents in preconditions and effects of actions and methods.
- \item \verb+:continuous-effects+ requires the applied system to support continuous action effects.
+ %\item \verb+:continuous-effects+ requires the applied system to support continuous action effects.
  \end{description}
  We add the following requirement flag:
 \begin{description}
