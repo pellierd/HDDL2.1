@@ -426,10 +426,10 @@ The {\em classical decomposition constraints} used in HTN planning introduced fi
 
 \subsection{Method Preconditions Semantics}
 
-Durative methods may have preconditions and their preconditions are temporally annotated to give the time at which they are supposed to happen. As durative actions, methods can have three types of annotated preconditions: (1) $(\atstart \ \phi)$ meaning that $\phi$ must be true or happen at the start of the method; (2) $(\atend \ \phi)$ meaning that $\phi$ must be true or happen at the end of the method, and $(\over all \ \phi)$ meaning that $\phi$ must be true for the full duration of the method.
+Durative methods may have preconditions and their preconditions are temporally annotated to give the time at which they are supposed to happen. As durative actions, methods can have three types of annotated preconditions: (1) $(\atstart \ \phi)$ meaning that $\phi$ must be true or happen at the start of the method; (2) $(\atend \ \phi)$ meaning that $\phi$ must be true or happen at the end of the method, and $(\overall \ \phi)$ meaning that $\phi$ must be true for the full duration of the method.
 
 
-Formally, these three temporal preconditions can be rewritten in terms of decomposition constraints previously introduced. A precondition of type $(\atstart \ \phi)$ (respectively $(\atend \ \phi)$) is equivalent to adding a decomposition constraint $(\atstart \ \phi)$ (respectively $(\atend \ \phi)$), and a precondition of type $(\over all \ \phi)$ is equivalent to adding a decomposition constraint $(\always \ \phi)$. The preconditions of the methods can be seen as syntactic glue to express decomposition constraints of type $\atstart$, $\atend$ and $\always$.
+Formally, these three temporal preconditions can be rewritten in terms of decomposition constraints previously introduced. A precondition of type $(\atstart \ \phi)$ (respectively $(\atend \ \phi)$) is equivalent to adding a decomposition constraint $(\atstart \ \phi)$ (respectively $(\atend \ \phi)$), and a precondition of type $(\overall \ \phi)$ is equivalent to adding a decomposition constraint $(\always \ \phi)$. The preconditions of the methods can be seen as syntactic glue to express decomposition constraints of type $\atstart$, $\atend$ and $\always$.
 
 \section{HDDL 2.1 Syntax}
 
