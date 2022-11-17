@@ -160,9 +160,12 @@ Our motivation is grounded on the compelling need to devise applications involvi
 %As a matter of fact, action concurrency and agent coordination are needed in HTN problems to find solutions for nontrivial tasks in complex scenarios, like collaborative robotic missions \citep{weser2010htn}.
 % TODO Revoir la fin, si ça change en cours de route
 Starting from a real satellite application example, we propose to extend HDDL including elements of PDDL 2.1 and ANML to express temporal and numerical expressions.
-This is intended to initiate discussions within HTN community on establishing a standard -- HDDL 2.1~-- aimed at filling the gaps between existing hierarchical-temporal planning approaches. To that end, we make this preliminary extension of HDDL an open source project with a publicly available repository.
+This is intended to initiate discussions within HTN community on establishing a standard -- HDDL 2.1~-- aimed at filling the gaps between existing hierarchical-temporal planning approaches. To that end, we make this preliminary extension of HDDL an open source project with a publicly available repository and we propose a parser available online as well as a set of benchmarks based on this extension\footnote{all urls was removed for blind review.}.
 
-The rest of the paper is organised as follows. In Section 2 we define the basic concepts of the proposed extension. In Sections 3 and 4 we set down the semantics for Temporal HTN planning. Section 5 describes our extension of the HDDL 1.0 syntax to deal with time, numeric and constraints in method declaration. We conclude discussing the main features of the proposed language. % The full syntax of our HDDL dialect is presented in the appendix.
+The rest of the paper is organised as follows. In Section 2 we define the basic concepts of the proposed extension. In Sections 3 and 4 we set down the semantics for Temporal HTN planning. Section 5 describes our extension of the HDDL 1.0 syntax to deal with time, numeric and constraints in method declaration. The proposed syntax called HDDL 2.1 is illustrated on a commercial optical Earth Observing Satellite (EOS) study case, which delimits our requirements for this new language inspired from the International Planning Competition hierarchical satellite domain~\citep{schattenberg2020} with temporal features, as well as the orderings and the hierarchical constraints of the proposed language extension. Finally, we conclude discussing the main features of the proposed language. % The full syntax of our HDDL dialect is presented in the appendix.
+
+
+%We illustrate the proposed syntax on a commercial optical Earth Observing Satellite (EOS) study case, which delimits our requirements for this new language, namely \emph{durative actions} and \emph{durative methods}, \emph{method preconditions}, \emph{numeric preconditions}, and \emph{timed ordering constraints}. The examples provided to illustrate HDDL~2.1 are shaped on the International Planning Competition hierarchical satellite domain~\citep{schattenberg2020}, extended to utilize the temporal features, as well as the orderings and the hierarchical constraints of the proposed language extension.
 
 
 %dealing with temporal and numeric expressions, for which we will made public a parser,
@@ -172,15 +175,15 @@ The rest of the paper is organised as follows. In Section 2 we define the basic 
 %  DOUBLE BLIND REVIEW
 % part of the PDDL4J library \citep{Pellier18} available online\footnote{\url{https://github.com/pellierd/pddl4j/tree/hddl2.1}}.
 
-Our reflection on HTN planning with time are based on a commercial optical Earth Observing Satellite (EOS) study case, which delimits our requirements for this new language, namely \emph{durative actions} and \emph{durative methods}, \emph{method preconditions}, \emph{numeric preconditions}, and \emph{timed ordering constraints}. The examples provided to illustrate HDDL~2.1 are shaped on the International Planning Competition hierarchical satellite domain~\citep{schattenberg2020}, extended to utilize the temporal features, as well as the orderings and the hierarchical constraints of the proposed language extension.
+%Our reflection on HTN planning with time are based on a commercial optical Earth Observing Satellite (EOS) study case, which delimits our requirements for this new language, namely \emph{durative actions} and \emph{durative methods}, \emph{method preconditions}, \emph{numeric preconditions}, and \emph{timed ordering constraints}. The examples provided to illustrate HDDL~2.1 are shaped on the International Planning Competition hierarchical satellite domain~\citep{schattenberg2020}, extended to utilize the temporal features, as well as the orderings and the hierarchical constraints of the proposed language extension.
 
 \section{Lifted Temporal HTN planning}
 
 % Dire que pour des raisons de places les fonctions n'ont pas été inclues
 
-Throughout this section, we will use common notations from first-order logic, which we assume to be known (see \cite{xx} for formal definitions). In the lifted formalism of HDDL 2.1, we assume for the sake of simplicity that all logical formulae are over a {\it function-free} first-order logic language ${\cal{L}} = (V, C, P)$. ${\cal{L}}$ consists of sufficiently many {\it constant} $c \in C$ representing the {\it objects} in the real world, {\it variables} $x \in V$ and {\it predicates} $p \in P$. Predicates have parameters that are either variables or constants. The predicate arity is the number of predicate parameters. For instance, $p(x, c)$ is a 2-arity predicate.
+Throughout this section, we will use common notations from first-order logic, which we assume to be known. In the lifted formalism of HDDL 2.1, we assume for the sake of simplicity that all logical formulae are over a {\it function-free} first-order logic language ${\cal{L}} = (V, C, P)$. ${\cal{L}}$ consists of sufficiently many {\it constant} $c \in C$ representing the {\it objects} in the real world, {\it variables} $x \in V$ and {\it predicates} $p \in P$. Predicates have parameters that are either variables or constants. The predicate arity is the number of predicate parameters. For instance, $p(x, c)$ is a 2-arity predicate.
 
-We can now define {\it formulas} in a function-free first-order logic \cite{ghallab}: (i) a predicate is a formula ; (ii) if ${\phi}$ and ${\psi}$ are formulas, then $\neg \phi$, $\phi \vee \psi$ and $\phi \wedge \psi$ are formulas ; (iii) if $\phi$ is a formula and $x$ is a variable, then $\forall x \phi$ is a formula. We define $\exists x \phi$ as $\neg \forall x \neg \phi$, and $\phi \rightarrow \psi$ as $\neg \phi \vee \psi$. $\forall$ and $\exists$ are respectively the universal and the existential quantifier.
+We can now define {\it formulas} in a function-free first-order logic: (i) a predicate is a formula ; (ii) if ${\phi}$ and ${\psi}$ are formulas, then $\neg \phi$, $\phi \vee \psi$ and $\phi \wedge \psi$ are formulas ; (iii) if $\phi$ is a formula and $x$ is a variable, then $\forall x \phi$ is a formula. We define $\exists x \phi$ as $\neg \forall x \neg \phi$, and $\phi \rightarrow \psi$ as $\neg \phi \vee \psi$. $\forall$ and $\exists$ are respectively the universal and the existential quantifier.
 
 Conceptually, grounding a formula consists in generating a set of variable-free i.e. {\it ground} formulas \cite{helmert} as follows: a variable $x$ in a quantifier-free formula $\phi$ is eliminated by replacing $\phi$ with $|C|$ copies, one for each $c \in C$, where $x$ is substituted with $c$ in the respective copy. This substitution is denoted by $\phi[x/c]$. Regarding quantified formulas, $\forall x \phi$ is replaced by $\bigwedge_{c \in C} \phi[x/c]$ and $\exists x \phi$ by $\bigvee_{c \in C} \phi[x/c]$. We refer the reader to \cite{behnke20,ramoul17} for further details on grounding implementation. Suffice to say it is always possible to transform a formula in function-free first-order logic into a finite set of ground formulas in propositional logic.
 
@@ -519,7 +522,7 @@ The domain definition has been extended to durative actions (line~\ref{l:durativ
 %We present thereafter this real use case of an EOS with the mission of observing areas on the surface of the planet and embedding the capacity of producing and executing autonomous plans.
 The example below, grounded in a commercial optical Earth Observing Satellite (EOS) study case, is shaped on the International Planning Competition hierarchical satellite domain~\citep{schattenberg2020}, and is intended to illustrate the temporal features, as well as the orderings and the hierarchical constraints of the proposed language extension.
 
-New generations of commercial EOSs guarantee better performances by embedding a certain degree of autonomy on-board~\citep{pralet2019}. An automated planner is expected to produce new observation mission plans whenever environment changes or new requests are sent from ground control. Because observation tasks depend on the environment ---which is not known in advance--- this is a planning problem and not just a scheduling matter~\citep{rodriguez-moreno2004}. 
+New generations of commercial EOSs guarantee better performances by embedding a certain degree of autonomy on-board~\citep{pralet2019}. An automated planner is expected to produce new observation mission plans whenever environment changes or new requests are sent from ground control. Because observation tasks depend on the environment ---which is not known in advance--- this is a planning problem and not just a scheduling matter~\citep{rodriguez-moreno2004}.
 %
 The EOS mission goal is then to fulfil a set of \emph{Acquisition Requests} of images of the Earth surface.
 %Requests can be single images, which can be obtained by powering on sensors, and pointing at the sites of interest.
@@ -589,7 +592,7 @@ Like methods, durative methods have parameters, the abstract task they decompose
 
 Figure \ref{pddl_durative_m_con} depicting the \textit{observe} method illustrates some temporal constraints semantics introduced here.
 % section \ref{ssec:temporal-constraints-semantics}.
-In this case, \texttt{pointing} at an observation site can be achieved by different subtasks. By requiring that this precondition of \mbox{\small\lstinline[language={pddl},basicstyle=\ttfamily]|durative-action take_image|} is performed  at most once, avoids useless satellite movements. 
+In this case, \texttt{pointing} at an observation site can be achieved by different subtasks. By requiring that this precondition of \mbox{\small\lstinline[language={pddl},basicstyle=\ttfamily]|durative-action take_image|} is performed  at most once, avoids useless satellite movements.
 Note that, besides the explicit subtask ordering, an implicit ordering between tasks 0 and 1 could have been forced by adding the constraint  \mbox{\small\lstinline[language={pddl},basicstyle=\ttfamily]|(within task1 (power_on ?i))|}, requiring that the instrument must be powered on \emph{before} turning towards the observation site.
 %
 \begin{figure}[h!]
@@ -957,7 +960,7 @@ But now, the following requirement flags are also compatible with HDDL 2.1:
 \label{sec:conclusion}
 
 % With the assistance of an EOS planning problem inspired from an IPC benchmark and grounded on a real application,
-%The generation of EOS mission plans is highly combinatorial as multiple activity types --- instrument operation, payload data download and maintenance --- are to be planned under strict resource and time constraints. 
+%The generation of EOS mission plans is highly combinatorial as multiple activity types --- instrument operation, payload data download and maintenance --- are to be planned under strict resource and time constraints.
 %In order to reflect the temporal constraints present in satellite operations, we have adopted a problem formulation that includes elements of temporal planning, besides the usual HDDL 1.0 formulation for expressing hierarchical planning problems~\citep{holler:19}.
 
 
@@ -967,7 +970,7 @@ This effort aims at ferrying HTN planning towards domains close to real world ap
 The lack of a unified language featuring both temporal and numerical constraints in the continuity of the works done on PDDL is, in our view, an obstacle and a need to address. The automated planning community has produced in the past several approaches for modelling complex planning problems including temporal aspects and a hierarchical decomposition of tasks, but the variety of language solutions is also a hindrance for having common tools and solvers.
 
 %%%
-ANML  \citep{smith08} has an expressivity close to what we seek here. 
+ANML  \citep{smith08} has an expressivity close to what we seek here.
 In ANML effects that happen at time intervals during an action duration can be specified. This  can also be represented in HDDL~2.1 by using constraints semantics and dividing actions with intermediate effects into separate durative actions.
 
 FAPE proposes benchmarks where ordering constraints are delayed.\footnote{E.g. \url{https://github.com/laas/fape/blob/master/planning/domains/rovers_ipc5-hier/rovers_ipc5-hier.dom.anml#L180}.} For instance in ANML it is possible to specify that an action must happen at least some amount of time after the end of a previous action. With the proposed syntax and semantics, such expressivity can be reached by using auxiliary tasks that decompose in a durative primitive task (of the desired duration) with no effects.
@@ -980,10 +983,10 @@ Basically, two approaches exist. Sampling can be either constant ---when time is
 
 
 To be fully compatible with PDDL 3.0 features, the language HDDL 2.1 needs to include axioms and preferences, besides the associated parsing, and validating tools.
-Future works include, 
+Future works include,
 \begin{itemize}
 \item To define constraints on solution plans, e.g. put a max time linit to plans
-\item To allow  defining delays for ordering constraints with point algebra 
+\item To allow  defining delays for ordering constraints with point algebra
 \item All other aspects not detailed here, e.g. continuous effects
 \end{itemize}
 
@@ -995,7 +998,7 @@ Future works include,
 
 \section*{Temporal HTN planning Semantics}
  \label{THTN}
- 
+
  The solution of a temporal HTN planning problem is a time-triggered plan that might be obtained from the problem initial task network by a series of method decompositions. Lifted problems are just a compact representation of their ground instances. With ground instances, there is no need to use variable constraints since they are satisfied by the grounding. Therefore, in this section, for the sake of simplicity, we define the semantics of a lifted problem in terms of its ground instances. For details on the grounding process, the reader is referred to \cite{behnke20,ramoul17}.
 
 % Let us start by informally discussing the role of this hierarchical extension over the underlying PDDL language.
@@ -1019,7 +1022,7 @@ In essence, this allows us to define the semantics of this hierarchical extensio
 
 
 \begin{definition}[Decomposition]
-Let be a method \mbox{$m = \bigl(\name(m),$ $\task(m), tn(m)\bigr)$} with a task network $tn(m) = ({\cal{I}}^m, \alpha^m, {\cal{C}}_{o}^{m},{\cal{C}}_{d}^{m}, {\cal{C}}_{t}^{m})$ and a task network to decompose $w_1= ({\cal{I}}^1, \alpha^1, {\cal{C}}_{o}^{1},{\cal{C}}_{d}^{1}, {\cal{C}}_{t}^{1})$. Without loss of generality we assume ${\cal{I}}^m \cap {\cal{I}}^1 = \emptyset$ (which might be achieved by renaming). Then, $m$ decomposes a task identifier $i \in {\cal{I}}^1$ into a task network $w_2= ({\cal{I}}^2, \alpha^2, {\cal{C}}_{o}^{2},{\cal{C}}_{d}^{2}, {\cal{C}}_{t}^{2})$ if and only if $\alpha^1(i) = task(m)$ and 
+Let be a method \mbox{$m = \bigl(\name(m),$ $\task(m), tn(m)\bigr)$} with a task network $tn(m) = ({\cal{I}}^m, \alpha^m, {\cal{C}}_{o}^{m},{\cal{C}}_{d}^{m}, {\cal{C}}_{t}^{m})$ and a task network to decompose $w_1= ({\cal{I}}^1, \alpha^1, {\cal{C}}_{o}^{1},{\cal{C}}_{d}^{1}, {\cal{C}}_{t}^{1})$. Without loss of generality we assume ${\cal{I}}^m \cap {\cal{I}}^1 = \emptyset$ (which might be achieved by renaming). Then, $m$ decomposes a task identifier $i \in {\cal{I}}^1$ into a task network $w_2= ({\cal{I}}^2, \alpha^2, {\cal{C}}_{o}^{2},{\cal{C}}_{d}^{2}, {\cal{C}}_{t}^{2})$ if and only if $\alpha^1(i) = task(m)$ and
 \begin{equation*} \label{eq1}
 \begin{aligned}
 {\cal{I}}^2 = & ({\cal{I}}^1 - \{i\}) \cup {\cal{I}}^m\\
@@ -1037,14 +1040,14 @@ Let be a method \mbox{$m = \bigl(\name(m),$ $\task(m), tn(m)\bigr)$} with a task
     TODO: A task network $w'$ is a decomposition of a task network $w$ if there is a sequence of method application that transform $w$ into $w'$.
 \end{definition}
 
-\begin{definition}[Schedule]TODO: 
+\begin{definition}[Schedule]TODO:
     A time-triggered plan $\pi$ is a valid schedule of a decomposition $w$ if:
     \begin{itemize}
-        \item there is a bijection between the actions of the plan and the primitive tasks of the decomposition. 
+        \item there is a bijection between the actions of the plan and the primitive tasks of the decomposition.
         \item Note that this bijection assigns a numerical value to all timepoints in the decomposition's temporal network, either directly (primitive tasks) or indirectly (computation of min/max expression).
         \item Given the state trajectory associated to $\pi$ and the schedule, all constraints are valid.
     \end{itemize}
-    
+
 \end{definition}
 
 \begin{definition}[Solution]
@@ -1053,7 +1056,7 @@ Let be a method \mbox{$m = \bigl(\name(m),$ $\task(m), tn(m)\bigr)$} with a task
         \item $\pi$ is a solution to the non-hierarchical problem $P_{flat}$. In essence, it means that the plan is executable and yields a valid state trajectory that achieves all the goals.
         \item there exists a decomposition $w^*$ of $w_0$ such that $\pi$ is a valid schedule of $w^*$.
     \end{itemize}
-    
+
 \end{definition}
 
 
@@ -1063,10 +1066,10 @@ Let be a method \mbox{$m = \bigl(\name(m),$ $\task(m), tn(m)\bigr)$} with a task
 Just a test to see how this goes, where $\states$ is the state trajectory induced by the plan.
 \[
       \states \models(\holdduring \ t_1 \ t_2 \ \phi)
-      \ \text{iff} \ \forall t \in [t_1,t_2], \ \states(t) \models \phi 
+      \ \text{iff} \ \forall t \in [t_1,t_2], \ \states(t) \models \phi
 \]
 
- 
+
 \bibliography{ref}
 
 \end{document}
