@@ -258,6 +258,51 @@ The action has conditions that, if set \texttt{at start} are equivalent to the c
 \end{figure}
 
 
+
+The satellite is agile, that is, it can rotate forwards and backwards in addition to left and right with respect to its track. This capability is used to point towards \textit{sites} that represent the direction of an acquisition request. However this is only possible during a short period of time $[t^{start}, t^{end}]$ in which the location is visible. The observable timespan of each {\tt site} of interest is specified in the initial situation with timed initial literals like in PDDL 2.2~ \citep{hoffmann2005deterministic}, e.g. 
+%{\small\lstinline[language={pddl},basicstyle=\ttfamily]|(and (at 500 (observable site))	(at 1000 (not (observable site))))|}.
+
+% as illustrated in Figure~\ref{pddl_initplan_dom}.
+ \begin{figure}[!h]
+ \begin{lstlisting}[language=pddl]
+ (:objects
+ 	site - image_direction
+ )
+ (:init
+ 	(at 500 (observable site))
+ 	(at 1000 (not (observable site)))
+     ...
+ ) \end{lstlisting}
+ \caption{Timed initial literals for site observability\label{pddl_initplan_dom}}
+ \end{figure}
+
+ The \texttt{take-image} preconditions depend then on the site visibility (Figure~\ref{pddl_take-image}). 
+ % explication basique
+ This action has conditions that should hold at start like in Fig.~\ref{pddl_calibrate}, but also \emph{throughout the action execution}, noted with \texttt{over all}; hence it should be a durative-action, with a duration (here set to a constant value).
+
+\begin{figure}[!h]
+\begin{lstlisting}[language=pddl]
+(:durative-action take_image
+	:parameters (?ti_s - satellite 
+	    ?ti_d - image_direction 
+	    ?ti_i - instrument ?ti_m - mode)
+	:duration (= ?duration 1.00000)
+	:precondition (and
+		  (over all (observable ?ti_d))
+		  (at start (calibrated ?ti_i))
+		  (at start (pointing ?ti_s ?ti_d))
+		  (over all (on_board ?ti_i ?ti_s))
+		  (over all (power_on ?ti_i))
+		  (at start (supports ?ti_i ?ti_m))	)
+	:effect	(and
+		(at end (have_image ?ti_d ?ti_m))
+		(at end (increase
+		   (image-quality ?ti_s) 2))) )
+\end{lstlisting}
+\caption{\texttt{take\_image} conditions depend on site observability.\label{pddl_take-image}}
+\end{figure}
+%
+
 %%%%
 
 
@@ -294,34 +339,42 @@ Like methods, durative methods have parameters, the abstract task they decompose
 
 %%% SAT example
 
-
-Figure \ref{pddl_durative_m_con} depicting the \textit{observe} method illustrates some temporal constraints semantics introduced here.
-% section \ref{ssec:temporal-constraints-semantics}.
-In this case, \texttt{pointing} at an observation site can be achieved by different subtasks. By requiring that this precondition of \mbox{\small\lstinline[language={pddl},basicstyle=\ttfamily]|durative-action take_image|} is performed  at most once, avoids useless satellite movements.
-Note that, besides the explicit subtask ordering, an implicit ordering between tasks 0 and 1 could have been forced by adding the constraint  \mbox{\small\lstinline[language={pddl},basicstyle=\ttfamily]|(within task1 (power_on ?i))|}, requiring that the instrument must be powered on \emph{before} turning towards the observation site.
+Pointing to sites is performed by the \texttt{turn\_to} task. \texttt{turn\_to} can be decomposed in two ways, one of which is less precise (the overall quality of the images will be reduced) but quicker to execute. These two \emph{durative-methods} differ mainly in the duration constraints, reflecting the different pointing times, as shown in Figure~\ref{pddl_durative_m}. This choice, only possible on-board, corrects over-confident plans regarding transition times that otherwise would have caused the acquisition to fail. The planning problem can be designed to optimise image quality, but also accept lower quality images when time is short. On the modelling side, the distinction between the two methods is done
+on the basis of the duration interval.
 %
-\begin{figure}[h!]
-	\begin{lstlisting}[language=pddl, basicstyle=\fontsize{8.5}{10}\selectfont\ttfamily, escapechar=~]
-	(:durative-method method_observe
-		:parameters (?d_prev - image_direction
-		   ?d - image_direction
-		   ?s - satellite
-		   ?i - instrument   ?m - mode)
-		:task (do_observation ?d ?m)
-		:duration
-		   (< (duration task1) (calib-time ?i))~\label{l:mdur}~
-		:subtasks (and
-		   (task0 (activate_instrument ?s ?i))
-		   (task1 (turn_to ?s ?d ?d_prev))
-		   (task2 (take_image ?s ?d ?i ?m)))
-		:ordering (and
-		   (< task0 task2)
-		   (< task1 task2))
-		:constraints (and
-		   (not (= ?d ?d_prev))
-		   (at-most-once (pointing ?s ?d))) )~\label{l:mhb}~
-	\end{lstlisting}
-	\caption{\texttt{method\_observe} uses a duration inequality and a constraint over literals to constrain an ordering. Similarly, a decomposition can be constrained at method-level.\label{pddl_durative_m_con}}
+\begin{figure}[!h]
+\begin{lstlisting}[language=pddl]
+(:durative-method turn_precise
+	:parameters (?tp_s - satellite 
+	    ?tp_d_prev - image_direction 
+	    ?tp_d - image_direction)
+	:task (turn_to ?tp_s ?tp_d ?tp_d_prev)
+	:duration (>= ?duration (* (/ (turn-time 
+	    (t_d_new t_d_prev)) 4) 5) ) 
+	:ordered-subtasks (and
+		(point_to ?tp_s ?tp_d ?tp_d_prev)
+		(take_image ?tp_s ?tp_d ?tp_i ?tp_m) )
+	:constraints (and
+		(not (= ?tp_d ?tp_d_prev))) )
+
+(:durative-method turn_approx
+	:parameters (?ta_s - satellite 
+	    ?ta_d_prev - image_direction 
+	    ?ta_d - image_direction)
+	:task (turn_to ?ta_s ?ta_d ?ta_d_prev)
+	:duration (and
+		  (<= ?duration (* (/ (turn-time 
+		      (t_d_new t_d_prev)) 4) 5)) 
+		  (>= ?duration (/ (turn-time 
+		      (t_d_new t_d_prev)) 2) ) 
+	:ordered-subtasks (and
+		(point_to ?ta_s ?ta_d ?ta_d_prev)
+		(take_image ?ta_s ?ta_d ?ta_i ?ta_m) 
+		(decrease_overall_quality ?ti_s) )
+	:constraints (and
+		(not (= ?ta_d ?ta_d_prev))) )
+\end{lstlisting}
+\caption{\texttt{turn\_precise} and \texttt{turn\_approx} methods use duration inequalities to reflect the duration time, which is bounded by the duration of the \emph{durative-action} \texttt{point\_to}. The duration of \texttt{point\_to} is bounded by the relative position of the two sites to observe.\label{pddl_durative_m}}
 \end{figure}
 
 
@@ -402,6 +455,37 @@ HDDL~1.0 only accepts equality constraints or inequality on method parameters in
 <timed-constraint-def> ::= ~\linebreak~(~sometime-after <gd> <gd>)~
 <timed-constraint-def> ::= ~\linebreak~(~always-within number <gd> <gd>)~
 \end{lstlisting}
+
+
+
+Figure \ref{pddl_durative_m_con} depicting the \textit{observe} method illustrates some temporal constraints semantics introduced here.
+% section \ref{ssec:temporal-constraints-semantics}.
+In this case, \texttt{pointing} at an observation site can be achieved by different subtasks. By requiring that this precondition of \mbox{\small\lstinline[language={pddl},basicstyle=\ttfamily]|durative-action take_image|} is performed  at most once, avoids useless satellite movements.
+Note that, besides the explicit subtask ordering, an implicit ordering between tasks 0 and 1 could have been forced by adding the constraint  \mbox{\small\lstinline[language={pddl},basicstyle=\ttfamily]|(within task1 (power_on ?i))|}, requiring that the instrument must be powered on \emph{before} turning towards the observation site.
+%
+\begin{figure}[h!]
+	\begin{lstlisting}[language=pddl, basicstyle=\fontsize{8.5}{10}\selectfont\ttfamily, escapechar=~]
+	(:durative-method method_observe
+		:parameters (?d_prev - image_direction
+		   ?d - image_direction
+		   ?s - satellite
+		   ?i - instrument   ?m - mode)
+		:task (do_observation ?d ?m)
+		:duration
+		   (< (duration task1) (calib-time ?i))~\label{l:mdur}~
+		:subtasks (and
+		   (task0 (activate_instrument ?s ?i))
+		   (task1 (turn_to ?s ?d ?d_prev))
+		   (task2 (take_image ?s ?d ?i ?m)))
+		:ordering (and
+		   (< task0 task2)
+		   (< task1 task2))
+		:constraints (and
+		   (not (= ?d ?d_prev))
+		   (at-most-once (pointing ?s ?d))) )~\label{l:mhb}~
+	\end{lstlisting}
+	\caption{\texttt{method\_observe} uses a duration inequality and a constraint over literals to constrain an ordering. Similarly, a decomposition can be constrained at method-level.\label{pddl_durative_m_con}}
+\end{figure}
 
 
 %
