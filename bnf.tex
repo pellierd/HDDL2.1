@@ -461,32 +461,32 @@ The domain definition has been extended to durative actions (line~\ref{l:durativ
 %
 % @HDDL 1.0
 
-\noindent The definition of the basic domain elements is nearly unchanged.
+The definition of the basic domain elements is nearly unchanged. In a general manner, the reader is referred to the Appendix for the full syntax, including the elements already present in previous versions of PDDL and HDDL.
 
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<require-def> ::= (:requirements  ~\mbox{<require-key>+}~)
-<require-key> ::= ~\textit{(see \S\ref{Sec:Requirements})}~
-<types-def> ::= (:types ~\mbox{<typed-list(<primitive-type>)>}~)
-<predicates-def> ::= (:predicates  ~\mbox{<atomic-formula-skeleton>+}~)
-<function-def> ::= (<function-typed-list  ~\mbox{(<atomic-function-skeleton>)}~>)
-<constants-def> ::= (:constants <typed-list (constant)>)
-<atomic-formula-skeleton> ::= ~\linebreak~(<predicate> <typed-list(variable)>)
-<atomic-function-skeleton> ::= ~\linebreak~(<function> <typed-list (variable)>)
-<typed-list (x)> ::= x+ - <type> ~\linebreak~[<typed list (x)>]~\label{l:typedlist}~
-<type> ::= (either <primitive-type>+)
-<type> ::= <primitive-type>
-<function-typed-list (x)> ::= x+ - ~\linebreak~<function-type> <function-typed-list(x)>
-<function-typed-list (x)> ::=
-<function-type> ::=~\specReq{:numeric-fluents}~number
-<function-type> ::=~\specReq{:typing} \specReq{+} \specReq{:object-fluents}~<type>
-<predicate> ::= <name>
-<function> ::= <name>
-<constant> ::= <name>
-<variable> ::= ?<name>
-<primitive-type> ::= <name>
-<primitive-type> ::= ~object
-\end{lstlisting}
-
+%
+% \begin{lstlisting}[firstnumber=last, escapechar=~]
+% <require-def> ::= (:requirements  ~\mbox{<require-key>+}~)
+% <require-key> ::= ~\textit{(see \S\ref{Sec:Requirements})}~
+% <types-def> ::= (:types ~\mbox{<typed-list(<primitive-type>)>}~)
+% <predicates-def> ::= (:predicates  ~\mbox{<atomic-formula-skeleton>+}~)
+% <function-def> ::= (<function-typed-list  ~\mbox{(<atomic-function-skeleton>)}~>)
+% <constants-def> ::= (:constants <typed-list (constant)>)
+% <atomic-formula-skeleton> ::= ~\linebreak~(<predicate> <typed-list(variable)>)
+% <atomic-function-skeleton> ::= ~\linebreak~(<function> <typed-list (variable)>)
+% <typed-list (x)> ::= x+ - <type> ~\linebreak~[<typed list (x)>]~\label{l:typedlist}~
+% <type> ::= (either <primitive-type>+)
+% <type> ::= <primitive-type>
+% <function-typed-list (x)> ::= x+ - ~\linebreak~<function-type> <function-typed-list(x)>
+% <function-typed-list (x)> ::=
+% <function-type> ::=~\specReq{:numeric-fluents}~number
+% <function-type> ::=~\specReq{:typing} \specReq{+} \specReq{:object-fluents}~<type>
+% <predicate> ::= <name>
+% <function> ::= <name>
+% <constant> ::= <name>
+% <variable> ::= ?<name>
+% <primitive-type> ::= <name>
+% <primitive-type> ::= ~object
+% \end{lstlisting}
 %
 % Task definition
 %
@@ -511,12 +511,9 @@ The domain definition has been extended to durative actions (line~\ref{l:durativ
 
 %% Satellite example
 
-
-
-% We will continue our description of HTN planning with time using a commercial optical Earth Observing Satellite (EOS) study case.
 %, which delimits our requirements for this new language, namely \emph{durative actions} and \emph{durative methods}, \emph{method preconditions}, \emph{numeric preconditions}, and \emph{timed ordering constraints}.
 %We present thereafter this real use case of an EOS with the mission of observing areas on the surface of the planet and embedding the capacity of producing and executing autonomous plans.
-The example below, grounded in a commercial optical Earth Observing Satellite (EOS) study case, is shaped on the International Planning Competition hierarchical satellite domain~\citep{schattenberg2020}, and is intended to illustrate the temporal features, as well as the orderings and the hierarchical constraints of the proposed language extension.
+We will continue our description of the syntax using code snippets from a commercial optical Earth Observing Satellite (EOS) study case shaped on the International Planning Competition hierarchical satellite domain~\citep{schattenberg2020}. The example is intended to illustrate the temporal features, as well as the orderings and the hierarchical constraints of the proposed language extension.
 
 New generations of commercial EOSs guarantee better performances by embedding a certain degree of autonomy on-board~\citep{pralet2019}. An automated planner is expected to produce new observation mission plans whenever environment changes or new requests are sent from ground control. Because observation tasks depend on the environment ---which is not known in advance--- this is a planning problem and not just a scheduling matter~\citep{rodriguez-moreno2004}.
 %
@@ -782,30 +779,30 @@ duration of the method or the sub-tasks that compose it. Therefore, it is necess
 %
 % @HDDL 1.0
 \noindent Compared to HDDL 1.0 we allow to define numerical and temporal preconditions. The syntax used from numeric preconditions is the same as that of PDDL 3.0. For the sake of simplicity, we chose to not include the preferences.
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<gd> ::= ()
-<gd> ::= <literal (term)>
-<gd> ::= (and <gd>*)
-<gd> ::=~\specReq{:disjunctive-preconditions}~ (or <gd>*)
-<gd> ::=~\specReq{:negative-preconditions}~ (not <gd>)
-<gd> ::=~\specReq{:disjunctive-preconditions \ :negative-preconditions}~ ~\mbox{(imply <gd> <gd>)}~
-<gd> ::=~\specReq{:existential-preconditions}~ ~\linebreak~(exists (<typed list (variable)>*) <gd>)
-<gd> ::=~\specReq{:universal-preconditions}~ ~\linebreak~(forall (<typed list (variable)>*) <gd>)
-<gd> ::= (= <term> <term>)
-<gd> ::=~\specReq{:numeric-fluents} <f-comp>
-<f-comp> ::= (<binary-comp> <f-exp> <f-exp>)
-\end{lstlisting}
+% \begin{lstlisting}[firstnumber=last, escapechar=~]
+% <gd> ::= ()
+% <gd> ::= <literal (term)>
+% <gd> ::= (and <gd>*)
+% <gd> ::=~\specReq{:disjunctive-preconditions}~ (or <gd>*)
+% <gd> ::=~\specReq{:negative-preconditions}~ (not <gd>)
+% <gd> ::=~\specReq{:disjunctive-preconditions \ :negative-preconditions}~ ~\mbox{(imply <gd> <gd>)}~
+% <gd> ::=~\specReq{:existential-preconditions}~ ~\linebreak~(exists (<typed list (variable)>*) <gd>)
+% <gd> ::=~\specReq{:universal-preconditions}~ ~\linebreak~(forall (<typed list (variable)>*) <gd>)
+% <gd> ::= (= <term> <term>)
+% <gd> ::=~\specReq{:numeric-fluents} <f-comp>
+% <f-comp> ::= (<binary-comp> <f-exp> <f-exp>)
+% \end{lstlisting}
 
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<literal (t)> ::= <atomic formula(t)>
-<literal (t)> ::= (not <atomic formula(t)>)
-<atomic formula(t)> ::= (<predicate> t*)
-\end{lstlisting}
+% \begin{lstlisting}[firstnumber=last, escapechar=~]
+% <literal (t)> ::= <atomic formula(t)>
+% <literal (t)> ::= (not <atomic formula(t)>)
+% <atomic formula(t)> ::= (<predicate> t*)
+% \end{lstlisting}
 
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<term> ::= <name>
-<term> ::= <variable>
-\end{lstlisting}
+% \begin{lstlisting}[firstnumber=last, escapechar=~]
+% <term> ::= <name>
+% <term> ::= <variable>
+% \end{lstlisting}
 
 %
 % Goal Description
@@ -995,78 +992,5 @@ Future works include,
 
 % More work lies ahead to provide the planning community with the tools it needs to deal with hierarchical temporal planning problems. As for instance developing a plan validator and a set of meaningful benchmarks for HDDL 2.1.
 
-
-\section*{Temporal HTN planning Semantics}
- \label{THTN}
-
- The solution of a temporal HTN planning problem is a time-triggered plan that might be obtained from the problem initial task network by a series of method decompositions. Lifted problems are just a compact representation of their ground instances. With ground instances, there is no need to use variable constraints since they are satisfied by the grounding. Therefore, in this section, for the sake of simplicity, we define the semantics of a lifted problem in terms of its ground instances. For details on the grounding process, the reader is referred to \cite{behnke20,ramoul17}.
-
-% Let us start by informally discussing the role of this hierarchical extension over the underlying PDDL language.
-% A PDDL problem characterizes the initial state and its evolution overtime as a result of the execution of actions and of its intrinsic dynamics (e.g. with time initial literals).
-
-
-\begin{definition}[Time-triggered plan]
-A {\it time-triggered plan} $\pi$ is a sequence of tuples $\langle (t_0, st_0, d_0), \ldots,$ $(t_n, st_n, d_n) \rangle$ where each $t_i$ is a ground primitive task in $\cal{T}$, $st_i \in \mathbb{Q}_{\geq 0}$ and $d_i \in \mathbb{Q}_{\geq 0}$ are rational numbers respectively giving the start time and the duration of the primitive task $t_i$.
-\end{definition}
-
-\newcommand{\states}{\Psi}
-\begin{definition}[State trajectory]
-    Given a problem $P$, a time-triggered plan induces a state trajectory $\states^P_\pi: \mathbb{R}^{\geq 0} \rightarrow S$.
-\end{definition}
-
-The precise characterization of the state trajectory is not in the scope of this paper.
-Indeed, observe that for a given time-triggered plan, the state trajectory solely depends on the semantics associated to the action model and state dynamics, both of which are not impacted by this hierarchical extension.
-Instead, the hierarchical extension only restricts the set of plans that can be accepted as a solution to the problem.
-
-In essence, this allows us to define the semantics of this hierarchical extension orthogonally to the underlying action model as long as it allows to test whether a given formula $\phi$ holds at a given time $t$, in the state trajectory induced by the plan $\pi$ (i.e. $\states_\pi(t) \models \phi$).
-
-
-\begin{definition}[Decomposition]
-Let be a method \mbox{$m = \bigl(\name(m),$ $\task(m), tn(m)\bigr)$} with a task network $tn(m) = ({\cal{I}}^m, \alpha^m, {\cal{C}}_{o}^{m},{\cal{C}}_{d}^{m}, {\cal{C}}_{t}^{m})$ and a task network to decompose $w_1= ({\cal{I}}^1, \alpha^1, {\cal{C}}_{o}^{1},{\cal{C}}_{d}^{1}, {\cal{C}}_{t}^{1})$. Without loss of generality we assume ${\cal{I}}^m \cap {\cal{I}}^1 = \emptyset$ (which might be achieved by renaming). Then, $m$ decomposes a task identifier $i \in {\cal{I}}^1$ into a task network $w_2= ({\cal{I}}^2, \alpha^2, {\cal{C}}_{o}^{2},{\cal{C}}_{d}^{2}, {\cal{C}}_{t}^{2})$ if and only if $\alpha^1(i) = task(m)$ and
-\begin{equation*} \label{eq1}
-\begin{aligned}
-{\cal{I}}^2 = & ({\cal{I}}^1 - \{i\}) \cup {\cal{I}}^m\\
-\alpha^2 = & (\alpha^1 \cup \alpha^m)\\
-{\cal{C}}^{2}_{o} = & {\cal{C}}^{1}_{o} \cup {\cal{C}}^{m}_{o} \\
-    & \cup \{ \ \tstart(i) = \min_{j \in {\cal{I}}^m} \tstart(j) \}  \\
-    & \cup \{ \ \tend(i) = \max_{j \in {\cal{I}}^m} \tend(j) \}  \\
-{\cal{C}}^{2}_{d}  = & {\cal{C}}^{1}_{d} \cup {\cal{C}}^{m}_{d} \\
-{\cal{C}}^{2}_{t}  = & {\cal{C}}^{1}_{t} \cup {\cal{C}}^{m}_{t} \\
-\end{aligned}
-\end{equation*}
-\end{definition}
-
-\begin{definition}
-    TODO: A task network $w'$ is a decomposition of a task network $w$ if there is a sequence of method application that transform $w$ into $w'$.
-\end{definition}
-
-\begin{definition}[Schedule]TODO:
-    A time-triggered plan $\pi$ is a valid schedule of a decomposition $w$ if:
-    \begin{itemize}
-        \item there is a bijection between the actions of the plan and the primitive tasks of the decomposition.
-        \item Note that this bijection assigns a numerical value to all timepoints in the decomposition's temporal network, either directly (primitive tasks) or indirectly (computation of min/max expression).
-        \item Given the state trajectory associated to $\pi$ and the schedule, all constraints are valid.
-    \end{itemize}
-
-\end{definition}
-
-\begin{definition}[Solution]
-    A time-triggered plan $\pi$ is a solution to a Temporal HTN planning problem $P$ iff:
-    \begin{itemize}
-        \item $\pi$ is a solution to the non-hierarchical problem $P_{flat}$. In essence, it means that the plan is executable and yields a valid state trajectory that achieves all the goals.
-        \item there exists a decomposition $w^*$ of $w_0$ such that $\pi$ is a valid schedule of $w^*$.
-    \end{itemize}
-
-\end{definition}
-
-
-
-\subsection{Constraint semantics}
-
-Just a test to see how this goes, where $\states$ is the state trajectory induced by the plan.
-\[
-      \states \models(\holdduring \ t_1 \ t_2 \ \phi)
-      \ \text{iff} \ \forall t \in [t_1,t_2], \ \states(t) \models \phi
-\]
 
 \end{document}
