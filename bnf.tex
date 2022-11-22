@@ -976,14 +976,9 @@ Basically, two approaches exist. Sampling can be either constant ---when time is
 % Joined with the suggested HDDL 2.1 language grammar, we propose a parser and an illustrative benchmark part of the PDDL4J librarie \cite{Pellier18} available online\footnote{\url{https://github.com/pellierd/pddl4j}}.
 
 
-To be fully compatible with PDDL 3.0 features, the language HDDL 2.1 needs to include axioms and preferences, besides the associated parsing, and validating tools.
-Future works include,
-\begin{itemize}
-\item To define constraints on solution plans, e.g. put a max time linit to plans
-\item To allow  defining delays for ordering constraints with point algebra
-\item All other aspects not detailed here, e.g. continuous effects
-\end{itemize}
-
+In order to be fully compatible with PDDL 3.0 features, the language HDDL 2.1 needs to include axioms and preferences, besides the associated parsing, and validating tools. For this reason, the present work has to be seen as a baseline for the planning community to build upon.
+In fact, many applications require features that have been (on purpose) omitted in this paper. Most importantly, we didn't explicitely reported a syntax for constraints on solution plans, e.g. to put a max time limit, and we didn't allowed to define delays  with point algebra for ordering constraints. Other aspects are simply not detailed here, e.g. continuous effects.
+Such language elements are left as natural extension of this paper for future work.
 
 \bibliography{ref}
 
