@@ -887,8 +887,13 @@ The problem definition includes as additional element the initial task network (
     [<metric-spec>]~\specReq{:numeric-fluents}
 \end{lstlisting}
 
+The baic elements stay unchanged from HDDL. Note that timed initial literals and optional metric spec are added using the same syntax as in PDDL 3.0.
+
 \begin{lstlisting}[firstnumber=last, escapechar=~]
 <object-declaration> ::= ~\linebreak~(:objects <typed list (name)>)
+<htn> ::= (:htn
+    [:parameters (<typed list (variable)>)] ~\label{l:tniparams}~
+    <tasknetwork-def>)~\label{l:tnitasks}~
 <init> ::= (:init <init-el>*)
 <init-el> ::= <literal (name)>
 <init-el> ::=~\specReq{:timed-initial-literals}~(~at ~<number>~ <literal (name)>)~
@@ -896,14 +901,6 @@ The problem definition includes as additional element the initial task network (
 <basic-function-term> ::= <function-symbol>
 <basic-function-term> ::= (<function-symbol> <name>*)
 <goal> ::= (:goal <gd>)
-\end{lstlisting}
-
-The initial task network contains the definition of the problem class.
-
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<htn> ::= (:htn
-    [:parameters (<typed list (variable)>)] ~\label{l:tniparams}~
-    <tasknetwork-def>)~\label{l:tnitasks}~
 \end{lstlisting} %| :tihtn~\specReq{:tihtn}~
 
 %
@@ -911,7 +908,7 @@ The initial task network contains the definition of the problem class.
 %
 % @HDDL 2.1
 
-Note that timed initial literals and optional metric spec are added to HDDL using the same syntax as in PDDL 3.0.
+
 
 %\begin{lstlisting}[firstnumber=last, escapechar=~]
 %<metric-spec> ::=~\specReq{:numeric-fluents}~
