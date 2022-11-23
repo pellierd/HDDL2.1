@@ -911,24 +911,24 @@ The initial task network contains the definition of the problem class.
 %
 % @HDDL 2.1
 
-The optional metric spec can be defined using the same syntax as in PDDL 3.0.
+The optional metric spec is added and can be defined using the same syntax as in PDDL 3.0.
 
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<metric-spec> ::=~\specReq{:numeric-fluents}~
-    (:metric <optimization> <metric-f-exp>)
-<optimization> ::= ~minimize~
-<optimization> ::= ~maximize~
-<metric-f-exp> ::= (<binary-op>
-    <metric-f-exp> <metric-f-exp>)
-<metric-f-exp> ::= (<multi-op>
-    <metric-f-exp> <metric-f-exp>+)
-<metric-f-exp> ::= (- <metric-f-exp>)
-<metric-f-exp> ::= <number>
-<metric-f-exp> ::= ( <function-symbol>
-    <name>* )
-<metric-f-exp> ::= <function-symbol>
-<metric-f-exp> ::= ~total-time
-\end{lstlisting}
+%\begin{lstlisting}[firstnumber=last, escapechar=~]
+%<metric-spec> ::=~\specReq{:numeric-fluents}~
+%    (:metric <optimization> <metric-f-exp>)
+%<optimization> ::= ~minimize~
+%<optimization> ::= ~maximize~
+%<metric-f-exp> ::= (<binary-op>
+%    <metric-f-exp> <metric-f-exp>)
+%<metric-f-exp> ::= (<multi-op>
+%    <metric-f-exp> <metric-f-exp>+)
+%<metric-f-exp> ::= (- <metric-f-exp>)
+%<metric-f-exp> ::= <number>
+%<metric-f-exp> ::= ( <function-symbol>
+%    <name>* )
+%<metric-f-exp> ::= <function-symbol>
+%<metric-f-exp> ::= ~total-time
+%\end{lstlisting}
 
 \subsection{Temporal and Numeric HDDL Requirements}
 \label{Sec:Requirements}
