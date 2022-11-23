@@ -1,10 +1,7 @@
-\def\year{2022}\relax
-%File: formatting-instructions-latex-2021.tex
-%release 2021.2
 \documentclass[letterpaper]{article} % DO NOT CHANGE THIS
-\usepackage{aaai22}  % DO NOT CHANGE THIS
+\usepackage[submission]{aaai23}  % DO NOT CHANGE THIS
 \usepackage{times}  % DO NOT CHANGE THIS
-\usepackage{helvet} % DO NOT CHANGE THIS
+\usepackage{helvet}  % DO NOT CHANGE THIS
 \usepackage{courier}  % DO NOT CHANGE THIS
 \usepackage[hyphens]{url}  % DO NOT CHANGE THIS
 \usepackage{graphicx} % DO NOT CHANGE THIS
@@ -13,16 +10,17 @@
 \usepackage{natbib}  % DO NOT CHANGE THIS AND DO NOT ADD ANY OPTIONS TO IT
 \usepackage{caption} % DO NOT CHANGE THIS AND DO NOT ADD ANY OPTIONS TO IT
 \frenchspacing  % DO NOT CHANGE THIS
-\setlength{\pdfpagewidth}{8.5in}  % DO NOT CHANGE THIS
-\setlength{\pdfpageheight}{11in}  % DO NOT CHANGE THIS
+\setlength{\pdfpagewidth}{8.5in} % DO NOT CHANGE THIS
+\setlength{\pdfpageheight}{11in} % DO NOT CHANGE THIS
+%
 \usepackage[ruled,linesnumbered,noend]{algorithm2e}
 \usepackage{multirow}
 \usepackage{subcaption}
 \usepackage{amsmath,amssymb,amsthm}
-\usepackage{bbm}
 \usepackage{subfiles}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{url}
 
 
 \definecolor{mygreen}{rgb}{0,0.6,0}
@@ -132,7 +130,7 @@ Univ. Grenoble Alpes, LIG\\
 38000 Grenoble, France\\
 \{Damien.Pellier, Humbert.Fiorino\}@univ-grenoble-alpes.fr}
 
-\title{Annex: HDDL 2.1 Syntax}
+\title{Annex: Full HDDL 2.1 Syntax}
 %\author{Paper \#}
 
 \sloppy
@@ -207,7 +205,7 @@ The domain definition has been extended to durative actions (line~\ref{l:durativ
 <task-symbol> ::= <name>
 \end{lstlisting}
 
-\noindent The structure of a temporal HDDL domain is composed of durative and non-durative methods and actions. Durative and non-durative actions are defined as in PDDL and non-durative methods as in HDDL.
+\noindent The structure of a temporal HDDL domain is composed of durative and non-durative methods and actions. Durative and non-durative actions are defined as in PDDL \cite{pddl3} and non-durative methods as in HDDL.
 
 \begin{lstlisting}[firstnumber=last, escapechar=~]
 <structure-def> ::= <action-def>
@@ -305,7 +303,7 @@ The ordering constraints are defined via the task ids, and have to induce a part
 % Constraints extensions
 %
 % @HDDL 2.1
-HDDL~1.0 only accepts equality constraints or inequality on method parameters in the task network. To increase the expressiveness of the language, we have chosen to add two kinds of constraints: the {\em classical decomposition constraints} ($\before$, $\after$, $\between$) used in HTN planning introduced first by \citep{erol94} to represent constraints between tasks for non temporal HTN problem and the {\em temporal decomposition constraints} based on the plan trajectory constraint from PDDL~3.0. The semantic of theses constraints were given in section~\ref{Sec:Decomposition-Constraints-Semantics}. To allow the specification of such the constraints added, it is necessary to use \verb+:method-constraints+.
+HDDL~1.0 only accepts equality constraints or inequality on method parameters in the task network. To increase the expressiveness of the language, we have chosen to add two kinds of constraints: the {\em classical decomposition constraints} ($\before$, $\after$, $\between$) used in HTN planning introduced first by \citep{erol94} to represent constraints between tasks for non temporal HTN problem and the {\em temporal decomposition constraints} based on the plan trajectory constraint from PDDL~3.0 \cite{gerevini05}. To allow the specification of such the constraints added, it is necessary to use \verb+:method-constraints+.
 
 \begin{lstlisting}[firstnumber=last, escapechar=~]
 <constraint-def> ::= () | <constraint-def> | (and <constraint-def>+)
@@ -318,11 +316,11 @@ HDDL~1.0 only accepts equality constraints or inequality on method parameters in
 <timed-constraint-def> ::= ~\linebreak~(~hold-during <timed-task-id> <gd>)~
 <timed-constraint-def> ::= ~\linebreak~(~within <timed-task-id> <gd>)~
 <timed-constraint-def> ::= ~\linebreak~(~hold-after <timed-task-id> <gd>)~
-<timed-constraint-def> ::= ~\linebreak~(~at start <gd>)~
-<timed-constraint-def> ::= ~\linebreak~(~at end <gd>)~
-<timed-constraint-def> ::= ~\linebreak~(~always <gd>)~
-<timed-constraint-def> ::= ~\linebreak~(~at-most-once <gd>)~
-<timed-constraint-def> ::= ~\linebreak~(~sometime <gd>)~
+<timed-constraint-def> ::= (~at start <gd>)~
+<timed-constraint-def> ::= (~at end <gd>)~
+<timed-constraint-def> ::= (~always <gd>)~
+<timed-constraint-def> ::= (~at-most-once <gd>)~
+<timed-constraint-def> ::= (~sometime <gd>)~
 <timed-constraint-def> ::= ~\linebreak~(~sometime-before <gd> <gd>)~
 <timed-constraint-def> ::= ~\linebreak~(~sometime-after <gd> <gd>)~
 <timed-constraint-def> ::= ~\linebreak~(~always-within number <gd> <gd>)~
@@ -525,8 +523,13 @@ The problem definition includes as additional element the initial task network (
     [<metric-spec>]~\specReq{:numeric-fluents}
 \end{lstlisting}
 
+Most of the elements of a problem remain unchanged from HDDL. Now timed initial literal and function are allowed in the declartion of the initial of the problem.
+
 \begin{lstlisting}[firstnumber=last, escapechar=~]
 <object-declaration> ::= ~\linebreak~(:objects <typed list (name)>)
+<htn> ::= (:htn
+    [:parameters (<typed list (variable)>)] ~\label{l:tniparams}~
+    <tasknetwork-def>)~\label{l:tnitasks}~
 <init> ::= (:init <init-el>*)
 <init-el> ::= <literal (name)>
 <init-el> ::=~\specReq{:timed-initial-literals}~(~at ~<number>~ <literal (name)>)~
@@ -536,21 +539,12 @@ The problem definition includes as additional element the initial task network (
 <goal> ::= (:goal <gd>)
 \end{lstlisting}
 
-The initial task network contains the definition of the problem class.
-
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<htn> ::= (:htn
-    [:parameters (<typed list (variable)>)] ~\label{l:tniparams}~
-    <tasknetwork-def>)~\label{l:tnitasks}~
-\end{lstlisting} %| :tihtn~\specReq{:tihtn}~
-
 %
 % Metric spec
 %
 % @HDDL 2.1
 
-The optional metric spec can be defined using the same syntax as in PDDL 3.0.
-
+Finally, the optional metric spec is added using the same syntax as in PDDL 3.0.
 \begin{lstlisting}[firstnumber=last, escapechar=~]
 <metric-spec> ::=~\specReq{:numeric-fluents}~
     (:metric <optimization> <metric-f-exp>)
@@ -588,5 +582,6 @@ But now, the following requirement flags are also compatible with HDDL 2.1:
 \item \verb+:method-constraints+ requires to specify decomposition constraints in methods.
  \end{description}
 
+\bibliography{ref}
 
 \end{document}
