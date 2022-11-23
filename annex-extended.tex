@@ -259,7 +259,7 @@ The action has conditions that, if set \texttt{at start} are equivalent to the c
 
 
 
-The satellite is agile, that is, it can rotate forwards and backwards in addition to left and right with respect to its track. This capability is used to point towards \textit{sites} that represent the direction of an acquisition request. However this is only possible during a short period of time $[t^{start}, t^{end}]$ in which the location is visible. The observable timespan of each {\tt site} of interest is specified in the initial situation with timed initial literals like in PDDL 2.2~ \citep{hoffmann2005deterministic}, e.g. 
+The satellite is agile, that is, it can rotate forwards and backwards in addition to left and right with respect to its track. This capability is used to point towards \textit{sites} that represent the direction of an acquisition request. However this is only possible during a short period of time $[t^{start}, t^{end}]$ in which the location is visible. The observable timespan of each {\tt site} of interest is specified in the initial situation with timed initial literals like in PDDL 2.2~ \citep{hoffmann2005deterministic}, e.g.
 %{\small\lstinline[language={pddl},basicstyle=\ttfamily]|(and (at 500 (observable site))	(at 1000 (not (observable site))))|}.
 
 % as illustrated in Figure~\ref{pddl_initplan_dom}.
@@ -276,15 +276,15 @@ The satellite is agile, that is, it can rotate forwards and backwards in additio
  \caption{Timed initial literals for site observability\label{pddl_initplan_dom}}
  \end{figure}
 
- The \texttt{take-image} preconditions depend then on the site visibility (Figure~\ref{pddl_take-image}). 
+ The \texttt{take-image} preconditions depend then on the site visibility (Figure~\ref{pddl_take-image}).
  % explication basique
  This action has conditions that should hold at start like in Fig.~\ref{pddl_calibrate}, but also \emph{throughout the action execution}, noted with \texttt{over all}; hence it should be a durative-action, with a duration (here set to a constant value).
 
 \begin{figure}[!h]
 \begin{lstlisting}[language=pddl]
 (:durative-action take_image
-	:parameters (?ti_s - satellite 
-	    ?ti_d - image_direction 
+	:parameters (?ti_s - satellite
+	    ?ti_d - image_direction
 	    ?ti_i - instrument ?ti_m - mode)
 	:duration (= ?duration 1.00000)
 	:precondition (and
@@ -345,12 +345,12 @@ on the basis of the duration interval.
 \begin{figure}[!h]
 \begin{lstlisting}[language=pddl]
 (:durative-method turn_precise
-	:parameters (?tp_s - satellite 
-	    ?tp_d_prev - image_direction 
+	:parameters (?tp_s - satellite
+	    ?tp_d_prev - image_direction
 	    ?tp_d - image_direction)
 	:task (turn_to ?tp_s ?tp_d ?tp_d_prev)
-	:duration (>= ?duration (* (/ (turn-time 
-	    (t_d_new t_d_prev)) 4) 5) ) 
+	:duration (>= ?duration (* (/ (turn-time
+	    (t_d_new t_d_prev)) 4) 5) )
 	:ordered-subtasks (and
 		(point_to ?tp_s ?tp_d ?tp_d_prev)
 		(take_image ?tp_s ?tp_d ?tp_i ?tp_m) )
@@ -358,18 +358,18 @@ on the basis of the duration interval.
 		(not (= ?tp_d ?tp_d_prev))) )
 
 (:durative-method turn_approx
-	:parameters (?ta_s - satellite 
-	    ?ta_d_prev - image_direction 
+	:parameters (?ta_s - satellite
+	    ?ta_d_prev - image_direction
 	    ?ta_d - image_direction)
 	:task (turn_to ?ta_s ?ta_d ?ta_d_prev)
 	:duration (and
-		  (<= ?duration (* (/ (turn-time 
-		      (t_d_new t_d_prev)) 4) 5)) 
-		  (>= ?duration (/ (turn-time 
-		      (t_d_new t_d_prev)) 2) ) 
+		  (<= ?duration (* (/ (turn-time
+		      (t_d_new t_d_prev)) 4) 5))
+		  (>= ?duration (/ (turn-time
+		      (t_d_new t_d_prev)) 2) )
 	:ordered-subtasks (and
 		(point_to ?ta_s ?ta_d ?ta_d_prev)
-		(take_image ?ta_s ?ta_d ?ta_i ?ta_m) 
+		(take_image ?ta_s ?ta_d ?ta_i ?ta_m)
 		(decrease_overall_quality ?ti_s) )
 	:constraints (and
 		(not (= ?ta_d ?ta_d_prev))) )
@@ -421,6 +421,7 @@ The ordering constraints are defined via the task ids, and have to induce a part
 <d-task> ::=~\specReq{:durative-action} ~>=
 <d-task> ::=~\specReq{:durative-action} ~<=
 <d-task> ::=~\specReq{:durative-action} ~>
+<d-task> ::=~\specReq{:durative-action} ~<
 <d-task> ::=~\specReq{:durative-action} ~=
 <task-id> ::= <name>
 <task-id> ::= ~\specReq{:durative-action} <time-task-id>~

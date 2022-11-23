@@ -358,9 +358,7 @@ The pending constraint \holdafter \ says \ that some properties must be verified
 %
 \begin{multline*}
 \langle (s_0, e_0, d_0), (s_1, e_1, d_1), \ldots, (s_n, e_n, d_n) \rangle \models\\
-     (\atstart \ \phi)\ \text{iff}\ (\at \ e_0 \ \phi)
-\end{multline*}
-\begin{multline*}
+     (\atstart \ \phi)\ \text{iff}\ (\at \ e_0 \ \phi)\\
 \langle (s_0, e_0, d_0), (s_1, e_1, d_1), \ldots, (s_n, e_n, d_n) \rangle \models\\
     (\atend \ \phi)\ \text{iff}\ (\at \ e_n \ \phi)
 \end{multline*}
@@ -394,10 +392,7 @@ Finally, we have the three last constraints introduced in PDDL~3.0: \sometimebef
 \begin{multline*}
 \langle (s_0, e_0, d_0), \ldots, (s_i, e_i, d_i), \ldots, (s_n, e_n, d_n) \rangle \models   \\
 (\sometimebefore \ \phi \ \psi) \ \text{iff} \; \forall e_i \ \text{if} \ (\at \ e_i \ \phi)\\
-\exists e_j : 0 \leq e_j \leq e_i \: \text{such as} \ (\at \ e_j \ \psi) \qquad\qquad\quad\quad
-\end{multline*}
-%
-\begin{multline*}
+\exists e_j : 0 \leq e_j \leq e_i \: \text{such as} \ (\at \ e_j \ \psi) \qquad\qquad\quad\quad\\
 \langle (s_0, e_0, d_0), \ldots, (s_i, e_i, d_i), \ldots, (s_n, e_n, d_n) \rangle \models   \\
 (\sometimeafter \ \phi \ \psi) \ \text{iff} \; \forall e_i \ \text{if} \ (\at \ e_i \ \phi)\\
 \exists e_j : e_i \leq e_j \leq e_n \: \text{such as} \ (\at \ e_j \ \psi) \qquad\qquad\quad\quad
@@ -433,13 +428,14 @@ Formally, these three temporal preconditions can be rewritten in terms of decomp
 
 \section{HDDL 2.1 Syntax}
 
-The proposed syntax, called HDDL2.1, takes its roots in HDDL~\citep{holler20}.
+The proposed syntax, called HDDL2.1, takes its roots in HDDL~\citep{holler20}. In a general manner, the reader is referred to the Appendix for the full syntax\footnote{The full syntax will be available online in the final paper version.}, including the elements already present in previous versions of PDDL and HDDL.
 
 \subsection{Domain Description}
 
 \newcommand{\specReq}[1]{\ensuremath{\mathtt{^{#1}}}}
 
-The domain definition has been extended to durative actions (line~\ref{l:durative-actions}) and durative methods (line~\ref{l:durative-methods}).
+The domain definition has been extended to durative actions %(line~\ref{l:durative-actions})
+and durative methods (line~\ref{l:durative-methods}). The durative action definition in PDDL stays unchanged in HDDL.
 \begin{lstlisting}[escapechar=~]
 <domain> ::= (define (domain <name>)
     [<require-def>]
@@ -461,7 +457,7 @@ The domain definition has been extended to durative actions (line~\ref{l:durativ
 %
 % @HDDL 1.0
 
-The definition of the basic domain elements is nearly unchanged. In a general manner, the reader is referred to the Appendix for the full syntax, including the elements already present in previous versions of PDDL and HDDL.
+The definition of the basic domain elements is nearly unchanged, i.e., {\tt require-def}, {\tt types-def}, etc.
 
 %
 % \begin{lstlisting}[firstnumber=last, escapechar=~]
@@ -538,8 +534,7 @@ The action has conditions that, if set \texttt{at start} are equivalent to the c
 			(at start (calib_target ?i ?d))
 			(at start (pointing ?s ?d))
 			(at start (power_on ?i)))
-	:effect
-		(and  (at end (calibrated ?i))) )
+	:effect (and  (at end (calibrated ?i))))
 	\end{lstlisting}
 	\caption{The calibrate action has a duration depending on the instrument calibration time\label{pddl_calibrate}, which are defined in the initial state, e.g.
 {\small\lstinline[language={pddl},basicstyle=\ttfamily]|(= (calib-time instrument0) 20)|}.}
@@ -602,9 +597,8 @@ Note that, besides the explicit subtask ordering, an implicit ordering between t
 		   (task0 (activate_instrument ?s ?i))
 		   (task1 (turn_to ?s ?d ?d_prev))
 		   (task2 (take_image ?s ?d ?i ?m)))
-		:ordering (and
-		   (< task0 task2)
-		   (< task1 task2))
+		:ordering (and (< task0 task2)
+                   (< task1 task2))
 		:constraints (and
 		   (not (= ?d ?d_prev))
 		   (at-most-once (pointing ?s ?d))) )~\label{l:mhb}~
@@ -653,25 +647,27 @@ The ordering constraints are defined via the task ids, and have to induce a part
 <ordering-def> ::= ~\linebreak~(<d-task> <task-id> <task-id>)
 <ordering-def> ::=~\specReq{:durative-action} \linebreak~(not (<ordering-def>))
 <d-task> ::= <
-<d-task> ::=~\specReq{:durative-action} ~>=
-<d-task> ::=~\specReq{:durative-action} ~<=
-<d-task> ::=~\specReq{:durative-action} ~>
-<d-task> ::=~\specReq{:durative-action} ~=
+<d-task> ::=~\specReq{:durative-action} ~> | >= | = | < | <=
 <task-id> ::= <name>
 <task-id> ::= ~\specReq{:durative-action} <time-task-id>~
 <time-task-id> ::= (<time-specifier> ~\mbox{<task-id>)}~
-<time-specifier> ::= ~start~
-<time-specifier> ::= ~end
+<time-specifier> ::= ~start~ | ~end
 \end{lstlisting}
 
+%<time-specifier> ::= ~start~
+%<time-specifier> ::= ~end
+%<d-task> ::=~\specReq{:durative-action} ~>=
+%<d-task> ::=~\specReq{:durative-action} ~<=
+%<d-task> ::=~\specReq{:durative-action} ~>
+%<d-task> ::=~\specReq{:durative-action} ~=
 %
 % Constraints extensions
 %
 % @HDDL 2.1
 HDDL~1.0 only accepts equality constraints or inequality on method parameters in the task network. To increase the expressiveness of the language, we have chosen to add two kinds of constraints: the {\em classical decomposition constraints} ($\before$, $\after$, $\between$) used in HTN planning introduced first by \citep{erol94} to represent constraints between tasks for non temporal HTN problem and the {\em temporal decomposition constraints} based on the plan trajectory constraint from PDDL~3.0. The semantic of theses constraints were given in section~\ref{Sec:Decomposition-Constraints-Semantics}. To allow the specification of such the constraints added, it is necessary to use \verb+:method-constraints+.
 
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<constraint-def> ::= () | <constraint-def> | (and <constraint-def>+)
+\begin{lstlisting}[firstnumber=last, basicstyle=\fontsize{8.5}{10}\selectfont\ttfamily, escapechar=~]
+<constraint-def> ::= () | <constraint-def> ~\linebreak~| (and <constraint-def>+)
 <constraint-def> ::= (not (= <term> <term>))~\linebreak~| (= <term> <term>)
 <constraint-def> ::=~\specReq{:method-constraints}~  ~\linebreak~(~before <task-id> <gd>)~
 <constraint-def> ::=~\specReq{:method-constraints}~  ~\linebreak~(~after <task-id> <gd>)~
@@ -681,11 +677,11 @@ HDDL~1.0 only accepts equality constraints or inequality on method parameters in
 <timed-constraint-def> ::= ~\linebreak~(~hold-during <timed-task-id> <gd>)~
 <timed-constraint-def> ::= ~\linebreak~(~within <timed-task-id> <gd>)~
 <timed-constraint-def> ::= ~\linebreak~(~hold-after <timed-task-id> <gd>)~
-<timed-constraint-def> ::= ~\linebreak~(~at start <gd>)~
-<timed-constraint-def> ::= ~\linebreak~(~at end <gd>)~
-<timed-constraint-def> ::= ~\linebreak~(~always <gd>)~
-<timed-constraint-def> ::= ~\linebreak~(~at-most-once <gd>)~
-<timed-constraint-def> ::= ~\linebreak~(~sometime <gd>)~
+<timed-constraint-def> ::= (~at start <gd>)~
+<timed-constraint-def> ::= (~at end <gd>)~
+<timed-constraint-def> ::= (~always <gd>)~
+<timed-constraint-def> ::= (~at-most-once <gd>)~
+<timed-constraint-def> ::= (~sometime <gd>)~
 <timed-constraint-def> ::= ~\linebreak~(~sometime-before <gd> <gd>)~
 <timed-constraint-def> ::= ~\linebreak~(~sometime-after <gd> <gd>)~
 <timed-constraint-def> ::= ~\linebreak~(~always-within number <gd> <gd>)~
@@ -696,63 +692,65 @@ HDDL~1.0 only accepts equality constraints or inequality on method parameters in
 % Action Definition
 %
 % HDDL 1.0
-The orginal action or durative action definitions defined in PDDL stay mainly unchanged. The only difference is that for simplicity, it is not possible to specify preferences. The non-durative actions are defined as follows:
+The orginal action or durative action definitions defined in PDDL stay mainly unchanged. The only difference is that for simplicity, it is not possible to specify preferences as in PDDL 3.0.
 
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<action-def> ::= (:action <task-def>~\label{l:action}~
-    [:precondition <gd>]
-    [:effect <effect>])
-\end{lstlisting}
+%The non-durative actions are defined as follows:
+
+%\begin{lstlisting}[firstnumber=last, escapechar=~]
+%<action-def> ::= (:action <task-def>~\label{l:action}~
+%    [:precondition <gd>]
+%    [:effect <effect>])
+%\end{lstlisting}
 
 %
 %  Durative Action Definition
 %
 % PDDL 3.0 add to HDDL 2.1
-\noindent The durative actions are defined as follows:
+%\noindent The durative actions are defined as follows:
 
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<durative-action-def> ::= ~\linebreak~(:durative-action <task-def>~\label{l:durative-actions}~
-      :duration <duration-constraint>
-      [:condition <da-gd)>]
-      [:effect <da-effect>])
-\end{lstlisting}
+%\begin{lstlisting}[firstnumber=last, escapechar=~]
+%<durative-action-def> ::= ~\linebreak~(:durative-action <task-def>~\label{l:durative-actions}~
+%      :duration <duration-constraint>
+%      [:condition <da-gd)>]
+%      [:effect <da-effect>])
+%\end{lstlisting}
 
 
 %
 %  Durative Action Constraints Definition
 %
 % PDDL 3.0 add to HDDL 2.1
-As in PDDL, duration constraints with the \verb|:duration-inequalities| requirement allow to express duration inequalities. The definition of the duration constraints for durative actions does not change.
+%As in PDDL, duration constraints with the \verb|:duration-inequalities| requirement allow to express duration inequalities. The definition of the duration constraints for durative actions does not change.
 
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<action-duration-constraint> ::=~\specReq{:duration-inequalities}~(and ~\linebreak~ <simple-action-duration-constraint>+)
-<action-duration-constraint> ::= ()
-<action-duration-constraint> ::= ~\mbox{<simple-action-duration-constraint>}~
-<action-simple-duration-constraint>::= ~\linebreak~(<d-op> ?duration <d-value>)
-<action-simple-duration-constraint>::= ~\linebreak~ (~{at}~ <time-specifier> ~\mbox{\hspace{2em}<simple-duration-constraint>}~)
-<d-op> :: <=
-<d-op> :: >=
-<d-op> :: =
-<d-value> ::= <number>
-<d-value> ::=~\specReq{:numeric-fluents}~<f-exp>
-<f-exp> ::=~\specReq{:numeric-fluents}~<number>
-<f-exp> ::=~\specReq{:numeric-fluents}~(<binary-op> <f-exp> <f-exp>)
-<f-exp> ::=~\specReq{:numeric-fluents}~(<multi-op> <f-exp> <f-exp>+)
-<f-exp> ::=~\specReq{:numeric-fluents}~(- <f-exp>)
-<f-exp> ::=~\specReq{:numeric-fluents}~<f-head>
-<f-head> ::= (<function-symbol> <term>*)
-<f-head> ::= <function-symbol>
-<binary-op> ::= <multi-op>
-<binary-op> ::= -
-<binary-op> ::= /
-<multi-op> ::= *
-<multi-op> ::= +
-<binary-comp> ::= >
-<binary-comp> ::= <
-<binary-comp> ::= =
-<binary-comp> ::= >=
-<binary-comp> ::= <=
-\end{lstlisting}
+%\begin{lstlisting}[firstnumber=last, escapechar=~]
+%<action-duration-constraint> ::=~\specReq{:duration-inequalities}~(and ~\linebreak~ <simple-action-duration-constraint>+)
+%<action-duration-constraint> ::= ()
+%<action-duration-constraint> ::= ~\mbox{<simple-action-duration-constraint>}~
+%<action-simple-duration-constraint>::= ~\linebreak~(<d-op> ?duration <d-value>)
+%<action-simple-duration-constraint>::= ~\linebreak~ (~{at}~ <time-specifier> ~\mbox{\hspace{2em}<simple-duration-constraint>}~)
+%<d-op> :: <=
+%<d-op> :: >=
+%<d-op> :: =
+%<d-value> ::= <number>
+%<d-value> ::=~\specReq{:numeric-fluents}~<f-exp>
+%<f-exp> ::=~\specReq{:numeric-fluents}~<number>
+%<f-exp> ::=~\specReq{:numeric-fluents}~(<binary-op> <f-exp> <f-exp>)
+%<f-exp> ::=~\specReq{:numeric-fluents}~(<multi-op> <f-exp> <f-exp>+)
+%<f-exp> ::=~\specReq{:numeric-fluents}~(- <f-exp>)
+%<f-exp> ::=~\specReq{:numeric-fluents}~<f-head>
+%<f-head> ::= (<function-symbol> <term>*)
+%<f-head> ::= <function-symbol>
+%<binary-op> ::= <multi-op>
+%<binary-op> ::= -
+%<binary-op> ::= /
+%<multi-op> ::= *
+%<multi-op> ::= +
+%<binary-comp> ::= >
+%<binary-comp> ::= <
+%<binary-comp> ::= =
+%<binary-comp> ::= >=
+%<binary-comp> ::= <=
+%\end{lstlisting}
 
 %
 %  Durative Method Constraints Definition
@@ -811,57 +809,58 @@ duration of the method or the sub-tasks that compose it. Therefore, it is necess
 
 \noindent The same approach is used for temporal precondition definition. The syntax used is the same as in PDDL 3.0.
 
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<da-gd> ::= <timed-gd>
-<da-gd> ::= (and <da-gd>*)
-<da-gd> ::=~\specReq{:universal-preconditions}~ (forall ~\linebreak~ <typed-list (variable)>) <da-gd>)
-<timed-gd> ::= (~at <time-specifier> <gd>)~
-<timed-gd> ::= (~over <interval> <gd>)~
-<interval> ::= ~all
-\end{lstlisting}
+%\begin{lstlisting}[firstnumber=last, escapechar=~]
+%<da-gd> ::= <timed-gd>
+%<da-gd> ::= (and <da-gd>*)
+%<da-gd> ::=~\specReq{:universal-preconditions}~ (forall ~\linebreak~ <typed-list (variable)>) <da-gd>)
+%<timed-gd> ::= (~at <time-specifier> <gd>)~
+%<timed-gd> ::= (~over <interval> <gd>)~
+%<interval> ::= ~all
+%\end{lstlisting}
 
 %
 % Effects
 %
 % @HDDL 1.0
-\noindent Symmetrically, we add to the effect definition the temporal and numeric aspect based on the same syntax as in PDDL 3.0.
+\noindent Symmetrically, we add to the effect definition the temporal and numeric aspect based on the same syntax as in PDDL 3.0 (see the full syntax in appendix).
 
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<effect> ::= ()
-<effect> ::= (and <c-effect>*)
-<effect> ::= <c-effect>
-<c-effect> ::=~\specReq{:conditional-effects}~ ~\linebreak~(forall (<variable>*) <effect>)
-<c-effect> ::=~\specReq{:conditional-effects}~ ~\linebreak~(when <gd> <cond-effect>)
-<c-effect> ::= <p-effect>
-<p-effect> ::= (not <atomic formula(term)>)
-<p-effect> ::= <atomic formula(term)>
-<cond-effect> ::= (and <p-effect>*)
-<cond-effect> ::= <p-effect>
-\end{lstlisting}
+%\begin{lstlisting}[firstnumber=last, escapechar=~]
+%<effect> ::= ()
+%<effect> ::= (and <c-effect>*)
+%<effect> ::= <c-effect>
+%<c-effect> ::=~\specReq{:conditional-effects}~ ~\linebreak~(forall (<variable>*) <effect>)
+%<c-effect> ::=~\specReq{:conditional-effects}~ ~\linebreak~(when <gd> <cond-effect>)
+%<c-effect> ::= <p-effect>
+%<p-effect> ::= (not <atomic formula(term)>)
+%<p-effect> ::= <atomic formula(term)>
+%<cond-effect> ::= (and <p-effect>*)
+%<cond-effect> ::= <p-effect>
+%\end{lstlisting}
 
 %
 %  Temporal Method Definition
 %
 % From PDDL 3.0 add to HDDL 2.1
 
-\noindent The temporal and numeric definitions of effects are as follows:
+%\noindent The temporal and numeric definitions of effects are as follows:
 
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<da-effect> ::= (and <da-effect>*)
-<da-effect> ::= <timed-effect>
-<da-effect> ::=~\specReq{:conditional-effects}~ (forall ~\linebreak~(<typed list (variable)>) <da-effect>)
-<da-effect> ::=~\specReq{:conditional-effects}~ ~\linebreak~(when <da-gd> <timed-effect>)
-<timed-effect> ::= ~\linebreak~(~at <time-specifier> <cond-effect>)~
-<timed-effect> ::=~\specReq{:numeric-fluents}~ ~\linebreak~(~at <time-specifier> <f-assign-da>)~
-<f-assign-da> ::= (<assign-op> <f-head>~\linebreak ~<f-exp-da>)
-<f-exp-da> ::= (<binary-op> <f-exp-da>~\linebreak ~ <f-exp-da>)
-<f-exp-da> ::= (<multi-op> <f-exp-da>~\linebreak ~ <f-exp-da>+)
-<f-exp-da> ::= (- <f-exp-da>)
-<f-exp-da> ::=~\specReq{:duration-inequalities}~ ?duration
-<f-exp-da> ::= <f-exp>
-<assign-op-t> ::= increase
-<assign-op-t> ::= decrease
-\end{lstlisting}
+%\begin{lstlisting}[firstnumber=last, escapechar=~]
+%<da-effect> ::= (and <da-effect>*)
+%<da-effect> ::= <timed-effect>
+%<da-effect> ::=~\specReq{:conditional-effects}~ (forall ~\linebreak~(<typed list (variable)>) <da-effect>)
+%<da-effect> ::=~\specReq{:conditional-effects}~ ~\linebreak~(when <da-gd> <timed-effect>)
+%<timed-effect> ::= ~\linebreak~(~at <time-specifier> <cond-effect>)~
+%<timed-effect> ::=~\specReq{:numeric-fluents}~ ~\linebreak~(~at <time-specifier> <f-assign-da>)~
+%<f-assign-da> ::= (<assign-op> <f-head>~\linebreak ~<f-exp-da>)
+%<f-exp-da> ::= (<binary-op> <f-exp-da>~\linebreak ~ <f-exp-da>)
+%<f-exp-da> ::= (<multi-op> <f-exp-da>~\linebreak ~ <f-exp-da>+)
+%<f-exp-da> ::= (- <f-exp-da>)
+%<f-exp-da> ::=~\specReq{:duration-inequalities}~ ?duration
+%<f-exp-da> ::= <f-exp>
+%<assign-op-t> ::= increase | decrease
+%\end{lstlisting}
+%<assign-op-t> ::= increase
+%<assign-op-t> ::= decrease
 
 % continuous-effects rules removed
 %<timed-effect> ::=~\specReq{:continuous-effects + :numeric-fluents}~ ~\linebreak~(<assign-op-t> <f-head> <f-exp-t>)
@@ -977,7 +976,7 @@ Basically, two approaches exist. Sampling can be either constant ---when time is
 
 
 In order to be fully compatible with PDDL 3.0 features, the language HDDL 2.1 needs to include axioms and preferences, besides the associated parsing, and validating tools. For this reason, the present work has to be seen as a baseline for the planning community to build upon.
-In fact, many applications require features that have been (on purpose) omitted in this paper. Most importantly, we didn't explicitely reported a syntax for constraints on solution plans, e.g. to put a max time limit, and we didn't allowed to define delays  with point algebra for ordering constraints. Other aspects are simply not detailed here, e.g. continuous effects.
+In fact, many applications require features that have been (on purpose) omitted in this paper. Most importantly, we did not explicitely reported a syntax for constraints on solution plans, e.g. to put a max time limit, and we didn't allowed to define delays  with point algebra for ordering constraints. Other aspects are simply not detailed here, e.g. continuous effects.
 Such language elements are left as natural extension of this paper for future work.
 
 \bibliography{ref}
