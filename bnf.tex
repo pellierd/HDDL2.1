@@ -517,28 +517,28 @@ The EOS mission goal is then to fulfil a set of \emph{Acquisition Requests} of i
 %Requests can be single images, which can be obtained by powering on sensors, and pointing at the sites of interest.
 The different modalities of fulfilling those requests require the extension of the satellite domain to a temporal model.
 
-Considering the structure of the requests that must be completed,
-the action specifications have a \emph{duration} to reflect the warming up of certain instruments and the time to modify the attitude of the satellite. Figure \ref{pddl_calibrate} shows the calibrate action having a duration specific to the used instrument and defined in the problem initial state.
+%Considering the structure of the requests that must be completed,
+%the action specifications have a \emph{duration} to reflect the warming up of certain instruments and the time to modify the attitude of the satellite. Figure \ref{pddl_calibrate} shows the calibrate action having a duration specific to the used instrument and defined in the problem initial state.
 %
 % explication basique
-The action has conditions that, if set \texttt{at start} are equivalent to the classical planning PDDL preconditions. In a similar way, effects set to happen \texttt{at end} are applied at the end of the action duration, similarly to classical planning effects.
+%The action has conditions that, if set \texttt{at start} are equivalent to the classical planning PDDL preconditions. In a similar way, effects set to happen \texttt{at end} are applied at the end of the action duration, similarly to classical planning effects.
 
 
-\begin{figure}[!h]
-	\begin{lstlisting}[language=pddl,mathescape]
-(:durative-action calibrate
-	:parameters (?s - satellite ?i - instrument ?d - calib_direction)
-	:duration (= ?duration (calib-time ?i))
-	:condition 	(and
-			(at start (on_board ?i ?s))
-			(at start (calib_target ?i ?d))
-			(at start (pointing ?s ?d))
-			(at start (power_on ?i)))
-	:effect (and  (at end (calibrated ?i))))
-	\end{lstlisting}
-	\caption{The calibrate action has a duration depending on the instrument calibration time\label{pddl_calibrate}, which are defined in the initial state, e.g.
-{\small\lstinline[language={pddl},basicstyle=\ttfamily]|(= (calib-time instrument0) 20)|}.}
-\end{figure}
+%\begin{figure}[!h]
+%	\begin{lstlisting}[language=pddl,mathescape]
+%(:durative-action calibrate
+%	:parameters (?s - satellite ?i - instrument ?d - calib_direction)
+%	:duration (= ?duration (calib-time ?i))
+%	:condition 	(and
+%			(at start (on_board ?i ?s))
+%			(at start (calib_target ?i ?d))
+%			(at start (pointing ?s ?d))
+%			(at start (power_on ?i)))
+%	:effect (and  (at end (calibrated ?i))))
+%	\end{lstlisting}
+%	\caption{The calibrate action has a duration depending on the instrument calibration time\label{pddl_calibrate}, which are defined in the initial state, e.g.
+%{\small\lstinline[language={pddl},basicstyle=\ttfamily]|(= (calib-time instrument0) 20)|}.}
+%\end{figure}
 
 
 %%%%
@@ -911,7 +911,7 @@ The initial task network contains the definition of the problem class.
 %
 % @HDDL 2.1
 
-The optional metric spec is added and can be defined using the same syntax as in PDDL 3.0.
+Note that timed initial literals and optional metric spec are added to HDDL using the same syntax as in PDDL 3.0.
 
 %\begin{lstlisting}[firstnumber=last, escapechar=~]
 %<metric-spec> ::=~\specReq{:numeric-fluents}~
