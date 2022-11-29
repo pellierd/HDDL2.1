@@ -509,15 +509,6 @@ The definition of the basic domain elements is nearly unchanged, i.e., {\tt requ
 
 %, which delimits our requirements for this new language, namely \emph{durative actions} and \emph{durative methods}, \emph{method preconditions}, \emph{numeric preconditions}, and \emph{timed ordering constraints}.
 %We present thereafter this real use case of an EOS with the mission of observing areas on the surface of the planet and embedding the capacity of producing and executing autonomous plans.
-xxx franchement bizarre xxxx
-We will continue our description of the syntax by using code snippets from a commercial optical Earth Observing Satellite (EOS) study case xxxshapedxxx on the International Planning Competition hierarchical satellite domain~\citep{schattenberg2020}. The example is intended to illustrate the temporal features, as well as the orderings and the hierarchical constraints of the proposed language extension.
-
-New generations of commercial EOSs guarantee better performances by embedding a certain degree of autonomy on-board~\citep{pralet2019}. An automated planner is expected to produce new observation mission plans whenever environment changes or new requests are sent from ground control. Because observation tasks depend on the environment ---which is not known in advance--- this is a planning problem and not just a scheduling matter~\citep{rodriguez-moreno2004}.
-%
-The EOS mission goal is then to fulfil a set of \emph{Acquisition Requests} of images of the Earth surface.
-%Requests can be single images, which can be obtained by powering on sensors, and pointing at the sites of interest.
-The different modalities of fulfilling those requests require the extension of the satellite domain to a temporal model.
-xxxx
 %Considering the structure of the requests that must be completed,
 %the action specifications have a \emph{duration} to reflect the warming up of certain instruments and the time to modify the attitude of the satellite. Figure \ref{pddl_calibrate} shows the calibrate action having a duration specific to the used instrument and defined in the problem initial state.
 %
@@ -578,9 +569,14 @@ Like methods, durative methods have parameters, the abstract task they decompose
 
 
 %%% SAT example
+Let us illustrate our description of the syntax by a code snippet from a commercial optical Earth Observing Satellite (EOS) study case as used in the International Planning Competition hierarchical satellite domain~\citep{schattenberg2020}. New generations of commercial EOSs guarantee better performances by embedding a certain degree of autonomy on-board~\citep{pralet2019}. An automated planner is expected to produce new observation mission plans whenever environment changes or new requests are sent from ground control. Because observation tasks depend on the environment ---which is not known in advance--- this is a planning problem and not just a scheduling matter~\citep{rodriguez-moreno2004}.
+%
+The EOS mission goal is then to fulfil a set of \emph{Acquisition Requests} of images of the Earth surface.
+%Requests can be single images, which can be obtained by powering on sensors, and pointing at the sites of interest.
+The different modalities of fulfilling those requests require the extension of the satellite domain to a temporal model.
 
 
-Figure \ref{pddl_durative_m_con} depicting the \textit{observe} method illustrates some temporal constraints semantics introduced here.
+Figure \ref{pddl_durative_m_con} depicting the \textit{observe} method illustrates some temporal constraint semantics introduced here.
 % section \ref{ssec:temporal-constraints-semantics}.
 In this case, \texttt{pointing} at an observation site can be achieved by different subtasks. By requiring that this precondition of \mbox{\small\lstinline[language={pddl},basicstyle=\ttfamily]|durative-action take_image|} is performed  at most once, avoids useless satellite movements.
 Note that, besides the explicit subtask ordering, an implicit ordering between tasks 0 and 1 could have been forced by adding the constraint  \mbox{\small\lstinline[language={pddl},basicstyle=\ttfamily]|(within task1 (power_on ?i))|}, requiring that the instrument must be powered on \emph{before} turning towards the observation site.
@@ -616,7 +612,7 @@ Note that, besides the explicit subtask ordering, an implicit ordering between t
 % @HDDL 1.0
 The definition of task networks is used in method definitions as well as in the problem definition to define the initial task network. It contains the definition of sub-tasks (line~\ref{l:tnsubtasks}), ordering constraints (line~\ref{l:tnordering}), and logical constraints (line~\ref{l:tnconstraints}) on the sub-tasks of the method. We keep here the same definition as in HDDL.
 
-When the key \verb+:ordered-subtasks+ is used, the network is considered totally ordered. In the other cases, ordering relations have to be defined explicitly. This is done by including ids into the task definition that can then be referenced in the ordering definition.
+When the keyword \verb+:ordered-subtasks+ is used, the network is considered totally ordered. In the other cases, ordering relations have to be defined explicitly. This is done by including ids into the task definition that can then be referenced in the ordering definition.
 
 \begin{lstlisting}[firstnumber=last, escapechar=~]
 <tasknetwork-def> ::=
@@ -666,7 +662,7 @@ The ordering constraints are defined via the task ids, and have to induce a part
 % Constraints extensions
 %
 % @HDDL 2.1
-HDDL~1.0 only accepts equality constraints or inequality on method parameters in the task network. To increase the expressiveness of the language, we have chosen to add two kinds of constraints: the {\em classical decomposition constraints} ($\before$, $\after$, $\between$) used in HTN planning introduced first by \citep{erol94} to represent constraints between tasks for non temporal HTN problem and the {\em temporal decomposition constraints} based on the plan trajectory constraint from PDDL~3.0. The semantics of theses constraints have been given in Section~\ref{Sec:Decomposition-Constraints-Semantics}. xxxxTo allow the specification of such the constraints added, it is necessary to use \verb+:method-constraints+.xxxx
+HDDL~1.0 only accepts equality constraints or inequality on method parameters in the task network. To increase the expressiveness of the language, we have chosen to add two kinds of constraints: the {\em classical decomposition constraints} ($\before$, $\after$, $\between$) used in HTN planning introduced first by \citep{erol94} to represent constraints between tasks for non temporal HTN problem and the {\em temporal decomposition constraints} based on the plan trajectory constraint from PDDL~3.0. The semantics of theses constraints have been given in Section~\ref{Sec:Decomposition-Constraints-Semantics}. To allow the specification of these constraints, it is necessary to use \verb+:method-constraints+.
 
 \begin{lstlisting}[firstnumber=last, basicstyle=\fontsize{8.5}{10}\selectfont\ttfamily, escapechar=~]
 <constraint-def> ::= () | <constraint-def> ~\linebreak~| (and <constraint-def>+)
@@ -963,7 +959,7 @@ The lack of a unified language featuring both temporal and numerical constraints
 
 %%%
 ANML  \citep{smith08} has an expressivity close to what we seek here.
-In ANML effects that happen at time intervals during an action duration can be specified. This  can also be represented in HDDL~2.1 by using constraints semantics and dividing actions with intermediate effects into separate durative actions.
+In ANML effects that happen at time intervals during an action duration can be specified. This  can also be represented in HDDL~2.1 by using constraint semantics and dividing actions with intermediate effects into separate durative actions.
 
 FAPE proposes benchmarks where ordering constraints are delayed.\footnote{E.g. \url{https://github.com/laas/fape/blob/master/planning/domains/rovers_ipc5-hier/rovers_ipc5-hier.dom.anml#L180}.} For instance in ANML it is possible to specify that an action must happen at least some amount of time after the end of a previous action. With the proposed syntax and semantics, such expressivity can be reached by using auxiliary tasks that decompose in a durative primitive task (of the desired duration) with no effects.
 
