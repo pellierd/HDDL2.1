@@ -254,7 +254,7 @@ A {\em method} $m$ is a tuple $\bigl(\name(m), \task(m), \tn(m)\bigr)$, where $\
  The solution of a temporal HTN planning problem is an {\it executable} temporal task networks that is obtained from the problem initial task network by applying method decompositions and constraint satisfaction. Lifted problems are just a compact representation of their ground instances. With ground instances, there is not need to use variable constraints since they are satisfied by the grounding. Therefore, in this section, for the sake of simplicity, we define the semantics of a lifted problem in terms of its ground instances. For details on the grounding process, the reader is referred to \cite{behnke20,ramoul17}.
 
  % Definition d'un sequence temporel de tâches
-Let us start by defining what is a temporal sequence of tasks.
+Let us start by defining what a temporal sequence of tasks is.
 \begin{definition}[Temporal Sequence of Tasks]
 A {\it temporal sequence of tasks} $\pi$ is a sequence of tuples $\langle (t_0, e_0, d_0), \ldots,$ $(t_n, e_n, d_n) \rangle$ where $t_0, \ldots, t_n$ are the set of ground tasks defined over $\cal{T}$, $e_i \in \mathbb{Q}_{\geq 0}$ and $d_i \in \mathbb{Q}_{\geq 0}$ are rational numbers to which refer as the staring time event and the duration of the task $t_i$, respectively. For a temporal sequence of tasks $\pi$, we call a sorted sequence $e_0, \ldots, e_n$ of the set of rational numbers $\{e \ | \ (t, e, d) \in \pi\} \cup \{e + d \ | \ (t, e, d) \in \pi\}$ the happening time events of the sequence $\pi$. % denoted $htps(\pi)$.
 A temporal sequence of tasks is primitive if and only if every task $t_i \in \pi$ is primitive, i.e., can be carried out by a durative action.
@@ -265,7 +265,7 @@ It is now necessary to define under which conditions such a sequence is {\it exe
 \begin{definition}[Non-Interference]
 Two snap actions $a$ and $b$ are not interfering if and only if (i) $\pre(a) \cap \bigl(\add(b) \cup \del(b)\bigr) = \emptyset$, (ii) $\pre(b) \cap \bigl(\add(a) \cup \del(a)\bigr) = \emptyset$, (iii) $\add(a) \cap \del(b) = \emptyset$ and  $\add(b) \cap \del(a) = \emptyset$.
 \end{definition}
-Two snap actions or more can be executed at the same time, if they are not interfering. Execution semantics of snap actions are similar to the semantics of $\forall$-step parallel plans \cite{rintanen06}, and used in PDDL~2.1 \cite{fox03}. With this notion, it is now possible to formally define what is an executable temporal sequence of tasks.
+Two snap actions or more can be executed at the same time, if they are not interfering. Execution semantics of snap actions are similar to the semantics of $\forall$-step parallel plans \cite{rintanen06}, and used in PDDL~2.1 \cite{fox03}. With this notion, it is now possible to formally define what an executable temporal sequence of tasks is.
 
 xxx il y a un probleme dans la definitionxxx
 \begin{definition}[Executable Temporal Sequence of Tasks]
