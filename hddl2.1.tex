@@ -267,18 +267,17 @@ Two snap actions $a$ and $b$ are not interfering if and only if (i) $\pre(a) \ca
 \end{definition}
 Two snap actions or more can be executed at the same time, if they are not interfering. Execution semantics of snap actions are similar to the semantics of $\forall$-step parallel plans \cite{rintanen06}, and used in PDDL~2.1 \cite{fox03}. With this notion, it is now possible to formally define what an executable temporal sequence of tasks is.
 
-xxx il y a un probleme dans la definitionxxx
 \begin{definition}[Executable Temporal Sequence of Tasks]
 A temporal sequence of tasks $\pi = \langle (t_0, e_0, d_0), \ldots,$ $(t_n, e_n, d_n) \rangle$ is executable in a state $s_0$ if and only if for every happening event $e_i$ of $\pi$ with $0 \leq i \leq n$:
 (i) all $t_i$ refer to ground actions $a_i$,
-(ii) $s_{i+1} = (s_i - \cup_{a \in B_{e_i}} \del(a)) \cup_{a \in B_{e_i}} \add(a)$
- where:
+(ii) $s_{i+1} = (s_i - \cup_{a \in B_{e_i}} \del(a)) \cup_{a \in B_{e_i}} \add(a)$,
+(iii) $B_{e_i}$ is {\em pairwise non-interfering},
+(iv) $s_i \models \tinv(a_i)$ for every $\tinv(a_i) \in I_{e_i}$, (v) $s_i \models \pre(a_i)$ for every $a_i \in B_{e_i}$, where:
 \begin{itemize}
  \item $B_{e_i} = \{ \tstart(a_i) \ | \ (a_i, e_i, d_i) \in \pi\} \ \cup  \{\tend(a_i) \ | \ (a_i, e_i - d_i, d_i) \in \pi\}$
  \item $I_{e_i} = \{ \tinv(a_i) \ | \ (a_i,e',d_i) \in \pi \wedge e' < e_i < e' + d_i\}$.
  \end{itemize}
-(iii) $B_{e_i}$ is {\em pairwise non-interfering},
-(iv) $s_i \models \tinv(a_i)$ for every $\tinv(a_i) \in I_{e_i}$, (v) $s_i \models \pre(a_i)$ for every $a_i \in B_{e_i}$.
+
  \end{definition}
 
  This definition can easily be extended to a temporal task network.
@@ -289,7 +288,7 @@ A temporal sequence of tasks $\pi = \langle (t_0, e_0, d_0), \ldots,$ $(t_n, e_n
 It remains to define how to transform a temporal task network into another one by using method decomposition in order to obtain an executable task network.
 
 \begin{definition}[Decomposition]
-Let \mbox{$m = \bigl(\name(m),$ $\task(m), tn(m)\bigr)$} be a method with a task network $tn(m) = ({\cal{I}}^m, \alpha^m, {\cal{C}}_{o}^{m},{\cal{C}}_{d}^{m}, {\cal{C}}_{t}^{m})$ and a task network to decompose $w_1= ({\cal{I}}^1, \alpha^1, {\cal{C}}_{o}^{1},{\cal{C}}_{d}^{1}, {\cal{C}}_{t}^{1})$. We suppose ${\cal{I}}^m \cap {\cal{I}}^1 = \emptyset$. This can be achieved by renaming. Then, $m$ decomposes a task identifier $i \in {\cal{I}}^1$ into a task network $w_2= ({\cal{I}}^2, \alpha^2, {\cal{C}}_{o}^{2},{\cal{C}}_{d}^{2}, {\cal{C}}_{t}^{2})$ if and only if $\alpha^1(i) = task(m)$ and
+Let $m = \bigl(\name(m),$ $\task(m), tn(m)\bigr)$ be a method with a task network $tn(m) = ({\cal{I}}^m, \alpha^m, {\cal{C}}_{o}^{m},{\cal{C}}_{d}^{m}, {\cal{C}}_{t}^{m})$ and a task network to decompose $w_1= ({\cal{I}}^1, \alpha^1, {\cal{C}}_{o}^{1},{\cal{C}}_{d}^{1}, {\cal{C}}_{t}^{1})$. We suppose ${\cal{I}}^m \cap {\cal{I}}^1 = \emptyset$. This can be achieved by renaming. Then, $m$ decomposes a task identifier $i \in {\cal{I}}^1$ into a task network $w_2= ({\cal{I}}^2, \alpha^2, {\cal{C}}_{o}^{2},{\cal{C}}_{d}^{2}, {\cal{C}}_{t}^{2})$ if and only if $\alpha^1(i) = task(m)$ and
 \begin{equation*} \label{eq1}
 \begin{aligned}
 {\cal{I}}^2 = & ({\cal{I}}^1 - \{i\}) \cup {\cal{I}}^m\\
