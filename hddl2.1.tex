@@ -224,7 +224,7 @@ A temporal task network $w = ({\cal{I}}, \alpha, {\cal{C}}_o, {\cal{C}}_v, {\cal
 
     \item ${\cal{C}}_o$ is a set of temporal qualitative ordering constraints over the start or the end events of the tasks in $\cal{I}$. The possible qualitative temporal ordering are those from the classical point algebra \cite{broxvall03}: $<$, $\leq$, $>$, $\geq$, $=$ and $\neq$. For instance, the temporal ordering constraint $\tstart(t_1) < \tend(t_2)$ expresses that the start of the task $t_1$ must occur strictly  before the end of the task $t_2$.
 
-    \item ${\cal{C}}_v$ is a set of parameter constraints. Each constraint can bind two variables to be equal or non-equals, or similarly bind a variable to a constant. % TODO Peut être rajouter un exemple pour être symetrique
+    \item ${\cal{C}}_v$ is a set of parameter constraints. Each constraint can bind two variables to be equal or non-equal, or similarly bind a variable to a constant. % TODO Peut être rajouter un exemple pour être symetrique
 
     \item ${\cal{C}}_d$ is a set of durative constraints over the duration of the tasks $\cal{I}$. For instance, let $t_1, t_2 \in {\cal{I}}$ and $w$ a task network; the durative constraints $\duration(t_1) < \duration(t_2)$ expresses that the duration of $t_1$ must be strictly smaller that $t_2$, and the constraint $\duration(w) \geq \duration(t_1) * \duration(t_2)$ expresses that the duration of $w$ is greater or equal to the product of the durations of $t_1$ and $t_2$. Durative constraints can be expressed in terms of start and end events of a task. For instance the previous constraint $\duration(t_1) < \duration(t_2)$ can be expressed as  $\tend(t_1) - \tstart(t_1) < \tend(t_2) - \tstart(t_2)$.
 
@@ -252,12 +252,12 @@ A {\em method} $m$ is a tuple $\bigl(\name(m), \task(m), \tn(m)\bigr)$, where $\
  \section{Temporal HTN planning Semantics}
  \label{THTN}
 
- The solution of a temporal HTN planning problem is an {\it executable} temporal task networks that is obtained from the problem initial task network by applying method decomposition and constraint satisfaction. Lifted problems are just a compact representation of their ground instances. With ground instances, there is not need to use variable constraints since they are satisfied by the grounding. Therefore, in this section, for the sake of simplicity, we define the semantics of a lifted problem in terms of its ground instances. For details on the grounding process, the reader is referred to \cite{behnke20,ramoul17}.
+ The solution of a temporal HTN planning problem is an {\it executable} temporal task network that is obtained from the problem initial task network by applying method decomposition and constraint satisfaction. Lifted problems are just a compact representation of their ground instances. With ground instances, there is not need to use variable constraints since they are satisfied by the grounding. Therefore, in this section, for the sake of simplicity, we define the semantics of a lifted problem in terms of its ground instances. For details on the grounding process, the reader is referred to \cite{behnke20,ramoul17}.
 
  % Definition d'un sequence temporel de tâches
 Let us start by defining a temporal sequence of tasks.
 \begin{definition}[Temporal Sequence of Tasks]
-A {\it temporal sequence of tasks} $\pi$ is a sequence of tuples $\langle (t_0, e_0, d_0), \ldots,$ $(t_n, e_n, d_n) \rangle$ where $t_0, \ldots, t_n$ are the set of ground tasks defined over $\cal{T}$, $e_i \in \mathbb{Q}_{\geq 0}$ and $d_i \in \mathbb{Q}_{\geq 0}$ are rational numbers to which refer as the staring time event and the duration of the task $t_i$, respectively. For a temporal sequence of tasks $\pi$, we call a sorted sequence $e_0, \ldots, e_n$ of the set of rational numbers $\{e \ | \ (t, e, d) \in \pi\} \cup \{e + d \ | \ (t, e, d) \in \pi\}$ the happening time events of the sequence $\pi$. % denoted $htps(\pi)$.
+A {\it temporal sequence of tasks} $\pi$ is a sequence of tuples $\langle (t_0, e_0, d_0), \ldots,$ $(t_n, e_n, d_n) \rangle$ where $t_0, \ldots, t_n$ are the set of ground tasks defined over $\cal{T}$, $e_i \in \mathbb{Q}_{\geq 0}$ and $d_i \in \mathbb{Q}_{\geq 0}$ are rational numbers to which refer as the starting time event and the duration of the task $t_i$, respectively. For a temporal sequence of tasks $\pi$, we call a sorted sequence $e_0, \ldots, e_n$ of the set of rational numbers $\{e \ | \ (t, e, d) \in \pi\} \cup \{e + d \ | \ (t, e, d) \in \pi\}$ the happening time events of the sequence $\pi$. % denoted $htps(\pi)$.
 A temporal sequence of tasks is primitive if and only if every task $t_i \in \pi$ is primitive, i.e., can be carried out by a durative action.
 \end{definition}
 
@@ -387,7 +387,7 @@ Constraint \atmostonce~ indicates that some properties must be satisfied at most
 (\at \ e_k \ \phi) \text{ and} \ \forall e_k : e_k > e_j \: \text{such as} \ (\at \ e_k \ \neg\phi) \qquad\quad
 \end{multline*}
 %
-Finally, we have the three last constraints introduced in PDDL~3.0: \sometimebefore, \sometimeafter~ and \alwayswithin. A constraint \sometimebefore~ (respectively \sometimeafter~) says that if some properties $\phi$ occurs at $e_i$ then $\psi$ must be verified sometime before (respectively after) $e_i$ in the sequence of states produced by the decomposition of the task network.
+Finally, we have the three last constraints introduced in PDDL~3.0: \sometimebefore, \sometimeafter~ and \alwayswithin. A constraint \sometimebefore~ (respectively \sometimeafter~) says that if some properties $\phi$ occur at $e_i$ then $\psi$ must be verified sometime before (respectively after) $e_i$ in the sequence of states produced by the decomposition of the task network.
 %
 \begin{multline*}
 \langle (s_0, e_0, d_0), \ldots, (s_i, e_i, d_i), \ldots, (s_n, e_n, d_n) \rangle \models   \\
