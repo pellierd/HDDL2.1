@@ -578,7 +578,7 @@ The different modalities of fulfilling those requests require the extension of t
 
 Figure \ref{pddl_durative_m_con} depicting the \textit{observe} method illustrates some temporal constraint semantics introduced here.
 % section \ref{ssec:temporal-constraints-semantics}.
-In this case, \texttt{pointing} at an observation site can be achieved by different subtasks. By requiring that this precondition of \mbox{\small\lstinline[language={pddl},basicstyle=\ttfamily]|durative-action take_image|} is performed  at most once, avoids useless satellite movements.
+In this case, \texttt{pointing} at an observation site can be achieved by different subtasks. By requiring that this precondition of \mbox{\small\lstinline[language={pddl},basicstyle=\ttfamily]|durative-action take_image|} is performed  at most once, useless satellite movements are avoided.
 Note that, besides the explicit subtask ordering, an implicit ordering between tasks 0 and 1 could have been forced by adding the constraint  \mbox{\small\lstinline[language={pddl},basicstyle=\ttfamily]|(within task1 (power_on ?i))|}, requiring that the instrument must be powered on \emph{before} turning towards the observation site.
 %
 \begin{figure}[h!]
@@ -601,7 +601,7 @@ Note that, besides the explicit subtask ordering, an implicit ordering between t
 		   (not (= ?d ?d_prev))
 		   (at-most-once (pointing ?s ?d))) )~\label{l:mhb}~
 	\end{lstlisting}
-	\caption{\texttt{method\_observe} uses a duration inequality and a constraint over literals to constrain an ordering. Similarly, a decomposition can be constrained at method-level.\label{pddl_durative_m_con}}
+	\caption{\texttt{method\_observe} uses a duration inequality and a constraint over literals to constrain an ordering. Similarly, a decomposition can be constrained at the method-level.\label{pddl_durative_m_con}}
 \end{figure}
 
 
@@ -638,7 +638,7 @@ When the keyword \verb+:ordered-subtasks+ is used, the network is considered tot
 % Ordering
 %
 % @HDDL 2.1
-The ordering constraints are defined via the task ids, and have to induce a partial order. To deal with time we add time specifiers on task ids to specify if the ordering constraints are about the start time or the end time of the task. The time specifiers are like in PDDL: ~{\tt start} to define the start time of a task, and {\tt end}  to define the end time of a task. Note that we extend also the list of operators available to express ordering constraints between tasks. It has been extended to define any constraints on the start or end of a sub-task of a method, and allows to express all Allen's intervals \citep{allen81} between these subtasks.
+The ordering constraints are defined via the task ids, and have to induce a partial order. To deal with time we add time specifiers on task ids to specify if the ordering constraints are about the start time or the end time of the task. The time specifiers are like in PDDL: ~{\tt start} to define the start time of a task, and {\tt end}  to define the end time of a task. Note that we also extend the list of operators available to express ordering constraints between tasks. It has been extended to define any constraints on the start or end of a sub-task of a method, and allows to express all Allen's intervals \citep{allen81} between these subtasks.
 
 \begin{lstlisting}[firstnumber=last, escapechar=~]
 <ordering-defs> ::= () | <ordering-def> ~\linebreak~| (and <ordering-def>+)
@@ -662,7 +662,7 @@ The ordering constraints are defined via the task ids, and have to induce a part
 % Constraints extensions
 %
 % @HDDL 2.1
-HDDL~1.0 only accepts equality constraints or inequality on method parameters in the task network. To increase the expressiveness of the language, we have chosen to add two kinds of constraints: the {\em classical decomposition constraints} ($\before$, $\after$, $\between$) used in HTN planning introduced first by \citep{erol94} to represent constraints between tasks for non temporal HTN problem and the {\em temporal decomposition constraints} based on the plan trajectory constraint from PDDL~3.0. The semantics of theses constraints have been given in Section~\ref{Sec:Decomposition-Constraints-Semantics}. To allow the specification of these constraints, it is necessary to use \verb+:method-constraints+.
+HDDL~1.0 only accepts equality constraints or inequality on method parameters in the task network. To increase the expressiveness of the language, we have chosen to add two kinds of constraints: the {\em classical decomposition constraints} ($\before$, $\after$, $\between$) used in HTN planning introduced first by \citep{erol94} to represent constraints between tasks for non temporal HTN problem and the {\em temporal decomposition constraints} based on the plan trajectory constraint from PDDL~3.0. The semantics of these constraints have been given in Section~\ref{Sec:Decomposition-Constraints-Semantics}. To allow the specification of these constraints, it is necessary to use \verb+:method-constraints+.
 
 \begin{lstlisting}[firstnumber=last, basicstyle=\fontsize{8.5}{10}\selectfont\ttfamily, escapechar=~]
 <constraint-def> ::= () | <constraint-def> ~\linebreak~| (and <constraint-def>+)
@@ -872,7 +872,7 @@ duration of the method or the sub-tasks that compose it. Therefore, it is necess
 % Problem Definition
 %
 % @HDDL 1.0 + initial timed literal + initial function values + metric spec
-The problem definition includes as additional element the initial task network (line~\ref{l:tnihtn}) as in HDDL 1.0. But now, it is possible to define in the initial state of the problem initial function values and initial time literals. It is also possible to define metric specs on solution plans. We have chosen here not to allow the definition of preferences. But preferences could be added in a next extension of the language. Likewise we have also chosen not to allow the definition of constraints on plans although it is possible in PDDL. We believe that it is preferable to add constraints on plans by adding logical constraints associated with task networks. This allows for a more unified language.
+The problem definition includes the initial task network (line~\ref{l:tnihtn}) as in HDDL 1.0. But now, it is possible to define in the initial state of the problem initial function values and initial time literals. It is also possible to define metric specs on solution plans. We have chosen here not to allow the definition of preferences. But preferences could be added in a next extension of the language. Likewise we have also chosen not to allow the definition of constraints on plans although it is possible in PDDL. We believe that it is preferable to add constraints on plans by adding logical constraints associated with task networks. This allows for a more unified language.
 
 \begin{lstlisting}[firstnumber=last, escapechar=~]
 <problem> ::= (define (problem <name>)
@@ -971,8 +971,8 @@ Basically, two approaches exist. Sampling can be either constant ---when time is
 % Joined with the suggested HDDL 2.1 language grammar, we propose a parser and an illustrative benchmark part of the PDDL4J librarie \cite{Pellier18} available online\footnote{\url{https://github.com/pellierd/pddl4j}}.
 
 
-In order to be fully compatible with PDDL 3.0 features, the language HDDL 2.1 needs to include axioms and preferences, besides the associated parsing, and validating tools. For this reason, the present work has to be seen as a baseline for the planning community to build upon.
-In fact, many applications require features that have been (on purpose) omitted in this paper. Most importantly, we did not explicitly reported a syntax for constraints on solution plans, e.g. to put a max time limit, and we did not allowed to define delays  with point algebra for ordering constraints. Other features are simply not detailed here, e.g. continuous effects.
+In order to be fully compatible with PDDL 3.0 features, the language HDDL 2.1 needs to include axioms and preferences, besides the associated parsing and validation tools. For this reason, the present work has to be seen as a baseline for the planning community to build upon.
+In fact, many applications require features that have been (on purpose) omitted in this paper. Most importantly, we did not explicitly reported a syntax for constraints on solution plans, e.g. to put a max time limit, and we did not allow to define delays  with point algebra for ordering constraints. Other features are simply not detailed here, e.g. continuous effects.
 Such language elements are left as natural extension of this paper for future work.
 
 \bibliography{ref}
