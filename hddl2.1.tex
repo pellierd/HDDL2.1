@@ -255,7 +255,7 @@ A {\em method} $m$ is a tuple $\bigl(\name(m), \task(m), \tn(m)\bigr)$, where $\
  The solution of a temporal HTN planning problem is an {\it executable} temporal task networks that is obtained from the problem initial task network by applying method decomposition and constraint satisfaction. Lifted problems are just a compact representation of their ground instances. With ground instances, there is not need to use variable constraints since they are satisfied by the grounding. Therefore, in this section, for the sake of simplicity, we define the semantics of a lifted problem in terms of its ground instances. For details on the grounding process, the reader is referred to \cite{behnke20,ramoul17}.
 
  % Definition d'un sequence temporel de tâches
-Let us start by defining what a temporal sequence of tasks is.
+Let us start by defining a temporal sequence of tasks.
 \begin{definition}[Temporal Sequence of Tasks]
 A {\it temporal sequence of tasks} $\pi$ is a sequence of tuples $\langle (t_0, e_0, d_0), \ldots,$ $(t_n, e_n, d_n) \rangle$ where $t_0, \ldots, t_n$ are the set of ground tasks defined over $\cal{T}$, $e_i \in \mathbb{Q}_{\geq 0}$ and $d_i \in \mathbb{Q}_{\geq 0}$ are rational numbers to which refer as the staring time event and the duration of the task $t_i$, respectively. For a temporal sequence of tasks $\pi$, we call a sorted sequence $e_0, \ldots, e_n$ of the set of rational numbers $\{e \ | \ (t, e, d) \in \pi\} \cup \{e + d \ | \ (t, e, d) \in \pi\}$ the happening time events of the sequence $\pi$. % denoted $htps(\pi)$.
 A temporal sequence of tasks is primitive if and only if every task $t_i \in \pi$ is primitive, i.e., can be carried out by a durative action.
@@ -306,8 +306,8 @@ Let $m = \bigl(\name(m),$ $\task(m), tn(m)\bigr)$ be a method with a task networ
 Now we can formally define a temporal task network solution.
 
 \begin{definition}[Temporal Task Network Solution]
-Let ${\cal{P}} = ({\cal{D}}, s_0, w_0, g)$ be a planning problem with $\cal{D} = ({\cal{L}}, {\cal{T}}, {\cal{A}}, {\cal{M}})$. A task network $w_s = ({\cal{I}}, \alpha, {\cal{C}}_o, {\cal{C}}_d, {\cal{C}}_t)$ is solution to a temporal HTN planning problem ${\cal{P}}$ if and only if:
-\begin{itemize}
+  Let ${\cal{P}} = ({\cal{D}}, s_0, w_0, g)$ be a planning problem with $\cal{D} = ({\cal{L}}, {\cal{T}}, {\cal{A}}, {\cal{M}})$. A task network $w_s = ({\cal{I}}, \alpha, {\cal{C}}_o, {\cal{C}}_d, {\cal{C}}_t)$ is solution to a temporal HTN planning problem ${\cal{P}}$ \mbox{if and only if:}
+  \begin{itemize}
     \item There exists a sequence of decompositions from $w_o$ to $w_s$ resulting from the application of the methods ${\cal{M}}$ of ${\cal{D}}$,
 %\item $w_s$ is executable and generates an executable temporal sequence of tasks from $s_0$ to a state $s \models g$.
 \item $w_s$ is executable and the temporal sequence of states resulting from its execution starts with $s_0$, and achieves a state $s \models g$.
@@ -317,7 +317,7 @@ Let ${\cal{P}} = ({\cal{D}}, s_0, w_0, g)$ be a planning problem with $\cal{D} =
 \section{Decomposition Constraint Semantics}
 \label{Sec:Decomposition-Constraints-Semantics}
 
-Decomposition constraints assert conditions that must be met by the entire sequence of states visited during the execution of a solution task network. They are expressed through temporal modal operators over first-order formulas involving state predicates as in PDDL. The semantics of the decomposition constraints can be formally specified in a similar way to what has been done by \citep{gerevini05}. Let $w = ({\cal{I}}, \alpha, {\cal{C}}_o, {\cal{C}}_d, {\cal{C}}_t)$ be a ground task network, a state $s_0$ and a temporal sequence of tasks $\pi = \langle (t_0, e_0, d_0), \ldots, (t_n, e_n, d_n) \rangle $ with $t_0 = \alpha(i_0), \ldots, t_n = \alpha(i_n)$ where $\pi$ is the result of the decomposition of $w$ into primitive tasks by applying method decompositions of the planning problem. We denote by $\langle (s_0, e_0, d_0), \ldots, (s_n, e_n, d_n) \rangle$ the sorted temporal sequence of states produced by the execution of $\pi$ in $s_0$ according to its happening event $e_i$ with $i \leq 0 \leq n$. $w$ satisfies a constraint $(\at \ e \ \phi) \in {\cal{C}}_t$ iff $\exists s_i \in \langle (s_0, e_0, d_0), \ldots, (s_n, e_n, d_n) \rangle$ such that $s_i \models \phi$. Note that we require every temporal constraint of the form $(\at \ e_i \ \phi) \in {\cal{C}}_t$ to be defined with $0 \leq i \leq n$ in order to avoid defining constraints out of the scope of the temporal task network $w$. Each decomposition constraint defined in HDDL~2.1 can be rewritten in terms of constraints of the form $(\at \ e\ \phi)$. The proposed HDDL extension distinguishes two types of decomposition constraints:
+Decomposition constraints assert conditions that must be met by the entire sequence of states visited during the execution of a solution task network. They are expressed through temporal modal operators over first-order formulas involving state predicates as in PDDL. The semantics of the decomposition constraints can be formally specified in a similar way to what has been done by \citep{gerevini05}. Let $w = ({\cal{I}}, \alpha, {\cal{C}}_o, {\cal{C}}_d, {\cal{C}}_t)$ be a ground task network, a state $s_0$ and a temporal sequence of tasks $\pi = \langle (t_0, e_0, d_0), \ldots, (t_n, e_n, d_n) \rangle $ with $t_0 = \alpha(i_0), \ldots, t_n = \alpha(i_n)$ where $\pi$ is the result of the decomposition of $w$ into primitive tasks by applying method decomposition of the planning problem. We denote by $\langle (s_0, e_0, d_0), \ldots, (s_n, e_n, d_n) \rangle$ the sorted temporal sequence of states produced by the execution of $\pi$ in $s_0$ according to its happening event $e_i$ with $i \leq 0 \leq n$. Decomposition $w$ satisfies a constraint $(\at \ e \ \phi) \in {\cal{C}}_t$ iff $\exists s_i \in \langle (s_0, e_0, d_0), \ldots, (s_n, e_n, d_n) \rangle$ such that $s_i \models \phi$. Note that we require every temporal constraint of the form $(\at \ e_i \ \phi) \in {\cal{C}}_t$ to be defined for $0 \leq i \leq n$ so to avoid defining constraints that are out of the scope of the temporal task network $w$. Each decomposition constraint defined in HDDL~2.1 can be rewritten in terms of constraints of the form $(\at \ e\ \phi)$. The proposed HDDL extension distinguishes two types of decomposition constraints:
 \begin{itemize}
     \item the {\em temporal decomposition constraints} that define the constraints that must hold at specific happening event whose semantics is based on the plan trajectory constraints from PDDL~3.0 \cite{gerevini05}. We have made the choice to keep the same constraints as introduced in PDDL~3.0 to stay consistent with PDDL.
     \item the {\em classical decomposition constraints} ($\before$, $\after$, $\between$) used in HTN planning introduced first by \citep{erol94} to represent constraints between tasks. We will show how the latter can be expressed with the former at the end of this section.
@@ -363,7 +363,7 @@ The pending constraint \holdafter \ says \ that some properties must be verified
     (\atend \ \phi)\ \text{iff}\ (\at \ e_n \ \phi)
 \end{multline*}
 %
-As \cite{gerevini05}, we propose to add also modal operators : \always, \sometimes, \atmostonce. A constraint \always~ expresses that some properties $\phi$ must be satisfied whatever the decomposition of the task network.
+As in \citet{gerevini05}, we propose to add also modal operators : \always, \sometimes, \atmostonce. A constraint \always~ expresses that some properties $\phi$ must be satisfied whatever the decomposition of the task network.
 %
 \begin{multline*}
 \langle (s_0, e_0, d_0), \ldots, (s_i, e_i, d_i), \ldots, (s_n, e_n, d_n) \rangle \models \\
@@ -392,10 +392,10 @@ Finally, we have the three last constraints introduced in PDDL~3.0: \sometimebef
 \begin{multline*}
 \langle (s_0, e_0, d_0), \ldots, (s_i, e_i, d_i), \ldots, (s_n, e_n, d_n) \rangle \models   \\
 (\sometimebefore \ \phi \ \psi) \ \text{iff} \; \forall e_i \ \text{if} \ (\at \ e_i \ \phi)\\
-\exists e_j : 0 \leq e_j \leq e_i \: \text{such as} \ (\at \ e_j \ \psi) \qquad\qquad\quad\quad\\
-\langle (s_0, e_0, d_0), \ldots, (s_i, e_i, d_i), \ldots, (s_n, e_n, d_n) \rangle \models   \\
+\exists e_j : 0 \leq e_j \leq e_i \: \text{such as} \ (\at \ e_j \ \psi)\qquad\qquad\quad\\
+\langle (s_0, e_0, d_0), \ldots, (s_i, e_i, d_i), \ldots, (s_n, e_n, d_n) \rangle \models  \qquad \\
 (\sometimeafter \ \phi \ \psi) \ \text{iff} \; \forall e_i \ \text{if} \ (\at \ e_i \ \phi)\\
-\exists e_j : e_i \leq e_j \leq e_n \: \text{such as} \ (\at \ e_j \ \psi) \qquad\qquad\quad\quad
+\exists e_j : e_i \leq e_j \leq e_n \: \text{such as} \ (\at \ e_j \ \psi) \qquad\qquad\qquad
 \end{multline*}
 %
 A constraint \alwayswithin~ says that if some properties $\phi$ occurs at $e_i$ then some properties $\psi$ must be verified after $e_i$ at the latest after a certain time $d$ in the sequence of states produced by the decomposition of the task network.
