@@ -192,7 +192,7 @@ A {\it state} $s$ is a set of ground predicates. For the sake of conciseness, we
 
 %set of ground atomic formulas defined over the $\cal{L}'$ predicates where all parameters are bound, i.e., replaced by a constants from $C$. A state $s$ is a model that assign {\it true} to all ground atomic formulas in $s$, and {\it false} to all ground atomic formulas not in $s$. Thus, a negated formula $\neg\phi$ is {\it true} in a state $s$, noted $s \models \neg \phi$, if only $\phi$ is not in $s$;  $s \models \phi_1 \wedge \phi_2$ if only both $\phi_1$ and $\phi_2$ is {\it true} in $s$; $s \models \phi_1 \vee \phi_2$ if $\phi_1$ or $\phi_2$ is {\it true} in $s$ and $s \models \phi_1 \rightarrow \phi_2$ if  $s \models \phi_1 \vee \neg \phi_2$; $\forall x \phi$ if for all possible values of $x$ in $C$ $s \models \phi$ and $\exists x \phi$ if it exists at least one value of $x$ in $C$ s.t $s \models \phi$.
 
- A key concept in HTN planning and a fortiori in temporal HTN planning is the concept of {\it task}. Each task is given by a name and a list of parameters. We distinguish two kinds of tasks: the actions, also called primitive tasks, and the abstract tasks (or coumpound tasks).
+ A key concept in HTN planning and a fortiori in temporal HTN planning is the concept of {\it task}. Each task is given by a name and a list of parameters. We distinguish two kinds of tasks: the actions, also called primitive tasks, and the abstract tasks (or compound tasks).
 
  %A {\it task} is defined as an atomic formula given by its name followed by a parameter sequence that could be either a typed variable in $V$ or typed constant in $C$. There are two kinds of tasks: primitive tasks that could be carried out by a durative action in the sense of classical temporal planning \cite{fox03} and abstract tasks that could be refined by applying methods that define how to decompose the task into subtasks. The purpose of abstract task is not to induce state transition unlike action, but to reference a predefined mapping to one or more tasks which that abstract task can be refined. This mapping is given by a set of decomposition methods.
 
@@ -252,7 +252,7 @@ A {\em method} $m$ is a tuple $\bigl(\name(m), \task(m), \tn(m)\bigr)$, where $\
  \section{Temporal HTN planning Semantics}
  \label{THTN}
 
- The solution of a temporal HTN planning problem is an {\it executable} temporal task networks that is obtained from the problem initial task network by applying method decompositions and constraint satisfaction. Lifted problems are just a compact representation of their ground instances. With ground instances, there is not need to use variable constraints since they are satisfied by the grounding. Therefore, in this section, for the sake of simplicity, we define the semantics of a lifted problem in terms of its ground instances. For details on the grounding process, the reader is referred to \cite{behnke20,ramoul17}.
+ The solution of a temporal HTN planning problem is an {\it executable} temporal task networks that is obtained from the problem initial task network by applying method decomposition and constraint satisfaction. Lifted problems are just a compact representation of their ground instances. With ground instances, there is not need to use variable constraints since they are satisfied by the grounding. Therefore, in this section, for the sake of simplicity, we define the semantics of a lifted problem in terms of its ground instances. For details on the grounding process, the reader is referred to \cite{behnke20,ramoul17}.
 
  % Definition d'un sequence temporel de tâches
 Let us start by defining what a temporal sequence of tasks is.
@@ -540,7 +540,7 @@ The definition of the basic domain elements is nearly unchanged, i.e., {\tt requ
 % Method Definition
 %
 % @HDDL 1.0
-xxx pas de numeros de lignesxxx
+%% xxx pas de numeros de lignesxxx
 Methods consist of a parameter list (line~\ref{l:mparams}), the abstract task they decompose (line~\ref{l:mabstask}), and the resulting task network (line~\ref{l:msubtasks}). By setting the \verb+:method-preconditions+ requirement, one can use method preconditions (line~\ref{l:mprec}, which can be used for example to filter the hierarchical decomposition).
 
 \begin{lstlisting}[firstnumber=last, escapechar=~]
@@ -690,7 +690,7 @@ HDDL~1.0 only accepts equality constraints or inequality on method parameters in
 % Action Definition
 %
 % HDDL 1.0
-The orginal action or durative action definitions defined in PDDL stay mainly unchanged. The only difference is that for simplicity, it is not possible to specify preferences as in PDDL 3.0.
+The original action or durative action definitions defined in PDDL stay mainly unchanged. The only difference is that for simplicity, it is not possible to specify preferences as in PDDL 3.0.
 
 %The non-durative actions are defined as follows:
 
@@ -965,14 +965,14 @@ Some planners propose benchmarks where ordering constraints are delayed, e.g., F
 For instance in ANML it is possible to specify that an action must happen at least some amount of time after the end of a previous action. With the proposed syntax and semantics, such expressivity can be reached by using auxiliary tasks that decompose in a durative primitive task (of the desired duration) with no effects. The syntax of HDDL 2.1 can be extended to facilitate the expression of this type of constraints.
 
 Time sampling represents another open question for this extension of HDDL with time.
-Basically, two approaches exist. Sampling can be either constant ---when time is divided into regular-spaced discrete steps--- or with variable time steps instantiated when effects and preconditions are applied. The latter can benefit from the Simple Temporal Problem formalism to model the temporal features of the plan and to include timed initial effects, and Interval Temporal Logics can be used to define truth of formulas relative to time intervals, rather than time points \citep{BRESOLIN2014269}.
+Basically, two approaches exist. Sampling can be either constant ---when time is divided into regular-spaced discrete steps--- or with variable time steps instantiated when effects and preconditions are applied. The latter can benefit from the Simple Temporal Problem formalism to model the temporal features of the plan and to include timed initial effects, and Interval Temporal Logic can be used to define truth of formulas relative to time intervals, rather than time points \citep{BRESOLIN2014269}.
 
 % TODO À rajouter dans la version finale.
 % Joined with the suggested HDDL 2.1 language grammar, we propose a parser and an illustrative benchmark part of the PDDL4J librarie \cite{Pellier18} available online\footnote{\url{https://github.com/pellierd/pddl4j}}.
 
 
 In order to be fully compatible with PDDL 3.0 features, the language HDDL 2.1 needs to include axioms and preferences, besides the associated parsing, and validating tools. For this reason, the present work has to be seen as a baseline for the planning community to build upon.
-In fact, many applications require features that have been (on purpose) omitted in this paper. Most importantly, we did not explicitely reported a syntax for constraints on solution plans, e.g. to put a max time limit, and we did not allowed to define delays  with point algebra for ordering constraints. Other features are simply not detailed here, e.g. continuous effects.
+In fact, many applications require features that have been (on purpose) omitted in this paper. Most importantly, we did not explicitly reported a syntax for constraints on solution plans, e.g. to put a max time limit, and we did not allowed to define delays  with point algebra for ordering constraints. Other features are simply not detailed here, e.g. continuous effects.
 Such language elements are left as natural extension of this paper for future work.
 
 \bibliography{ref}
@@ -984,3 +984,9 @@ Such language elements are left as natural extension of this paper for future wo
 
 
 \end{document}
+
+% LocalWords:  HTN HDDL PDDL ghallabnautraverso erol Milot Menif ADL
+% LocalWords:  Georgievski bercher Monnot ramoul Shivashankar Bercher
+% LocalWords:  behnke totsat Behnke orderchaos Schreiber mcdermott
+% LocalWords:  IPC ICAPS HPlan ANML urls EOS schattenberg FAPE
+% LocalWords:  BRESOLIN
