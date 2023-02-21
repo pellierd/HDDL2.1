@@ -22,7 +22,8 @@
 \usepackage{subfiles}
 \usepackage{listings}
 \usepackage{xcolor}
-
+\usepackage{tikz}
+\usetikzlibrary{decorations.pathreplacing,positioning, arrows.meta}
 
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
@@ -198,20 +199,65 @@ A {\it state} $s$ is a set of ground predicates. For the sake of conciseness, we
 
  Let us start by defining the concepts of {\it snap} and {\it durative actions}, which are the primitive tasks, based on the concepts of \cite{abdulaziz22}.
 
-A snap action is an action whose execution is instantaneous, in the sense of classical planning. % duration \epsilon << d
+A snap action is an action whose execution is instantaneous, in the sense of classical planning, meaning that they have a duration $\epsilon \ll \delta$ between preconditions checking and applying effects. %% Using Greek letters to denote time
 \begin{definition}[Snap Action] A {\em snap action} $a$ is a tuple $\bigl(\name(a), \pre(a), \effect(a) \bigr)$: $\name(a)$ is the name of $a$, the precondition $\pre(a)$ is a first-order formula $s \models \phi$ in state $s$ to execute $a$, and the effects \effect(a) produced by the execution of $a$. $\effect(a) = \add(a) \cup \del(a)$ ($\add(a) \cap \del(a) = \emptyset$), $\add(a)$ and $\del(a)$ are conjunctions of predicates, respectively true and false after the execution of $a$.
 \end{definition}
 
 \begin{definition}[Durative Action]
-A {\em durative action} $a$ is a tuple $\bigl(\name(a), \tstart(a), \tend(a), \tinv(a), d\bigr)$: $\name(a)$ is the name of $a$, $\tstart(a)$ and $\tend(a)$ are snap actions; $\tinv(a)$ is a first-order formula that must hold in all the states after the execution of $start(a)$ and until $end(a)$, and $d$ is the duration of $a$. $start(a)$ and $end(a)$ are called time events.
+  A {\em durative action} $a$ is a tuple $\bigl(\name(a), \tstart(a), \tend(a), \tinv(a), \delta\bigr)$: $\name(a)$ is the name of $a$, $\tstart(a)$ and $\tend(a)$ are snap actions; $\tinv(a)$ is a first-order formula that must hold in all the states after the execution of $start(a)$ and until the execution of $end(a)$, %NB IT can also go until the end of end(a)
+  and $\delta$ is the duration of $a$. $start(a)$ and $end(a)$ are called time events.
 \end{definition}
-Hence, actions do change the state of the world. How states change will be formally defined in Section \ref{THTN}.
+Hence, actions do change the state of the world. Durative actions also change the time of the model, shifting it by a quantity $\delta$, as shown in Figure~\ref{fig:timeline}.
+How states change will be formally defined in Section \ref{THTN}.
 
 Unlike a primitive task, % (i.e. a snap or durative action),
 a {\it compound task} does not change the world state.
 A compound task is identified by a name and defines the way other --possibly ordered-- tasks (either primitive or compound) must be achieved with respect to some constraints in order to refine it.
 For instance, in the task of serving a dinner, {\it deliver-dinner(?food-style, ?place)} is the compound task consisting in performing first the task of serving the starters, then the main course, etc. In that sense,  {\it deliver-dinner(?food-style, ?place)} can be refined in: {\it serve-starters(?food-style, ?place)},  {\it serve-main-course(?food-style, ?place)}, etc. This mapping between tasks is achieved by the Temporal Task Networks and the methods as defined below. Like primitive tasks, compound tasks have also a start event and an end event, which will be associated to time points in Section \ref{THTN}.
 
+\begin{figure}
+\begin{tikzpicture}
+% draw horizontal line   
+\draw[thick, -Triangle] (0,0) -- (8cm,0) node[font=\scriptsize,below left=3pt and -8pt]{time};
+
+% draw vertical lines
+\foreach \x in {0,1,...,7}
+\draw (\x cm,3pt) -- (\x cm,-3pt);
+
+%\foreach \x/\descr in {4/t-2,5/t-1,6/t,7/t+1}
+%\node[font=\scriptsize, text height=1.75ex,text depth=.5ex] at (\x,-.3) {$\descr$};
+
+% colored bar up
+%\foreach \x/\perccol in
+%{1/100,2/75,3/25,4/0}
+\draw[yellow, line width=.5cm] (1 cm,0.25) -- +(1,0);
+\draw[yellow, line width=.5cm] (6 cm,0.25) -- +(1,0);
+\draw[cyan, line width=.25cm] (2 cm,0.15) -- +(4,0);
+%\draw[-Triangle, dashed, red] (5,.5) --  +(1,0);
+
+% colored bar down
+%\foreach \x/\perccol in
+%{3/100,4/75,5/0}
+%\draw[lightgray!\perccol!green, line width=4pt] 
+%(\x,-.7) -- +(1,0);
+\draw[>=latex, <->, dashed, teal] (1,-.9) --  +(6,0);
+\node[font=\scriptsize, text height=1.75ex,text depth=.5ex, teal] at (8/2,-.65) {$\delta$};
+
+% braces
+\node[font=\scriptsize, text height=1.75ex,text depth=.5ex] at (1,.65) {\emph{pre}};
+\node[font=\scriptsize, text height=1.75ex,text depth=.5ex] at (2,.65) {\emph{eff}};
+\node[font=\scriptsize, text height=1.75ex,text depth=.5ex] at (1.5,.3) {start(a)};
+\node[font=\scriptsize, text height=1.75ex,text depth=.5ex] at (6,.65) {\emph{pre}};
+\node[font=\scriptsize, text height=1.75ex,text depth=.5ex] at (7,.65) {\emph{eff}};
+\node[font=\scriptsize, text height=1.75ex,text depth=.5ex] at (6.5,.3) {end(a)};
+\node[font=\scriptsize, text height=1.75ex,text depth=.5ex] at (4,.15) {inv(a)};
+\draw [thick,decorate,decoration={brace,amplitude=5pt}] (7,-.25) -- +(-1,0)
+       node [black,midway,font=\scriptsize, below=4pt] {$\epsilon$};
+\draw [thick,decorate,decoration={brace,amplitude=5pt}] (2,-.25) -- +(-1,0)
+       node [black,midway,font=\scriptsize, below=4pt] {$\epsilon$};
+\end{tikzpicture}
+\caption{Timeline of a durative action \emph{a} application.\label{fig:timeline}}
+\end{figure}
 
 %To formally define a method and define how break down a task into subtasks, it is necessary to define first the concept of {\it temporal task networks}.
 \begin{definition}[Temporal Task Network]
@@ -224,7 +270,7 @@ A temporal task network $w = ({\cal{I}}, \alpha, {\cal{C}}_o, {\cal{C}}_v, {\cal
 
     \item ${\cal{C}}_o$ is a set of temporal qualitative ordering constraints over the start or the end events of the tasks in $\cal{I}$. The possible qualitative temporal ordering are those from the classical point algebra \cite{broxvall03}: $<$, $\leq$, $>$, $\geq$, $=$ and $\neq$. For instance, the temporal ordering constraint $\tstart(t_1) < \tend(t_2)$ expresses that the start of the task $t_1$ must occur strictly  before the end of the task $t_2$.
 
-    \item ${\cal{C}}_v$ is a set of parameter constraints. Each constraint can bind two variables to be equal or non-equal, or similarly bind a variable to a constant. % TODO Peut être rajouter un exemple pour être symetrique
+    \item ${\cal{C}}_v$ is a set of parameter constraints. Each constraint can bind two variables to be equal or non-equal, or similarly bind a variable to a constant. % TODO Peut être rajouter un exemple pour être symetrique -> Et si on déplaçait les exemples hors de la définition ?
 
     \item ${\cal{C}}_d$ is a set of durative constraints over the duration of the tasks $\cal{I}$. For instance, let $t_1, t_2 \in {\cal{I}}$ and $w$ a task network; the durative constraints $\duration(t_1) < \duration(t_2)$ expresses that the duration of $t_1$ must be strictly smaller that $t_2$, and the constraint $\duration(w) \geq \duration(t_1) * \duration(t_2)$ expresses that the duration of $w$ is greater or equal to the product of the durations of $t_1$ and $t_2$. Durative constraints can be expressed in terms of start and end events of a task. For instance the previous constraint $\duration(t_1) < \duration(t_2)$ can be expressed as  $\tend(t_1) - \tstart(t_1) < \tend(t_2) - \tstart(t_2)$.
 
@@ -232,14 +278,19 @@ A temporal task network $w = ({\cal{I}}, \alpha, {\cal{C}}_o, {\cal{C}}_v, {\cal
    \end{itemize}
 \end{definition}
 
+A temporal task network explicits the decomposition of abstract tasks into subtasks, i.e. to reference a predefined mapping to one or more tasks which that abstract task can be refined. 
 Note that a temporal task network is ground if all its variables are bound to constants, and primitive if all its tasks ${\cal{I}}$ are primitive.
+
+
 
 Methods allow to refer tasks to temporal task networks.
 \begin{definition}[Method]
-A {\em method} $m$ is a tuple $\bigl(\name(m), \task(m), \tn(m)\bigr)$, where $\name(m)$ is the name of the method, $\task(m)$ is the task refined by the method, and $\tn(m)$ is the temporal task network decomposing $\task(m)$ into the subtasks $\{\tn(m) \in \cal{I}\}$.
+A {\em method} $m$ is a tuple $\bigl(\name(m), \task(m), \tn(m)\bigr)$, where $\name(m)$ is the name of the method, $\task(m)$ is the task refined by the method, and $\tn(m)$ is the temporal task network decomposing $\task(m)$ into the subtasks $\{t_m \in \cal{I}\}$.
 \end{definition}
+%
  We can now define the planning domain and problem for Temporal HTN Planning.
-\begin{definition}
+ %
+ \begin{definition}
  A {\em planning domain} $\cal{D}$ is a tuple $({\cal{L}}, {\cal{T}}, {\cal{A}}, {\cal{M}})$, where $\cal{L}$ is the first-order logic language, $\cal{T}$ is the set of tasks, ${\cal{A}}$ is a set of actions and $\cal{M}$ is the set of methods. %We note ${\cal{T}}_p$ the set of primitive tasks and ${\cal{T}}_a$ the set of abstract tasks, s.t.  ${\cal{T}} = {\cal{T}}_p \cup {\cal{T}}_a$.
  \end{definition}
 
