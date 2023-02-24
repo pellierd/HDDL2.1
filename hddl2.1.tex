@@ -217,7 +217,7 @@ How states change will be formally defined in Section \ref{THTN}.
 Unlike a primitive task, % (i.e. a snap or durative action),
 a {\it compound task} does not directly  change the world state.
 A compound task is identified by a name and defines the way other --possibly ordered-- tasks (either primitive or compound) must be achieved with respect to some constraints in order to refine it.
-For instance, in the task of serving a dinner, {\it deliver-dinner(?food-style, ?place)} is the compound task consisting in performing first the task of serving the starters, then the main course, etc. In that sense,  {\it deliver-dinner(?food-style, ?place)} can be refined in: {\it serve-starters(?food-style, ?place)},  {\it serve-main-course(?food-style, ?place)}, etc. This mapping between tasks is achieved by the Temporal Task Networks and the methods as defined below. Like primitive tasks, compound tasks have also a start event and an end event, which will be associated to time points in Section \ref{THTN}.
+For instance, in the task of serving a dinner, {\it deliver-dinner(?food-style, ?place)} is the compound task consisting in performing first the task of serving the starters, then the main course, etc. In that sense,  {\it deliver-dinner(?food-style, ?place)} can be refined in: {\it serve-starters(?food-style, ?place)},  {\it serve-main-course(?food-style, ?place)}, etc. This mapping between tasks is achieved by the Temporal Task Networks and the methods as defined below. Like primitive tasks, compound tasks have also a start event and an end event, which will be associated to time points in Section \ref{THTN}. % time points  =  dates
 
 \begin{figure}
 \begin{tikzpicture}
@@ -318,6 +318,9 @@ Let us start by defining a temporal sequence of tasks.
 A temporal sequence of tasks  $\pi$ is primitive if and only if every task $t$ s.t. $(t, e, d) \in \pi$ is primitive, i.e. it is be carried out by an action (either snap or durative action).
 \end{definition}
 
+The \emph{duration} of a task $t$ is generally unbounded, as the bound would be the sum of the durations of the tasks of which $t$ is coumpounded of. Only when a task $t$ is primitive, then $duration(t)$ is given by the duration $\delta$ of the action that refines $t$.
+
+
 % Definition de l'executabilité d'une sequences de tâches dans un état
 It is now necessary to define under which conditions such a sequence is {\it executable}. A central notion for that is the notion of snap action {\it non-interference}, i.e. when preconditions and effects do not overlap.
 \begin{definition}[Non-Interference]
@@ -329,21 +332,22 @@ Two snap actions or more can be executed at the same time if they are pairwise n
   A temporal sequence of tasks $\pi = \langle (t_0, e_0, \delta_0), \ldots,$ $(t_n, e_n, \delta_n) \rangle$ is executable in a state $s_0$ if and only if for every $(t, e, \delta) \in \pi$:
   (i) $t$ is primitive;
   (ii) $e$ is an happening event of $\pi$;
-  (iii) given a tuple $(t_i, e_i, \delta_i) \in \pi$, with $0 \leq i \leq n$, for a state $s_i$ at date $e_i$ we have: 
+  (iii) %given a tuple $(t_i, e_i, \delta_i) \in \pi$, with $0 \leq i \leq n$,
+  a state $s_i$ at date $e_i$ transitions to a new state $s_{i+1}$ s.t.: 
 \begin{itemize}
-  \item $t_i$ is achieved by a ground action $a_i$; %% Useless
-  \item for the set  $B_{e_i}$ of all the snap actions executing at $e_i$, s.t.:
+  % \item $t_i$ is achieved by a ground action $a_i$; %% Useless
+  \item given the set  $B_{e_i}$ of the snap actions executing at $e_i$:
     \begin{multline*}
       B_{e_i} = \bigl\{ \tstart(a_j) \; | \;  (a_j, e_j, \delta_j) \in \pi \text{ and } e_j = e_i \}\\
       \; \cup  \{\tend(a_k) \ | \ (a_k, e_k, \delta_k) \in \pi \text{ and } e_k + \delta_k = e_i\bigr\}
     \end{multline*}
     
- and for the set $I_{e_i}$ of the invariants holding a $e_i$, s.t.:
+ and given the set $I_{e_i}$ of the invariants holding a $e_i$:
     \begin{equation*}
       I_{e_i} = \bigl\{ \tinv(a_j) \; | \; (a_j, e_j, \delta_j) \in \pi \wedge e_j < e_i < e_j + \delta_j\bigr\}
     \end{equation*}
 
-    at $e_i$, a state $s_i$  transitions in a new state $s_{i+1}$, given $B_{e_i}$ and $I_{e_i}$, and that the snap actions in $B_{e_i}$ are \emph{pairwise non-interfering}:   %transition function between two states
+    the transition of $s_i$ to  $s_{i+1}$, given that all the snap actions in $B_{e_i}$ are \emph{pairwise non-interfering}, is defined as   %transition function between two states
       \begin{align*}
        s_i& \models \pre(a) \text{ for every } a \in B_{e_i}\\
        s_{i+1}& = \left(s_i - \cup_{a \in B_{e_i}} \del(a)\right) \bigcup_{a \in B_{e_i}} \add(a)\\
@@ -351,6 +355,8 @@ Two snap actions or more can be executed at the same time if they are pairwise n
       \end{align*}
 \end{itemize}
 \end{definition}
+%% Manque l'exécution par rapport au temps. The execution of a temporal sequence of tasks results in a sequence of states <s_i, e_i>
+
 
  This definition can easily be extended to a temporal task network.
 
