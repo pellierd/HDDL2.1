@@ -24,6 +24,8 @@
 \usepackage{xcolor}
 \usepackage{comment}
 \usepackage{tikz}
+\usepackage{adjustbox}
+
 \usetikzlibrary{decorations.pathreplacing,positioning, arrows.meta}
 
 \definecolor{mygreen}{rgb}{0,0.6,0}
@@ -128,14 +130,14 @@
 \setcounter{secnumdepth}{2}
 
 \setlength\titlebox{2.5in}
-\title{HDDL 2.1: Towards Defining a HTN Formalism with Time}
+\title{HDDL 2.1.alpha: The Challenge of Defining a HTN Formalism with Time}
 \author{
 Damien Pellier, Humbert Fiorino\\
 Univ. Grenoble Alpes, LIG\\
 38000 Grenoble, France\\
 \{Damien.Pellier, Humbert.Fiorino\}@univ-grenoble-alpes.fr}
 
-\title{HDDL 2.1: Towards Defining a HTN Formalism with Time}
+\title{HDDL 2.1.alpha: Towards Defining a HTN Formalism with Time}
 \author{Paper \#}
 
 \sloppy
@@ -146,7 +148,7 @@ Univ. Grenoble Alpes, LIG\\
 \begin{abstract}
 Real world applications as in industry and robotics need modelling rich and diverse automated planning problems. Their resolution usually requires coordinated and concurrent action execution. In several cases, these problems are naturally decomposed in a hierarchical way and expressed by a Hierarchical Task Network (HTN) formalism. Recently, HDDL, a hierarchical extension of the Planning Domain Definition Language (PDDL) has been proposed. However, unlike PDDL 2.1, it does not allow to represent planning problems with numerical and temporal constraints, which are essential for real world applications.
 
-We propose to fill the gap between HDDL and these operational needs and to extend HDDL by taking inspiration from  PDDL 2.1 in order to express numerical and temporal expressions. This paper opens discussions on the semantics and the syntax needed for this HDDL 2.1 extension.
+We propose to fill the gap between HDDL and these operational needs and to extend HDDL by taking inspiration from  PDDL 2.1 in order to express numerical and temporal expressions. This paper opens discussions on the semantics and the syntax needed for a future HDDL 2.1 extension.
 \end{abstract}
 
 \section{Introduction}
@@ -157,15 +159,17 @@ These real world applications of planning use both numerical and temporal constr
 
 The Hierarchical Task Network (HTN) formalism \citep{erol94} is used to express a wide variety of planning problems in many real-world applications, e.g., in task allocation for robot fleets \citep{Milot21}, video games \citep{Menif14} or industrial contexts such as software deployment \citep{Georgievski17}. Over the last years, much progress has been made in the field of hierarchical planning \citep{bercher19}. Novel systems based on the traditional, search-based techniques have been introduced~\citep{Bit-Monnot:16,ramoul17,Shivashankar17,Bercher17,Holler19,holler20,Holler21}, but also new techniques like the translation to STRIPS/ADL~\citep{Alford09,Alford16,behnke2022}, or revisited approaches like the translation to propositional logic~\citep{behnke2018totsat,Behnke2019orderchaos,Schreiber2019SAT,Schreiber21,behnke2021}.
 
-Despite these advances, not all these systems use the same formalism to represent hierarchical task decomposition. This makes difficult to compare the different approaches and to promote HTN planning techniques, even if some formalisms are more adopted than others. For these reasons, an extension of the PDDL (Planning Domain Description Language)~\citep{mcdermott98},  used in the International Planning Competitions (IPC), has been proposed. This extension \citep{holler20}, called HDDL (Hierarchical Planning Domain Description Language), is based on PDDL 2.1 \citep{fox03} and is the result of several discussions within the planning community \citep{Holler19b} to fill the need of a standard language for the first Hierarchical Planning track of IPC 2020. In this first version, it was decided that, considering the efforts to develop the language and related tools, none of the temporal and numerical features of PDDL would be included. In this paper, we propose the semantics and the syntax for a temporal extension of HDDL, to match the needs of the planning community and the applications of planning. This work was accomplished collectively after the ICAPS workshop HPlan in 2022.
+Despite these advances, not all planning systems use the same formalism to represent hierarchical task decomposition, making it difficult to compare approaches and promote HTN planning techniques. % even if some formalisms are more adopted than others.
+An extension of PDDL (Planning Domain Description Language)~\citep{mcdermott98}, called HDDL (Hierarchical Planning Domain Description Language) \citep{holler20}, has been proposed to address this issue. HDDL is based on PDDL 2.1 \citep{fox03} and is the result of several discussions within the planning community \citep{Holler19b} to fill the need of a standard language for the first Hierarchical Planning track of International Planning Competitions (IPC) in 2020. However, it was decided that the first version of HDDL would not include any of the temporal or numerical features of PDDL due to efforts to develop the language and related tools. In this paper, we illustrate the challenge of defining the semantics (and eventually  the syntax) for a temporal extension of HDDL to meet the needs of the planning community and planning applications. % This work was accomplished collectively after the ICAPS workshop HPlan in 2022.
 
 Our motivation is grounded on the compelling need to devise applications involving autonomous systems, i.e. agents that must be coordinated to fulfil hierarchical tasks containing both numerical and temporal constraints.
 %As a matter of fact, action concurrency and agent coordination are needed in HTN problems to find solutions for nontrivial tasks in complex scenarios, like collaborative robotic missions \citep{weser2010htn}.
 % TODO Revoir la fin, si ça change en cours de route
-Starting from a real satellite application example, we propose to extend HDDL including elements of PDDL 2.1 and ANML \citep{smith08} to express temporal and numerical expressions.
-This is intended to initiate discussions within HTN community on establishing a standard -- HDDL 2.1~-- aimed at filling the gaps between existing hierarchical-temporal planning approaches. To that end, we make this preliminary extension of HDDL an open source project with a publicly available repository and we propose a parser available online as well as a set of benchmarks based on this extension\footnote{all urls have been removed for blind review.}.
+We propose to extend HDDL, including elements of PDDL 2.1 and ANML \citep{smith08}, to express temporal and numerical constraints.
+This is intended to initiate discussions within HTN community on establishing a standard -- HDDL 2.1~-- aimed at filling the gaps between existing hierarchical-temporal planning approaches. To that end, we make this preliminary extension of HDDL an open source project with a public repository, where we propose a full syntax and its parser both available online, as well as a set of benchmarks based on this extension\footnote{All urls have been removed for blind review.}.
 
-The rest of the paper is organised as follows. In Section 2 we define the basic concepts of the proposed extension. In Sections 3 and 4 we set down the semantics for Temporal HTN planning. Section 5 describes our extension of the HDDL 1.0 syntax to deal with time, numeric and constraints in method declaration. The proposed syntax called HDDL 2.1 is illustrated on a commercial optical Earth Observing Satellite (EOS) study case, which delimits our requirements for this new language inspired from the International Planning Competition hierarchical satellite domain~\citep{schattenberg2020} with temporal features, as well as the orderings and the hierarchical constraints of the proposed language extension. Finally, we conclude by discussing the main features of the proposed language. % The full syntax of our HDDL dialect is presented in the appendix.
+The rest of the paper is organised as follows. In Section 2 we define the basic concepts of the proposed extension. In Sections 3 and 4 we set down the semantics for Temporal HTN planning. We conclude on the central aspects of this planning paradigm, and on future work. %% TODO : Revoir dernière phrase
+% Section 5 describes our extension of the HDDL 1.0 syntax to deal with time, numeric and constraints in method declaration. The proposed syntax called HDDL 2.1 is illustrated on a commercial optical Earth Observing Satellite (EOS) study case, which delimits our requirements for this new language inspired from the International Planning Competition hierarchical satellite domain~\citep{schattenberg2020} with temporal features, as well as the orderings and the hierarchical constraints of the proposed language extension. Finally, we conclude by discussing the main features of the proposed language. % The full syntax of our HDDL dialect is presented in the appendix.
 
 
 %We illustrate the proposed syntax on a commercial optical Earth Observing Satellite (EOS) study case, which delimits our requirements for this new language, namely \emph{durative actions} and \emph{durative methods}, \emph{method preconditions}, \emph{numeric preconditions}, and \emph{timed ordering constraints}. The examples provided to illustrate HDDL~2.1 are shaped on the International Planning Competition hierarchical satellite domain~\citep{schattenberg2020}, extended to utilize the temporal features, as well as the orderings and the hierarchical constraints of the proposed language extension.
@@ -247,12 +251,13 @@ A compound task is identified by a name and defines the way other --possibly ord
 For instance, in the task of serving a dinner, {\it deliver-dinner(?food-style, ?place)} is the compound task consisting in performing first the task of serving the starters, then the main course, etc. In that sense,  {\it deliver-dinner(?food-style, ?place)} can be refined in: {\it serve-starters(?food-style, ?place)},  {\it serve-main-course(?food-style, ?place)}, etc. This mapping between tasks is achieved by the Temporal Task Networks and the methods as defined below. Like primitive tasks, compound tasks have also a start event and an end event, which will be associated to time points in Section \ref{THTN}. % time points  =  dates
 
 \begin{figure}
+\begin{adjustbox}{width=\columnwidth}
 \begin{tikzpicture}
 % draw horizontal line   
-\draw[thick, -Triangle] (0,0) -- (8cm,0) node[font=\scriptsize,below left=3pt and -8pt]{time};
+\draw[thick, -Triangle] (0,0) -- (7cm,0) node[font=\scriptsize,below left=3pt and -8pt]{time};
 
 % draw vertical lines
-\foreach \x in {0,1,...,7}
+\foreach \x in {0,1,...,6}
 \draw (\x cm,3pt) -- (\x cm,-3pt);
 
 %\foreach \x/\descr in {4/t-2,5/t-1,6/t,7/t+1}
@@ -263,9 +268,9 @@ For instance, in the task of serving a dinner, {\it deliver-dinner(?food-style, 
 %{1/100,2/75,3/25,4/0}
 %\draw[yellow, line width=.5cm] (1 cm,0.25) -- +(1,0);
 %\draw[yellow, line width=.5cm] (6 cm,0.25) -- +(1,0)
-\draw[cyan, line width=.25cm] (1.05 cm,0.15) -- +(4.9,0);
-\draw [yellow, arrows = {-Stealth[length=10pt]}, line width=1mm] (1 cm, 0) -- +(0, 0.75);
-\draw [yellow, arrows = {-Stealth[length=10pt]}, line width=1mm] (6 cm, 0) -- +(0, -0.75);
+\draw[cyan, line width=.25cm] (1.05 cm,0.15) -- +(4.95,0);
+\draw [orange, arrows = {-Stealth[length=10pt]}, line width=1mm] (1 cm, 0) -- +(0, 0.75);
+\draw [orange, arrows = {-Stealth[length=10pt]}, line width=1mm] (6 cm, 0.75) -- +(0, -0.75);
 
 %\draw[-Triangle, dashed, red] (5,.5) --  +(1,0);
 
@@ -274,22 +279,23 @@ For instance, in the task of serving a dinner, {\it deliver-dinner(?food-style, 
 %{3/100,4/75,5/0}
 %\draw[lightgray!\perccol!green, line width=4pt] 
 %(\x,-.7) -- +(1,0);
-\draw[>=latex, <->, dashed, teal] (1,-.75) --  +(5,0);
-\node[font=\scriptsize, text height=1.75ex,text depth=.5ex, teal] at (7/2,-.5) {$\delta$};
+\draw[>=latex, <->, dashed, teal] (1,-.5) --  +(5,0);
+\node[font=\scriptsize, text height=1.75ex,text depth=.5ex, teal] at (7/2,-.3) {$\delta$};
 
 % braces
-\node[font=\scriptsize, text height=1.75ex,text depth=.5ex] at (0.75,.5) {\emph{pre}};
-\node[font=\scriptsize, text height=1.75ex,text depth=.5ex] at (1.25,.5) {\emph{eff}};
-\node[font=\scriptsize, text height=1.75ex,text depth=.5ex] at (1,-.15) {start(a)};
-\node[font=\scriptsize, text height=1.75ex,text depth=.5ex] at (5.75,.5) {\emph{pre}};
-\node[font=\scriptsize, text height=1.75ex,text depth=.5ex] at (6.2,.5) {\emph{eff}};
-\node[font=\scriptsize, text height=1.75ex,text depth=.5ex] at (6,-.15) {end(a)};
+\node[font=\scriptsize, text height=1.75ex,text depth=.5ex] at (0.7,.5) {\emph{pre}};
+\node[font=\scriptsize, text height=1.75ex,text depth=.5ex] at (1.3,.5) {\emph{eff}};
+\node[font=\scriptsize, text height=1.75ex,text depth=.5ex] at (1.05,-.2) {start(a)};
+\node[font=\scriptsize, text height=1.75ex,text depth=.5ex] at (5.74,.5) {\emph{pre}};
+\node[font=\scriptsize, text height=1.75ex,text depth=.5ex] at (6.23,.5) {\emph{eff}};
+\node[font=\scriptsize, text height=1.75ex,text depth=.5ex] at (6.05,-.2) {end(a)};
 \node[font=\scriptsize, text height=1.75ex,text depth=.5ex] at (3.4,.15) {inv(a)};
 %\draw [thick,decorate,decoration={brace,amplitude=5pt}] (7,-.25) -- +(-1,0)
 %       node [black,midway,font=\scriptsize, below=4pt] {$\epsilon$};
 %\draw [thick,decorate,decoration={brace,amplitude=5pt}] (2,-.25) -- +(-1,0)
 %       node [black,midway,font=\scriptsize, below=4pt] {$\epsilon$};
 \end{tikzpicture}
+  \end{adjustbox}
 \caption{Timeline of a durative action \emph{a} application.\label{fig:timeline}}
 \end{figure}
 
@@ -573,525 +579,6 @@ Durative methods can have preconditions and their preconditions are temporally a
 
 Formally, these three temporal preconditions can be rewritten in terms of decomposition constraints previously introduced. A precondition of type $(\atstart \ \phi)$ (respectively $(\atend \ \phi)$) is equivalent to adding a decomposition constraint $(\atstart \ \phi)$ (respectively $(\atend \ \phi)$), and a precondition of type $(\overall \ \phi)$ is equivalent to adding a decomposition constraint $(\always \ \phi)$. The preconditions of the methods can be seen as syntactic glue to express decomposition constraints of type $\atstart$, $\atend$ and $\always$.
 
-\section{HDDL 2.1 Syntax}
-
-The proposed syntax, called HDDL2.1, takes its roots in HDDL~\citep{holler20}. In a general manner, the reader is referred to the Appendix for the full syntax\footnote{The full syntax will be available as appendix in the final paper version.}, including the elements already present in previous versions of PDDL and HDDL.
-
-\subsection{Domain Description}
-
-\newcommand{\specReq}[1]{\ensuremath{\mathtt{^{#1}}}}
-
-The domain definition has been extended to durative actions %(line~\ref{l:durative-actions})
-and durative methods (line~\ref{l:durative-methods}). The durative action definition in PDDL stays unchanged in HDDL.
-\begin{lstlisting}[escapechar=~]
-<domain> ::= (define (domain <name>)
-    [<require-def>]
-    [<types-def>]~\specReq{:typing}~
-    [<predicates-def>]
-    [<functions-def>]~\specReq{:fluents}~
-    [<constants-def>]
-    [<task-defs>]
-    <structure-def>*)
-\end{lstlisting}
-
-%
-% Domain definition
-%
-% Requirement Statement
-% Type Definition
-% Domain Constant Definition
-% Predicate Definition
-%
-% @HDDL 1.0
-
-The definition of the basic domain elements is nearly unchanged, i.e., {\tt require-def}, {\tt types-def}, etc.
-
-%
-% \begin{lstlisting}[firstnumber=last, escapechar=~]
-% <require-def> ::= (:requirements  ~\mbox{<require-key>+}~)
-% <require-key> ::= ~\textit{(see \S\ref{Sec:Requirements})}~
-% <types-def> ::= (:types ~\mbox{<typed-list(<primitive-type>)>}~)
-% <predicates-def> ::= (:predicates  ~\mbox{<atomic-formula-skeleton>+}~)
-% <function-def> ::= (<function-typed-list  ~\mbox{(<atomic-function-skeleton>)}~>)
-% <constants-def> ::= (:constants <typed-list (constant)>)
-% <atomic-formula-skeleton> ::= ~\linebreak~(<predicate> <typed-list(variable)>)
-% <atomic-function-skeleton> ::= ~\linebreak~(<function> <typed-list (variable)>)
-% <typed-list (x)> ::= x+ - <type> ~\linebreak~[<typed list (x)>]~\label{l:typedlist}~
-% <type> ::= (either <primitive-type>+)
-% <type> ::= <primitive-type>
-% <function-typed-list (x)> ::= x+ - ~\linebreak~<function-type> <function-typed-list(x)>
-% <function-typed-list (x)> ::=
-% <function-type> ::=~\specReq{:numeric-fluents}~number
-% <function-type> ::=~\specReq{:typing} \specReq{+} \specReq{:object-fluents}~<type>
-% <predicate> ::= <name>
-% <function> ::= <name>
-% <constant> ::= <name>
-% <variable> ::= ?<name>
-% <primitive-type> ::= <name>
-% <primitive-type> ::= ~object
-% \end{lstlisting}
-%
-% Task definition
-%
-% @HDDL 1.0
-\noindent Abstract tasks are defined similarly to actions as in HDDL 1.0
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<tasks-def> ::= (:task <task-def>)
-<task-def> ::= <task-symbol> ~\linebreak~:parameters (<typed list (variable)>)~\label{l:compTask}~
-<task-symbol> ::= <name>
-\end{lstlisting}
-
-\noindent The structure of a temporal HDDL domain is composed of durative and non-durative methods and actions. Durative and non-durative actions are defined as in PDDL and non-durative methods as in HDDL.
-
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<structure-def> ::= <action-def>
-<structure-def> ::=~\specReq{:durative-actions}~ ~\mbox{<durative-action-def>}~
-<structure-def> ::= <method-def>
-<structure-def> ::=~\specReq{:durative-methods}~ ~\mbox{<durative-method-def>}~
-\end{lstlisting}
-
-
-
-%% Satellite example
-
-%, which delimits our requirements for this new language, namely \emph{durative actions} and \emph{durative methods}, \emph{method preconditions}, \emph{numeric preconditions}, and \emph{timed ordering constraints}.
-%We present thereafter this real use case of an EOS with the mission of observing areas on the surface of the planet and embedding the capacity of producing and executing autonomous plans.
-%Considering the structure of the requests that must be completed,
-%the action specifications have a \emph{duration} to reflect the warming up of certain instruments and the time to modify the attitude of the satellite. Figure \ref{pddl_calibrate} shows the calibrate action having a duration specific to the used instrument and defined in the problem initial state.
-%
-% explication basique
-%The action has conditions that, if set \texttt{at start} are equivalent to the classical planning PDDL preconditions. In a similar way, effects set to happen \texttt{at end} are applied at the end of the action duration, similarly to classical planning effects.
-
-
-%\begin{figure}[!h]
-%	\begin{lstlisting}[language=pddl,mathescape]
-%(:durative-action calibrate
-%	:parameters (?s - satellite ?i - instrument ?d - calib_direction)
-%	:duration (= ?duration (calib-time ?i))
-%	:condition 	(and
-%			(at start (on_board ?i ?s))
-%			(at start (calib_target ?i ?d))
-%			(at start (pointing ?s ?d))
-%			(at start (power_on ?i)))
-%	:effect (and  (at end (calibrated ?i))))
-%	\end{lstlisting}
-%	\caption{The calibrate action has a duration depending on the instrument calibration time\label{pddl_calibrate}, which are defined in the initial state, e.g.
-%{\small\lstinline[language={pddl},basicstyle=\ttfamily]|(= (calib-time instrument0) 20)|}.}
-%\end{figure}
-
-
-%%%%
-
-
-%
-% Method Definition
-%
-% @HDDL 1.0
-%% xxx pas de numeros de lignesxxx
-Methods consist of a parameter list (line~\ref{l:mparams}), the abstract task they decompose (line~\ref{l:mabstask}), and the resulting task network (line~\ref{l:msubtasks}). By setting the \verb+:method-preconditions+ requirement, one can use method preconditions (line~\ref{l:mprec}, which can be used for example to filter the hierarchical decomposition).
-
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<method-def> ::= (:method <name>~\label{l:methods}~
-    :parameters (<typed list (variable)>)~\label{l:mparams}~
-    :task (<task-symbol> <term>*)~\label{l:mabstask}~
-    [:precondition <gd>]~\specReq{:method-preconditions}~~\label{l:mprec}~
-    <tasknetwork-def>~\label{l:msubtasks}~)
-\end{lstlisting}
-
-%
-% Durative Method Definition
-%
-% @HDDL 2.1
-Like methods, durative methods have parameters, the abstract task they decompose, and the resulting task network, and, like durative actions, they can have duration constraints and a condition that has to hold to apply the decomposition. Note that, unlike for durative actions, duration constraints are not mandatory. By default the duration of a method is the sum of all the durations of the primitive tasks that compose it. However, it can be interesting to specify temporal constraints on the execution of the decomposition such as, for example, whatever decomposition is chosen, the duration of the primitive tasks must not exceed a given value, or that a subtask must last less than another subtask. These durative constraints can be declared if the requirement {\tt :durative-inequalities} is set. We use here the same requirement as for PDDL.
-
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<durative-method-def> ::=~\label{l:durative-methods}~
-    :durative-method <name>
-    :parameters (<typed list (variable)>)
-    :task (<task-symbol> <term>*)
-    [:duration <method-duration-constraint>]~\specReq{:duration-inequalities}~
-    [:condition <da-gd>]~\specReq{:method-preconditions}~~\label{l:mcond}~
-    <tasknetwork-def>~\label{l:msubtasks2}~)
-\end{lstlisting}
-
-
-%%% SAT example
-Let us illustrate our description of the syntax by a code snippet from a commercial optical Earth Observing Satellite (EOS) study case as used in the International Planning Competition hierarchical satellite domain~\citep{schattenberg2020}. New generations of commercial EOSs guarantee better performances by embedding a certain degree of autonomy on-board~\citep{pralet2019}. An automated planner is expected to produce new observation mission plans whenever environment changes or new requests are sent from ground control. Because observation tasks depend on the environment ---which is not known in advance--- this is a planning problem and not just a scheduling matter~\citep{rodriguez-moreno2004}.
-%
-The EOS mission goal is then to fulfil a set of \emph{Acquisition Requests} of images of the Earth surface.
-%Requests can be single images, which can be obtained by powering on sensors, and pointing at the sites of interest.
-The different modalities of fulfilling those requests require the extension of the satellite domain to a temporal model.
-
-
-Figure \ref{pddl_durative_m_con} depicting the \textit{observe} method illustrates some temporal constraint semantics introduced here.
-% section \ref{ssec:temporal-constraints-semantics}.
-In this case, \texttt{pointing} at an observation site can be achieved by different subtasks. By requiring that this precondition of \mbox{\small\lstinline[language={pddl},basicstyle=\ttfamily]|durative-action take_image|} is performed  at most once, useless satellite movements are avoided.
-Note that, besides the explicit subtask ordering, an implicit ordering between tasks 0 and 1 could have been forced by adding the constraint  \mbox{\small\lstinline[language={pddl},basicstyle=\ttfamily]|(within task1 (power_on ?i))|}, requiring that the instrument must be powered on \emph{before} turning towards the observation site.
-%
-\begin{figure}[h!]
-	\begin{lstlisting}[language=pddl, basicstyle=\fontsize{8.5}{10}\selectfont\ttfamily, escapechar=~]
-	(:durative-method method_observe
-		:parameters (?d_prev - image_direction
-		   ?d - image_direction
-		   ?s - satellite
-		   ?i - instrument   ?m - mode)
-		:task (do_observation ?d ?m)
-		:duration
-		   (< (duration task1) (calib-time ?i))~\label{l:mdur}~
-		:subtasks (and
-		   (task0 (activate_instrument ?s ?i))
-		   (task1 (turn_to ?s ?d ?d_prev))
-		   (task2 (take_image ?s ?d ?i ?m)))
-		:ordering (and (< task0 task2)
-                   (< task1 task2))
-		:constraints (and
-		   (not (= ?d ?d_prev))
-		   (at-most-once (pointing ?s ?d))) )~\label{l:mhb}~
-	\end{lstlisting}
-	\caption{\texttt{method\_observe} uses a duration inequality and a constraint over literals to constrain an ordering. Similarly, a decomposition can be constrained at the method-level.\label{pddl_durative_m_con}}
-\end{figure}
-
-
-%%%%%%
-%
-% Task Definition
-%
-% @HDDL 1.0
-The definition of task networks is used in method definitions as well as in the problem definition to define the initial task network. It contains the definition of sub-tasks (line~\ref{l:tnsubtasks}), ordering constraints (line~\ref{l:tnordering}), and logical constraints (line~\ref{l:tnconstraints}) on the sub-tasks of the method. We keep here the same definition as in HDDL.
-
-When the keyword \verb+:ordered-subtasks+ is used, the network is considered totally ordered. In the other cases, ordering relations have to be defined explicitly. This is done by including ids into the task definition that can then be referenced in the ordering definition.
-
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<tasknetwork-def> ::=
-    [~\textbf{:}~[~\textbf{ordered-}~][~\textbf{sub}~]~\textbf{tasks}~
-        <subtask-defs>]~\label{l:tnsubtasks}~
-    [~\textbf{:order}~[~\textbf{ing}~] <ordering-defs>]~\label{l:tnordering}~
-    [:constraints <constraint-defs>]~\label{l:tnconstraints}~
-\end{lstlisting}
-
-%
-% Subtasks
-%
-% @HDDL 1.0
-\noindent The subtask definition can contain one or more subtasks.
-
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<subtask-defs> ::= () | <subtask-def> ~\linebreak~| (and <subtask-def>+)
-<subtask-def> ::= (<task-symbol> <term>*) ~\linebreak~| (<subtask> (<task-symbol> <term>*))
-<subtask> ::= <name>
-\end{lstlisting}
-
-%
-% Ordering
-%
-% @HDDL 2.1
-The ordering constraints are defined via the task ids, and have to induce a partial order. To deal with time we add time specifiers on task ids to specify if the ordering constraints are about the start time or the end time of the task. The time specifiers are like in PDDL: ~{\tt start} to define the start time of a task, and {\tt end}  to define the end time of a task. Note that we also extend the list of operators available to express ordering constraints between tasks. It has been extended to define any constraints on the start or end of a sub-task of a method, and allows to express all Allen's intervals \citep{allen81} between these subtasks.
-
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<ordering-defs> ::= () | <ordering-def> ~\linebreak~| (and <ordering-def>+)
-<ordering-def> ::= ~\linebreak~(<d-task> <task-id> <task-id>)
-<ordering-def> ::=~\specReq{:durative-action} \linebreak~(not (<ordering-def>))
-<d-task> ::= <
-<d-task> ::=~\specReq{:durative-action} ~> | >= | = | < | <=
-<task-id> ::= <name>
-<task-id> ::= ~\specReq{:durative-action} <time-task-id>~
-<time-task-id> ::= (<time-specifier> ~\mbox{<task-id>)}~
-<time-specifier> ::= ~start~ | ~end
-\end{lstlisting}
-
-%<time-specifier> ::= ~start~
-%<time-specifier> ::= ~end
-%<d-task> ::=~\specReq{:durative-action} ~>=
-%<d-task> ::=~\specReq{:durative-action} ~<=
-%<d-task> ::=~\specReq{:durative-action} ~>
-%<d-task> ::=~\specReq{:durative-action} ~=
-%
-% Constraints extensions
-%
-% @HDDL 2.1
-HDDL~1.0 only accepts equality constraints or inequality on method parameters in the task network. To increase the expressiveness of the language, we have chosen to add two kinds of constraints: the \emph{classical decomposition constraints} ($\before$, $\after$, $\between$) used in HTN planning introduced first by \citep{erol94} to represent constraints between tasks for non temporal HTN problem and the \emph{temporal decomposition constraints} based on the plan trajectory constraint from PDDL~3.0. The semantics of these constraints have been given in Section~\ref{Sec:Decomposition-Constraints-Semantics}. To allow the specification of these constraints, it is necessary to use \verb+:method-constraints+.
-
-\begin{lstlisting}[firstnumber=last, basicstyle=\fontsize{8.5}{10}\selectfont\ttfamily, escapechar=~]
-<constraint-def> ::= () | <constraint-def> ~\linebreak~| (and <constraint-def>+)
-<constraint-def> ::= (not (= <term> <term>))~\linebreak~| (= <term> <term>)
-<constraint-def> ::=~\specReq{:method-constraints}~  ~\linebreak~(~before <task-id> <gd>)~
-<constraint-def> ::=~\specReq{:method-constraints}~  ~\linebreak~(~after <task-id> <gd>)~
-<constraint-def> ::=~\specReq{:method-constraints}~  ~\linebreak~(~between <task-id> <task-id> <gd>)~
-<constraint-def> ::=~\specReq{:durative-action + :method-constraints}~ ~\linebreak~<timed-constraint-def>
-<timed-constraint-def> ::= ~\linebreak~(~at <timed-task-id> <gd>)~
-<timed-constraint-def> ::= ~\linebreak~(~hold-during <timed-task-id> <gd>)~
-<timed-constraint-def> ::= ~\linebreak~(~within <timed-task-id> <gd>)~
-<timed-constraint-def> ::= ~\linebreak~(~hold-after <timed-task-id> <gd>)~
-<timed-constraint-def> ::= (~at start <gd>)~
-<timed-constraint-def> ::= (~at end <gd>)~
-<timed-constraint-def> ::= (~always <gd>)~
-<timed-constraint-def> ::= (~at-most-once <gd>)~
-<timed-constraint-def> ::= (~sometime <gd>)~
-<timed-constraint-def> ::= ~\linebreak~(~sometime-before <gd> <gd>)~
-<timed-constraint-def> ::= ~\linebreak~(~sometime-after <gd> <gd>)~
-<timed-constraint-def> ::= ~\linebreak~(~always-within number <gd> <gd>)~
-\end{lstlisting}
-
-
-%
-% Action Definition
-%
-% HDDL 1.0
-The original action or durative action definitions defined in PDDL stay mainly unchanged. The only difference is that for simplicity, it is not possible to specify preferences as in PDDL 3.0.
-
-%The non-durative actions are defined as follows:
-
-%\begin{lstlisting}[firstnumber=last, escapechar=~]
-%<action-def> ::= (:action <task-def>~\label{l:action}~
-%    [:precondition <gd>]
-%    [:effect <effect>])
-%\end{lstlisting}
-
-%
-%  Durative Action Definition
-%
-% PDDL 3.0 add to HDDL 2.1
-%\noindent The durative actions are defined as follows:
-
-%\begin{lstlisting}[firstnumber=last, escapechar=~]
-%<durative-action-def> ::= ~\linebreak~(:durative-action <task-def>~\label{l:durative-actions}~
-%      :duration <duration-constraint>
-%      [:condition <da-gd)>]
-%      [:effect <da-effect>])
-%\end{lstlisting}
-
-
-%
-%  Durative Action Constraints Definition
-%
-% PDDL 3.0 add to HDDL 2.1
-%As in PDDL, duration constraints with the \verb|:duration-inequalities| requirement allow to express duration inequalities. The definition of the duration constraints for durative actions does not change.
-
-%\begin{lstlisting}[firstnumber=last, escapechar=~]
-%<action-duration-constraint> ::=~\specReq{:duration-inequalities}~(and ~\linebreak~ <simple-action-duration-constraint>+)
-%<action-duration-constraint> ::= ()
-%<action-duration-constraint> ::= ~\mbox{<simple-action-duration-constraint>}~
-%<action-simple-duration-constraint>::= ~\linebreak~(<d-op> ?duration <d-value>)
-%<action-simple-duration-constraint>::= ~\linebreak~ (~{at}~ <time-specifier> ~\mbox{\hspace{2em}<simple-duration-constraint>}~)
-%<d-op> :: <=
-%<d-op> :: >=
-%<d-op> :: =
-%<d-value> ::= <number>
-%<d-value> ::=~\specReq{:numeric-fluents}~<f-exp>
-%<f-exp> ::=~\specReq{:numeric-fluents}~<number>
-%<f-exp> ::=~\specReq{:numeric-fluents}~(<binary-op> <f-exp> <f-exp>)
-%<f-exp> ::=~\specReq{:numeric-fluents}~(<multi-op> <f-exp> <f-exp>+)
-%<f-exp> ::=~\specReq{:numeric-fluents}~(- <f-exp>)
-%<f-exp> ::=~\specReq{:numeric-fluents}~<f-head>
-%<f-head> ::= (<function-symbol> <term>*)
-%<f-head> ::= <function-symbol>
-%<binary-op> ::= <multi-op>
-%<binary-op> ::= -
-%<binary-op> ::= /
-%<multi-op> ::= *
-%<multi-op> ::= +
-%<binary-comp> ::= >
-%<binary-comp> ::= <
-%<binary-comp> ::= =
-%<binary-comp> ::= >=
-%<binary-comp> ::= <=
-%\end{lstlisting}
-
-%
-%  Durative Method Constraints Definition
-%
-% @HDDL 2.1
-The duration of a method is by default the sum of the durations of the sub-tasks that compose it. Optional constraints might be specified to restrict the allowed value for the
-duration of the method or the sub-tasks that compose it. Therefore, it is necessary to be able to refer explicitly to the duration of a subtask and not only to the duration of the method with the variable {\tt ?duration}.
-
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<method-duration-constraint> ::=~\specReq{:duration-inequalities}~ (and~\linebreak~ <method-simple-duration-constraint>+)
-<method-duration-constraint> ::= ()
-<method-duration-constraint> ::= ~\mbox{<simple-method-duration-constraint>}~
-<simple-method-duration-constraint>::= ~\linebreak~(<binary-comp> <duration> <td-value>)
-<simple-method-duration-constraint>::= ~\linebreak~(~{at}~ <time-specifier> ~\mbox{\hspace{2em}<simple-method-duration-constraint>}~)
-<duration> :: = ?duration
-<duration> :: = <task-duration>
-<td-value> ::= <d-value>
-<td-value> ::= <task-duration>
-<task-duration> :: = (duration <task-id>)
-\end{lstlisting}
-
-%
-% Goal Description
-%
-% @HDDL 1.0
-\noindent Compared to HDDL 1.0 we allow to define numerical and temporal preconditions. The syntax used from numeric preconditions is the same as that of PDDL 3.0. For the sake of simplicity, we have chosen to not include the preferences.
-% \begin{lstlisting}[firstnumber=last, escapechar=~]
-% <gd> ::= ()
-% <gd> ::= <literal (term)>
-% <gd> ::= (and <gd>*)
-% <gd> ::=~\specReq{:disjunctive-preconditions}~ (or <gd>*)
-% <gd> ::=~\specReq{:negative-preconditions}~ (not <gd>)
-% <gd> ::=~\specReq{:disjunctive-preconditions \ :negative-preconditions}~ ~\mbox{(imply <gd> <gd>)}~
-% <gd> ::=~\specReq{:existential-preconditions}~ ~\linebreak~(exists (<typed list (variable)>*) <gd>)
-% <gd> ::=~\specReq{:universal-preconditions}~ ~\linebreak~(forall (<typed list (variable)>*) <gd>)
-% <gd> ::= (= <term> <term>)
-% <gd> ::=~\specReq{:numeric-fluents} <f-comp>
-% <f-comp> ::= (<binary-comp> <f-exp> <f-exp>)
-% \end{lstlisting}
-
-% \begin{lstlisting}[firstnumber=last, escapechar=~]
-% <literal (t)> ::= <atomic formula(t)>
-% <literal (t)> ::= (not <atomic formula(t)>)
-% <atomic formula(t)> ::= (<predicate> t*)
-% \end{lstlisting}
-
-% \begin{lstlisting}[firstnumber=last, escapechar=~]
-% <term> ::= <name>
-% <term> ::= <variable>
-% \end{lstlisting}
-
-%
-% Goal Description
-%
-% PDDL 3.0 add to HDDL 2.1
-
-\noindent The same approach is used for temporal precondition definition. The syntax used is the same as in PDDL 3.0.
-
-%\begin{lstlisting}[firstnumber=last, escapechar=~]
-%<da-gd> ::= <timed-gd>
-%<da-gd> ::= (and <da-gd>*)
-%<da-gd> ::=~\specReq{:universal-preconditions}~ (forall ~\linebreak~ <typed-list (variable)>) <da-gd>)
-%<timed-gd> ::= (~at <time-specifier> <gd>)~
-%<timed-gd> ::= (~over <interval> <gd>)~
-%<interval> ::= ~all
-%\end{lstlisting}
-
-%
-% Effects
-%
-% @HDDL 1.0
-\noindent Symmetrically, we add to the effect definition the temporal and numeric features based on the same syntax as in PDDL 3.0 (see the full syntax in appendix).
-
-%\begin{lstlisting}[firstnumber=last, escapechar=~]
-%<effect> ::= ()
-%<effect> ::= (and <c-effect>*)
-%<effect> ::= <c-effect>
-%<c-effect> ::=~\specReq{:conditional-effects}~ ~\linebreak~(forall (<variable>*) <effect>)
-%<c-effect> ::=~\specReq{:conditional-effects}~ ~\linebreak~(when <gd> <cond-effect>)
-%<c-effect> ::= <p-effect>
-%<p-effect> ::= (not <atomic formula(term)>)
-%<p-effect> ::= <atomic formula(term)>
-%<cond-effect> ::= (and <p-effect>*)
-%<cond-effect> ::= <p-effect>
-%\end{lstlisting}
-
-%
-%  Temporal Method Definition
-%
-% From PDDL 3.0 add to HDDL 2.1
-
-%\noindent The temporal and numeric definitions of effects are as follows:
-
-%\begin{lstlisting}[firstnumber=last, escapechar=~]
-%<da-effect> ::= (and <da-effect>*)
-%<da-effect> ::= <timed-effect>
-%<da-effect> ::=~\specReq{:conditional-effects}~ (forall ~\linebreak~(<typed list (variable)>) <da-effect>)
-%<da-effect> ::=~\specReq{:conditional-effects}~ ~\linebreak~(when <da-gd> <timed-effect>)
-%<timed-effect> ::= ~\linebreak~(~at <time-specifier> <cond-effect>)~
-%<timed-effect> ::=~\specReq{:numeric-fluents}~ ~\linebreak~(~at <time-specifier> <f-assign-da>)~
-%<f-assign-da> ::= (<assign-op> <f-head>~\linebreak ~<f-exp-da>)
-%<f-exp-da> ::= (<binary-op> <f-exp-da>~\linebreak ~ <f-exp-da>)
-%<f-exp-da> ::= (<multi-op> <f-exp-da>~\linebreak ~ <f-exp-da>+)
-%<f-exp-da> ::= (- <f-exp-da>)
-%<f-exp-da> ::=~\specReq{:duration-inequalities}~ ?duration
-%<f-exp-da> ::= <f-exp>
-%<assign-op-t> ::= increase | decrease
-%\end{lstlisting}
-%<assign-op-t> ::= increase
-%<assign-op-t> ::= decrease
-
-% continuous-effects rules removed
-%<timed-effect> ::=~\specReq{:continuous-effects + :numeric-fluents}~ ~\linebreak~(<assign-op-t> <f-head> <f-exp-t>)
-%<f-exp-t> ::= (* <f-exp> #t)
-%<f-exp-t> ::= (* #t <f-exp>)
-%<f-exp-t> ::= #t
-
-\subsection{Problem Description}
-
-%
-% Problem Definition
-%
-% @HDDL 1.0 + initial timed literal + initial function values + metric spec
-The problem definition includes the initial task network (line~\ref{l:tnihtn}) as in HDDL 1.0. But now, it is possible to define in the initial state of the problem initial function values and initial time literals. It is also possible to define metric specs on solution plans. We have chosen here not to allow the definition of preferences. But preferences could be added in a next extension of the language. Likewise we have also chosen not to allow the definition of constraints on plans although it is possible in PDDL. We believe that it is preferable to add constraints on plans by adding logical constraints associated with task networks. This allows for a more unified language.
-
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<problem> ::= (define (problem <name>)
-    (:domain <name>)
-    [<require-def>]
-    [<object-declaration>]
-    [<htn>]~\label{l:tnihtn}~
-    <init>
-    [<goal>])~\label{l:goal}~
-    [<metric-spec>]~\specReq{:numeric-fluents}
-\end{lstlisting}
-
-The basic elements stay unchanged from HDDL. Note that timed initial literals and optional metric spec are added using the same syntax as in PDDL 3.0.
-
-\begin{lstlisting}[firstnumber=last, escapechar=~]
-<object-declaration> ::= ~\linebreak~(:objects <typed list (name)>)
-<htn> ::= (:htn
-    [:parameters (<typed list (variable)>)] ~\label{l:tniparams}~
-    <tasknetwork-def>)~\label{l:tnitasks}~
-<init> ::= (:init <init-el>*)
-<init-el> ::= <literal (name)>
-<init-el> ::=~\specReq{:timed-initial-literals}~(~at ~<number>~ <literal (name)>)~
-<init-el> ::=~\specReq{:numeric-fluents}~ (= ~<basic-function-term>~ <number>)
-<basic-function-term> ::= <function-symbol>
-<basic-function-term> ::= (<function-symbol> <name>*)
-<goal> ::= (:goal <gd>)
-\end{lstlisting} %| :tihtn~\specReq{:tihtn}~
-
-%
-% Metric spec
-%
-% @HDDL 2.1
-
-
-
-%\begin{lstlisting}[firstnumber=last, escapechar=~]
-%<metric-spec> ::=~\specReq{:numeric-fluents}~
-%    (:metric <optimization> <metric-f-exp>)
-%<optimization> ::= ~minimize~
-%<optimization> ::= ~maximize~
-%<metric-f-exp> ::= (<binary-op>
-%    <metric-f-exp> <metric-f-exp>)
-%<metric-f-exp> ::= (<multi-op>
-%    <metric-f-exp> <metric-f-exp>+)
-%<metric-f-exp> ::= (- <metric-f-exp>)
-%<metric-f-exp> ::= <number>
-%<metric-f-exp> ::= ( <function-symbol>
-%    <name>* )
-%<metric-f-exp> ::= <function-symbol>
-%<metric-f-exp> ::= ~total-time
-%\end{lstlisting}
-
-\subsection{Temporal and Numeric HDDL Requirements}
-\label{Sec:Requirements}
-The overall definition includes all the following requirement flags as in HDDL 1.0:
-\begin{itemize}
- \item \verb+:hierarchy+ requires the applied system to support HTN planning, so this can be seen as the basic requirement for the language defined here.
- \item \verb+:method-preconditions+ requires the applied system to support method preconditions or condition when defined in durative methods.
-\end{itemize}
-But now, the following requirement flags are also compatible with HDDL 2.1:
-\begin{description}
- \item \verb+:durative-actions+ requires the applied system to support durative actions and temporal ordering constraints in method definitions.
- \item \verb+:duration-inequalities+ requires the applied system to support duration inequalities in durative action declarations. Implies \verb+:durative-actions+.
- \item \verb+:timed-initial-literals+ requires the applied system to support initial state with literals that become true at a specified time point. Implies \verb+:durative-actions+.
- \item \verb+:numeric-fluent+ requires the applied system to support numeric fluents in preconditions and effects of actions and methods.
- %\item \verb+:continuous-effects+ requires the applied system to support continuous action effects.
- \end{description}
- We add the following requirement flag:
-\begin{description}
-\item \verb+:method-constraints+ requires to specify decomposition constraints in methods.
- \end{description}
-
 \section{Discussion and Conclusion}
 \label{sec:conclusion}
 
@@ -1122,6 +609,7 @@ In order to be fully compatible with PDDL 3.0 features, the language HDDL 2.1 ne
 In fact, many applications require features that have been (on purpose) omitted in this paper. Most importantly, we did not explicitly reported a syntax for constraints on solution plans, e.g. to put a max time limit, and we did not allow to define delays  with point algebra for ordering constraints. Other features are simply not detailed here, e.g. continuous effects.
 Such language elements are left as natural extension of this paper for future work.
 
+\newpage
 \bibliography{ref}
 
 %\appendix
