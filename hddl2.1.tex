@@ -194,7 +194,9 @@ We can now define {\it formulas} in a function-free first-order logic: (i) a pre
 
 Conceptually, grounding a formula consists in generating a set of variable-free i.e. {\it ground} formulas \cite{helmert} as follows: a variable $x$ in a quantifier-free formula $\phi$ is eliminated by replacing $\phi$ with $|C|$ copies, one for each $c \in C$, where $x$ is substituted with $c$ in the respective copy. This substitution is denoted by $\phi[x/c]$. Regarding quantified formulas, $\forall x \phi$ is replaced by $\bigwedge_{c \in C} \phi[x/c]$ and $\exists x \phi$ by $\bigvee_{c \in C} \phi[x/c]$. We refer the reader to \cite{behnke20,ramoul17} for further details on grounding implementation. Note that it is always possible to transform a formula in function-free first-order logic into a finite set of ground formulas in propositional logic.
 
-A {\it state} $s$ is a set of ground predicates. For the sake of conciseness, we will also consider $s$ as a Herbrand interpretation that assigns $true$ to all ground predicates in $s$, and $false$ to all ground predicates not in $s$. From this, a truth value can be computed for every {\it ground} formula from ${\cal{L}}$ by using the usual rules for logical composition. For instance, $\phi \wedge \psi$ is true in $s$ if and only if both $\phi$ and $\psi$ are true in $s$. Without loss of generality, a formula (not necessarily ground) $\phi$ is true in $s$ if and only if grounding $\phi$ generates at least one ground formula true in $s$. We will use the notation $s \models \phi$ to mean that the formula $\phi$ is true in $s$.
+A {\it state} $s$ is a set of ground predicates. For the sake of conciseness, we will also consider $s$ as a Herbrand interpretation that assigns $true$ to all ground predicates in $s$, and $false$ to all ground predicates not in $s$. From this, a truth value can be computed for every {\it ground} formula from ${\cal{L}}$ by using the usual rules for logical composition.
+% For instance, we say that the formula $\phi \wedge \psi$ is true in $s$ if and only if both $\phi$ and $\psi$ are true in $s$.
+Without loss of generality, a formula (not necessarily ground) $\phi$ is true in $s$ if and only if grounding $\phi$ generates at least one ground formula true in $s$. We will use the notation $s \models \phi$ to mean that the formula $\phi$ is true in $s$.
 %A first-order formula is defined over $\cal{L}$ is either (i) an atomic formula $\phi \in P$, (ii) a negated formula $\neg\phi$, (iii) a conjunction of formulas $\phi_1 \wedge \phi_2$, (iv) a disjunction of formulas $\phi_1 \vee \phi_2$, (v) an implication of formulas $\phi_1 \rightarrow \phi_2$ or (vi) a quantified formula $\forall x \phi$ or $\exists x \phi$ where $x$ is a freexxx typed variable in $V$.
 
 %set of ground atomic formulas defined over the $\cal{L}'$ predicates where all parameters are bound, i.e., replaced by a constants from $C$. A state $s$ is a model that assign {\it true} to all ground atomic formulas in $s$, and {\it false} to all ground atomic formulas not in $s$. Thus, a negated formula $\neg\phi$ is {\it true} in a state $s$, noted $s \models \neg \phi$, if only $\phi$ is not in $s$;  $s \models \phi_1 \wedge \phi_2$ if only both $\phi_1$ and $\phi_2$ is {\it true} in $s$; $s \models \phi_1 \vee \phi_2$ if $\phi_1$ or $\phi_2$ is {\it true} in $s$ and $s \models \phi_1 \rightarrow \phi_2$ if  $s \models \phi_1 \vee \neg \phi_2$; $\forall x \phi$ if for all possible values of $x$ in $C$ $s \models \phi$ and $\exists x \phi$ if it exists at least one value of $x$ in $C$ s.t $s \models \phi$.
@@ -202,19 +204,25 @@ A {\it state} $s$ is a set of ground predicates. For the sake of conciseness, we
 %% Domain def %%%
 
  A key concept in HTN planning and a fortiori in temporal HTN planning is the concept of {\it task}. Each task is given by a name and a list of parameters. We distinguish two kinds of tasks: the  primitive tasks (also called actions), and the abstract tasks (or compound tasks).
+ Primitive tasks are carried out by  durative actions in the sense of classical temporal planning \cite{fox03}, while abstract tasks can be refined by applying methods that define the decomposition of the task into subtasks. The purpose of abstract tasks is not to induce a state transition. Instead, they refer to a predefined mapping to one or more tasks that can refine the abstract task.
+ 
+ For instance, in the task of serving a dinner, {\it deliver-dinner(?food-style, ?place)} is the compound task consisting in performing first the task of serving the starters, then the main course, etc. In that sense,  {\it deliver-dinner(?food-style, ?place)} can be refined in: $\langle$ {\it serve-starters(?food-style, ?place)},  {\it serve-main-course(?food-style, ?place)}, etc.$\rangle$
 
- %A {\it task} is defined as an atomic formula given by its name followed by a parameter sequence that could be either a typed variable in $V$ or typed constant in $C$. There are two kinds of tasks: primitive tasks that could be carried out by a durative action in the sense of classical temporal planning \cite{fox03} and abstract tasks that could be refined by applying methods that define how to decompose the task into subtasks. The purpose of abstract task is not to induce state transition unlike action, but to reference a predefined mapping to one or more tasks which that abstract task can be refined. This mapping is given by a set of decomposition methods.
+ This mapping between tasks is achieved by a set of decomposition methods, namely the methods (Def. \ref{def:met}) and the the Temporal Task Networks (Def. \ref{def:TNN}).%as defined below in Def.~\ref{def:decomp}.
 
- We now define the planning domain and problem for Temporal HTN Planning using the
+ 
+ %A {\it task} is defined as an atomic formula given by its name followed by a parameter sequence that could be either a typed variable in $V$ or typed constant in $C$. There are two kinds of tasks: 
+
+ We first define the planning domain and problem for Temporal HTN Planning.
  %
  \begin{definition}
    A \emph{planning domain} $\cal{D}$ is a tuple $({\cal{L}}, {\cal{T}}, {\cal{I}}, \alpha, {\cal{A}}, {\cal{M}})$, where
    $\cal{L}$ is the first-order logic language,
    $\cal{T}$ is the set of tasks,
-   $\cal{I}$ is the set of task identifiers~\footnote{Task identifiers are arbitrary symbols, which serve as place holders for the actual tasks they represent. Identifiers are needed because tasks can occur multiple times within the same task network.},
+   $\cal{I}$ is the set of task identifiers~\footnote{Task identifiers are arbitrary symbols, which serve as place holders for the actual tasks they represent. Identifiers are needed because tasks can occur multiple times within the same task network, as we will see below.},
    $\alpha: {\cal{I}} \rightarrow {\cal{T}}$ is the funciton that maps task identifiers to tasks,
-   ${\cal{A}}$ is a set of actions constituted by \emph{snap} actions (Def.\ref{def:snap}) and \emph{durative} actions (Def.\ref{def:dur}),
-   $\cal{M}$ is the set of methods (Def.\ref{def:met}). %We note ${\cal{T}}_p$ the set of primitive tasks and ${\cal{T}}_a$ the set of abstract tasks, s.t.  ${\cal{T}} = {\cal{T}}_p \cup {\cal{T}}_a$.
+   ${\cal{A}}$ is a set of actions constituted by \emph{snap} actions (Def. \ref{def:snap}) and \emph{durative} actions (Def. \ref{def:dur}),
+   $\cal{M}$ is the set of methods (Def. \ref{def:met}). %We note ${\cal{T}}_p$ the set of primitive tasks and ${\cal{T}}_a$ the set of abstract tasks, s.t.  ${\cal{T}} = {\cal{T}}_p \cup {\cal{T}}_a$.
  \end{definition}
 
  The domain implicitly defines the set of all states $S$ defined over all subsets of all ground predicates in $\cal{L}$.
@@ -225,31 +233,7 @@ A {\it state} $s$ is a set of ground predicates. For the sake of conciseness, we
 
  %%% Tasks and Tasks networks
 
-
-
- Let us start by defining the concepts of {\it snap} and {\it durative actions}, which are the primitive tasks, based on the concepts of \cite{abdulaziz22}.
-
- A snap action is an action whose execution is instantaneous, in the sense of classical planning, meaning that they have a null duration $\epsilon = 0$ %$\epsilon \ll \delta$
- between preconditions checking and applying effects. %% Using Greek letters to denote time
- %
- \begin{definition}[Snap Action]\label{def:snap} A \emph{snap action} $a$ is a tuple $\bigl(\name(a), \pre(a), \effect(a) \bigr)$, where $\name(a)$ is the name of $a$, the precondition $\pre(a)$ is a first-order formula, % $\phi$,
-   and the effects $\effect(a) = \add(a) \cup \del(a)$ ($\add(a) \cap \del(a) = \emptyset$), $\add(a)$ and $\del(a)$ are conjunctions of predicates. 
-
- % The execution of $a$ in state $s$ is possible if   $s \models \phi$. The effects produced by the execution of $a$ is a state transition from $s$ to $s'$ s.t. $s' = \effect(a) = \add(a) \cup \del(a)$ ($\add(a) \cap \del(a) = \emptyset$), $\add(a)$ and $\del(a)$ are conjunctions of predicates, respectively true and false after the execution of $a$.
-\end{definition}
-
-\begin{definition}[Durative Action]\label{def:dur}
-  A \emph{durative action} $a$ is a tuple $\bigl(\name(a), \tstart(a), \tend(a), \tinv(a), \delta\bigr)$: $\name(a)$ is the name of $a$; $\tstart(a)$ and $\tend(a)$ are snap actions; $\tinv(a)$ is a first-order formula that must hold in all the states after the execution of $start(a)$ and until the execution of $end(a)$, %NB IT can also go until the end of end(a)
-  and $\delta$ is the duration of $a$. %% $start(a)$ and $end(a)$ are called time events.
-\end{definition}
-Actions do change the state of the world. Durative actions also change the time of the model, shifting it by a quantity $\delta$, as shown in Figure~\ref{fig:timeline}.
-How states change will be formally defined in Section \ref{THTN}.
-
-Unlike a primitive task, % (i.e. a snap or durative action),
-a {\it compound task} does not directly  change the world state.
-A compound task is identified by a name and defines the way other --possibly ordered-- tasks (either primitive or compound) must be achieved with respect to some constraints in order to refine it.
-For instance, in the task of serving a dinner, {\it deliver-dinner(?food-style, ?place)} is the compound task consisting in performing first the task of serving the starters, then the main course, etc. In that sense,  {\it deliver-dinner(?food-style, ?place)} can be refined in: {\it serve-starters(?food-style, ?place)},  {\it serve-main-course(?food-style, ?place)}, etc. This mapping between tasks is achieved by the Temporal Task Networks and the methods as defined below. Like primitive tasks, compound tasks have also a start event and an end event, which will be associated to time points in Section \ref{THTN}. % time points  =  dates
-
+ 
 \begin{figure}
 \begin{adjustbox}{width=\columnwidth}
 \begin{tikzpicture}
@@ -300,7 +284,30 @@ For instance, in the task of serving a dinner, {\it deliver-dinner(?food-style, 
 \end{figure}
 
 
+ Let us start by defining the concepts of {\it snap} and {\it durative actions}, which are the primitive tasks, based on the concepts of \cite{abdulaziz22}.
+
+ A snap action is an action whose execution is instantaneous in the sense of classical planning, meaning that it has a null duration % $\epsilon = 0$  -- $\epsilon \ll \delta$
+ between checking the preconditions and applying the effects. %% Using Greek letters to denote time
+ %
+ \begin{definition}[Snap Action]\label{def:snap} A \emph{snap action} $a$ is a tuple $\bigl(\name(a), \pre(a), \effect(a) \bigr)$, where $\name(a)$ is the name of $a$, the precondition $\pre(a)$ is a first-order formula, % $\phi$,
+   and the effects $\effect(a) = \add(a) \cup \del(a)$ ($\add(a) \cap \del(a) = \emptyset$), $\add(a)$ and $\del(a)$ are conjunctions of predicates. 
+
+ % The execution of $a$ in state $s$ is possible if   $s \models \phi$. The effects produced by the execution of $a$ is a state transition from $s$ to $s'$ s.t. $s' = \effect(a) = \add(a) \cup \del(a)$ ($\add(a) \cap \del(a) = \emptyset$), $\add(a)$ and $\del(a)$ are conjunctions of predicates, respectively true and false after the execution of $a$.
+\end{definition}
+
+\begin{definition}[Durative Action]\label{def:dur}
+  A \emph{durative action} $a$ is a tuple $\bigl(\name(a), \tstart(a), \tend(a), \tinv(a), \delta\bigr)$: $\name(a)$ is the name of $a$; $\tstart(a)$ and $\tend(a)$ are snap actions; $\tinv(a)$ is a first-order formula that must hold in all the states after the execution of $start(a)$ and until the execution of $end(a)$, %NB IT can also go until the end of end(a)
+  and $\delta$ is the duration of $a$. %% $start(a)$ and $end(a)$ are called time events.
+\end{definition}
+Actions do change the state of the world. Durative actions also change the time of the model, shifting it by a quantity $\delta$, as shown in Figure~\ref{fig:timeline}.
+States transition will be formally defined in Section \ref{THTN}.  % TODO Check
+
+% Unlike a primitive task, % (i.e. a snap or durative action),
+% a {\it compound task} does not directly  change the world state.
+A compound task is identified by a name and defines the way other --possibly ordered-- tasks (either primitive or compound) must be achieved with respect to some constraints in order to refine it.
+ Like primitive tasks, compound tasks have also a start event and an end event, which will be associated to time points in Section \ref{THTN}. % time points  =  dates
 In this sense, methods allow to refer tasks to temporal task networks.
+
 \begin{definition}[Method]\label{def:met}
 A \emph{method} $m$ is a tuple $\bigl(\name(m), \task(m), \tn(m)\bigr)$, where $\name(m)$ is the name of the method, $\task(m)$ is the task refined by the method, and $\tn(m)$ is the temporal task network decomposing $\task(m)$. % definition later of decomposition
 \end{definition}
@@ -308,13 +315,13 @@ A \emph{method} $m$ is a tuple $\bigl(\name(m), \task(m), \tn(m)\bigr)$, where $
 
 
 %To formally define a method and define how break down a task into subtasks, it is necessary to define first the concept of {\it temporal task networks}.
-\begin{definition}[Temporal Task Network]
-A temporal task network $w = ({\cal{I}}', {\cal{C}})$ is given by: % is a partially temporal ordered multi-set of tasks $\cal{T}$, where %% Where is the multi-set ?
+\begin{definition}[Temporal Task Network]\label{def:TNN}
+A \emph{temporal task network} $w = ({\cal{I}}', {\cal{C}})$ is given by: % is a partially temporal ordered multi-set of tasks $\cal{T}$, where %% Where is the multi-set ?
 \begin{itemize}
 
     \item $\cal{I}' \subseteq \cal{I}$ is a set (possibly empty) set of tasks identifiers,
 
-    \item $\cal{C}$ is the set of constraints, with ${\cal{C}} = < {\cal{C}}_o, {\cal{C}}_v, {\cal{C}}_d, {\cal{C}}_t) >$:
+    \item $\cal{C}$ is the set of constraints, with ${\cal{C}} = < {\cal{C}}_o, {\cal{C}}_v, {\cal{C}}_d, {\cal{C}}_t >$:
       \begin{itemize}
       \item ${\cal{C}}_o$ is a set of temporal qualitative ordering constraints over the start or the end events of the tasks in $\cal{I}$. The possible qualitative temporal ordering are those from the classical point algebra \cite{broxvall03}: $<$, $\leq$, $>$, $\geq$, $=$ and $\neq$.
 
@@ -325,11 +332,11 @@ A temporal task network $w = ({\cal{I}}', {\cal{C}})$ is given by: % is a partia
       \item ${\cal{C}}_t$ is a set of temporal decomposition constraints of the form $(\at \ e \ \phi)$. This constraint expresses that some properties defined by the logical formula $\phi$ must hold in the state at the time event $e$. We will show in Section~\ref{Sec:Decomposition-Constraints-Semantics}, how to extend this simple constraint to more expressive ones proposed in HDDL~2.1.  
       \end{itemize}
 \end{itemize}
-$w$ implicitely defines a temporal ordered multi-set of tasks ${\cal{T}}' = \{ \alpha(i) \: | \: i \in {\cal{I}}' \}$.
+The temporal task network $w$ implicitely defines a temporal ordered multi-set of tasks ${\cal{T}}' = \{ \alpha(i) \: | \: i \in {\cal{I}}' \}$.
 \end{definition}
 
 
-A temporal task network explicits the decomposition of abstract tasks into subtasks, i.e. to reference a predefined mapping to one or more tasks which that abstract task can be refined. 
+A temporal task network explicits the decomposition of abstract tasks into subtasks. %, i.e. to reference a predefined mapping to one or more tasks which that abstract task can be refined. 
 Note that a temporal task network is ground if all its variables are bound to constants, and primitive if all its tasks ${\cal{T}}'$ are primitive.
 
 \begin{example}[${\cal{C}}_o$ constraints]
@@ -357,11 +364,11 @@ Note that a temporal task network is ground if all its variables are bound to co
 
  % Definition d'un sequence temporel de tâches
 Let us start by defining a temporal sequence of tasks.
-\begin{definition}[Temporal Sequence of Tasks]
-  A \emph{temporal sequence of tasks} $\pi$ over a planning domain $\cal{D}$, is a sequence of tuples $\langle (t_0, e_0, \delta_0), \ldots,$ $(t_n, e_n, \delta_n) \rangle$ where $t_0, \ldots, t_n$ are the set of ground tasks defined over $\cal{T}$, $e_i \in \mathbb{N}_{\geq 0}$ and $\delta_i \in \mathbb{N}_{\geq 0}$ are natural numbers~\footnote{
-    Rational numbers are used in the usual definition from~\cite{}. However, we feel that using rational numbers is a huge mistake, as the consequence is that the problem might be undecidable.}
-  to which refer as the starting time event and the duration of the task $t_i$, respectively. For a temporal sequence of tasks $\pi$, we call a sorted sequence $e_0, \ldots, e_n$ of the set of natural numbers $\{e \ | \ (t, e, d) \in \pi\} \cup \{e + d \ | \ (t, e, d) \in \pi\}$ the happening events of the sequence $\pi$. % denoted $htps(\pi)$.  These are dates.
-A temporal sequence of tasks  $\pi$ is primitive if and only if every task $t$ s.t. $(t, e, d) \in \pi$ is primitive, i.e. it is be carried out by an action (either snap or durative action).
+\begin{definition}[Temporal Sequence of Tasks] % TODO e_i is an event and \delta is a date/time
+  A \emph{temporal sequence of tasks} $\pi$ over a planning domain $\cal{D}$, is a sequence of tuples $\langle (t_0, e_0, \delta_0), \ldots,$ $(t_n, e_n, \delta_n) \rangle$ where $t_0, \ldots, t_n$ are the set of ground tasks defined over $\cal{T}$, $e_i \in \mathbb{N}_{\geq 0}$ and $\delta_i \in \mathbb{N}_{\geq 0}$ are natural numbers\footnote{
+    Rational numbers are used in the definition from~\citet{fox03}. However, integers should be used for dates, because using rationals can yield to an undecidable planning problem.}
+  to which refer as the starting time event and the duration of the task $t_i$, respectively. For a temporal sequence of tasks $\pi$, we call a sorted sequence $e_0, \ldots, e_n$ of the set of natural numbers $\{e \ | \ (t, e, \delta) \in \pi\} \cup \{e + \delta \ | \ (t, e, \delta) \in \pi\}$ the happening events of the sequence $\pi$. % denoted $htps(\pi)$.  These are dates.
+A temporal sequence of tasks  $\pi$ is primitive if and only if every task $t$ s.t. $(t, e, \delta) \in \pi$ is primitive, i.e. it is be carried out by an action (either snap or durative action).
 \end{definition}
 
 The \emph{duration} of a task $t$ is generally unbounded, as the bound would be the sum of the durations of the tasks of which $t$ is coumpounded of. Only when a task $t$ is primitive, then $duration(t)$ is given by the duration $\delta$ of the action that refines $t$.
@@ -406,18 +413,18 @@ Two snap actions or more can be executed at the same time if they are pairwise n
 
  This definition can easily be extended to a temporal task network.
 
-  \begin{definition}[Executable Temporal Task Network] A temporal task network $w = ({\cal{I}}, \alpha, {\cal{C}}_o, {\cal{C}}_d, {\cal{C}}_t)$ is executable in a state $s_0$ if and only if there exists an executable temporal sequence of tasks $\pi = \langle (\alpha(i_0), e_0, \delta_0), \ldots,$ $(\alpha(i_n), e_n, \delta_n)\rangle$ in $s_0$ where $i_0, \ldots, i_n$ are task identifiers in $\cal{I}$ that matches the following conditions: (i) $\pi$ matches the temporal constraints ${\cal{C}}_o$, (ii) $\pi$ matches the duration constraints ${\cal{C}}_d$, and (iii) the sequence of states $\langle (s_0, e_0, \delta_0), \ldots,$ $(s_n, e_n, \delta_n) \rangle$ resulting from the execution of $\pi$ matches the constraints ${\cal{C}}_t$.
+  \begin{definition}[Executable Temporal Task Network] A temporal task network $w = ({\cal{I}}', <\!{\cal{C}}_o, {\cal{C}}_v, {\cal{C}}_d, {\cal{C}}_t\!\!>)$ is executable in a state $s_0$ if and only if there exists an executable temporal sequence of tasks $\pi = \langle (\alpha(i_0), e_0, \delta_0), \ldots,$ $(\alpha(i_n), e_n, \delta_n)\rangle$ in $s_0$ where $i_0, \ldots, i_n$ are task identifiers in $\cal{I}'$ that matches the following conditions: (i) $\pi$ matches the temporal constraints ${\cal{C}}_o$, (ii) $\pi$ matches the duration constraints ${\cal{C}}_d$, and (iii) the sequence of states $\langle (s_0, e_0, \delta_0), \ldots,$ $(s_n, e_n, \delta_n) \rangle$ resulting from the execution of $\pi$ matches the constraints ${\cal{C}}_t$.
   \end{definition}
 
   It remains to define how to transform a temporal task network into another one by using method decomposition in order to obtain an executable task network.
 
   First, a method $m = \bigl(\name(m), \task(m), tn(m)\bigr)$
   refines a task $t = \task(m)$ in the subtasks multi-set  $\{\alpha^m(i)   \, | \, i \in {\cal{I}}^m \}$ with
-  $\tn(m) = ({\cal{I}}^m, \alpha^m, {\cal{C}}_{o}^{m},{\cal{C}}_{d}^{m}, {\cal{C}}_{t}^{m})$ the temporal task network of $m$.
+  $\tn(m) = ({\cal{I}}^m, {\cal{C}}^{m})$ the temporal task network of $m$. %\cal{C} = {\cal{C}}_{o}^{m},{\cal{C}}_{d}^{m}, {\cal{C}}_{t}^{m}
   
   % solution or plan if forall t in w_i, t verifies the contraints C_i
 
-\begin{definition}[Decomposition]
+\begin{definition}[Decomposition]\label{def:decomp}
 %  Let $m = \bigl(\name(m),$ $\task(m), tn(m)\bigr)$ be a method with a task network $tn(m) = ({\cal{I}}^m, \alpha^m, {\cal{C}}_{o}^{m},{\cal{C}}_{d}^{m}, {\cal{C}}_{t}^{m})$ and
   
   A task network $w_1= ({\cal{I}}^1, \alpha^1, {\cal{C}}_{o}^{1},{\cal{C}}_{d}^{1}, {\cal{C}}_{t}^{1})$ is decomposed into a new task network
