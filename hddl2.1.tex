@@ -155,7 +155,7 @@ We propose to fill the gap between HDDL and these operational needs and to exten
 
 Real world applications of Automated Planning, like in industry and robotics, require modelling rich and diverse scenarios.
 In several cases, such  planning problems are naturally decomposed in a hierarchical way, with compound tasks that refine in different ways their execution model.
-These real world applications of planning use both numerical and temporal constraints to define the agents synchronisation on collaborative tasks, and sub-tasks decomposition. In fact, concurrency between actions, their duration, and agents coordination in HTN problems are needed to find solutions for nontrivial tasks in complex scenarios and require to make explicit the representation of time \citep{ghallabnautraverso2016}.
+These real world applications of planning use both numerical and temporal constraints to define the agents synchronisation on collaborative tasks, and sub-task decomposition. In fact, concurrency between actions, their duration, and agents coordination in HTN problems are needed to find solutions for nontrivial tasks in complex scenarios and require to make explicit the representation of time \citep{ghallabnautraverso2016}.
 
 The Hierarchical Task Network (HTN) formalism \citep{erol94} is used to express a wide variety of planning problems in many real-world applications, e.g., in task allocation for robot fleets \citep{Milot21}, video games \citep{Menif14} or industrial contexts such as software deployment \citep{Georgievski17}. Over the last years, much progress has been made in the field of hierarchical planning \citep{bercher19}. Novel systems based on the traditional, search-based techniques have been introduced~\citep{Bit-Monnot:16,ramoul17,Shivashankar17,Bercher17,Holler19,holler20,Holler21}, but also new techniques like the translation to STRIPS/ADL~\citep{Alford09,Alford16,behnke2022}, or revisited approaches like the translation to propositional logic~\citep{behnke2018totsat,Behnke2019orderchaos,Schreiber2019SAT,Schreiber21,behnke2021}.
 
@@ -165,7 +165,7 @@ An extension of PDDL (Planning Domain Description Language)~\citep{mcdermott98},
 Our motivation is grounded on the compelling need to devise applications involving autonomous systems. % TODO if place=>, i.e. agents that must be coordinated to fulfil hierarchical tasks containing both numerical and temporal constraints.
 %As a matter of fact, action concurrency and agent coordination are needed in HTN problems to find solutions for nontrivial tasks in complex scenarios, like collaborative robotic missions \citep{weser2010htn}.
 % TODO Revoir la fin, si ça change en cours de route
-We propose to extend HDDL, including elements of PDDL 2.1 and ANML \citep{smith08}, to express temporal and numerical constraints.
+We propose to extend HDDL, by including elements of PDDL 2.1 and ANML \citep{smith08}, to express temporal and numerical constraints.
 This is intended to initiate discussions within HTN community on establishing a standard -- HDDL 2.1~-- aimed at filling the gaps between existing hierarchical-temporal planning approaches. To that end, we make this preliminary extension of HDDL an open source project with a public repository, where we propose a full syntax and its parser, both available online, besides the current semantics elements, as well as a set of benchmarks based on this extension\footnote{All urls have been removed for blind review.}.
 
 The rest of the paper is organised as follows. In Section 2 we define the basic concepts of the proposed extension. In Sections 3 and 4 we set down the semantics for Temporal HTN planning. We conclude on the central aspects of this planning paradigm, and on future work. %% TODO : Revoir dernière phrase
@@ -220,7 +220,7 @@ Without loss of generality, a formula (not necessarily ground) $\phi$ is true in
    $\cal{L}$ is the first-order logic language,
    $\cal{T}$ is the set of tasks,
    $\cal{J}$ is the set of task identifiers~\footnote{Task identifiers are arbitrary symbols, which serve as place holders for the actual tasks they represent. Identifiers are needed because tasks can occur multiple times within the same task network, as we will see below.},
-   $\alpha: {\cal{J}} \rightarrow {\cal{T}}$ is the funciton that maps task identifiers to tasks,
+   $\alpha: {\cal{J}} \rightarrow {\cal{T}}$ is the function that maps task identifiers to tasks,
    ${\cal{A}}$ is a set of actions constituted by \emph{snap} actions (Def. \ref{def:snap}) and \emph{durative} actions (Def. \ref{def:dur}),
    $\cal{M}$ is the set of methods (Def. \ref{def:met}). %We note ${\cal{T}}_p$ the set of primitive tasks and ${\cal{T}}_a$ the set of abstract tasks, s.t.  ${\cal{T}} = {\cal{T}}_p \cup {\cal{T}}_a$.
  \end{definition}
@@ -391,18 +391,18 @@ Two snap actions or more can be executed at the same time if they are pairwise n
 \begin{definition}[Executable Temporal Sequence of Tasks]
   A temporal sequence of tasks $\pi = \langle (t_0, e_0, \delta_0), \ldots,$ $(t_n, e_n, \delta_n) \rangle$ is executable in a state $s_0$ if and only if for every $(t, e, \delta) \in \pi$:
   (i) $t$ is primitive;
-  (ii) $e$ is an happening event of $\pi$;
+  (ii) $e$ is a happening event of $\pi$;
   (iii) %given a tuple $(t_i, e_i, \delta_i) \in \pi$, with $0 \leq i \leq n$,
   a state $s_i$ at date $e_i$ transitions to a new state $s_{i+1}$ s.t.: 
 \begin{itemize}
   % \item $t_i$ is achieved by a ground action $a_i$; %% Useless
-  \item given the set  $B_{e_i}$ of the snap actions executing at $e_i$:
+  \item given the set  $B_{e_i}$ of the snap actions executing at $e_i$xxx executed?:
     \begin{multline*}
       B_{e_i} = \bigl\{ \tstart(a_j) \; | \;  (a_j, e_j, \delta_j) \in \pi \text{ and } e_j = e_i \}\\
-      \; \cup  \{\tend(a_k) \ | \ (a_k, e_k, \delta_k) \in \pi \text{ and } e_k + \delta_k = e_i\bigr\}
+      \; \cup  \{\tend(a_k) \ | \ (a_k, e_k, \delta_k) \in \pi \text{ and } e_k + \delta_k = e_i\bigr\}xxxe_i + d_k?xxx
     \end{multline*}
     
- and given the set $I_{e_i}$ of the invariants holding a $e_i$:
+ and given the set $I_{e_i}$ of the invariants holding at $e_i$:
     \begin{equation*}
       I_{e_i} = \bigl\{ \tinv(a_j) \; | \; (a_j, e_j, \delta_j) \in \pi \wedge e_j < e_i < e_j + \delta_j\bigr\}
     \end{equation*}
@@ -410,7 +410,7 @@ Two snap actions or more can be executed at the same time if they are pairwise n
     the transition of $s_i$ to  $s_{i+1}$, given that all the snap actions in $B_{e_i}$ are \emph{pairwise non-interfering}, is defined as   %transition function between two states
       \begin{align*}
        s_i& \models \pre(a) \text{ for every } a \in B_{e_i}\\
-       s_i& \models \tinv(a_i) \text{ for every }\tinv(a_i) \in I_{e_i}\\
+       s_i& \models \tinv(a_i) \text{ for every }\tinv(a_i) \in I_{e_i}xxxx\\
        s_{i+1}& = \left(s_i - \cup_{a \in B_{e_i}} \del(a)\right) \bigcup_{a \in B_{e_i}} \add(a)       
       \end{align*}
 \end{itemize}
@@ -485,13 +485,13 @@ We now formally define a temporal task network solution.
 \section{Decomposition Constraint Semantics}
 \label{Sec:Decomposition-Constraints-Semantics}
 
-Decomposition constraints are conditions that must be satisfiedt by all the states visited while executing a solution task network. They are expressed through temporal modal operators over first-order formulas involving state predicates, as in PDDL. The semantics of the decomposition constraints can be formally specified similarly to the approach taken by \citet{gerevini05}. Let $w = ({\cal{I}}, {\cal{C}})$ be a ground task network, a state $s_0$ and a primitive temporal sequence of tasks $\pi = \langle (t_0, e_0, \delta_0), \ldots, (t_n, e_n, \delta_n) \rangle $ with $t_0 = \alpha(i_0), \ldots, t_n = \alpha(i_n)$ resulting from the decomposition of $w$.
+Decomposition constraints are conditions that must be satisfied by all the states visited while executing a solution task network. They are expressed through temporal modal operators over first-order formulas involving state predicates, as in PDDL. The semantics of the decomposition constraints can be formally specified similarly to the approach taken by \citet{gerevini05}. Let $w = ({\cal{I}}, {\cal{C}})$ be a ground task network, a state $s_0$ and a primitive temporal sequence of tasks $\pi = \langle (t_0, e_0, \delta_0), \ldots, (t_n, e_n, \delta_n) \rangle $ with $t_0 = \alpha(i_0), \ldots, t_n = \alpha(i_n)$ resulting from the decomposition of $w$.
 % TODO Je n'ai pas bien compris pourquoi on a besoin des durées \delta dans (s_n, e_n, \delta_n)
-We denote by $\tau = \langle (s_0, e_0), \ldots, (s_n, e_n) \rangle$ the  temporal sequence of states produced by the execution of $\pi$ in $s_0$, ordered according to its happening event, with \mbox{$i \leq 0 \leq n$}. Decomposition $w$ satisfies a constraint $(\at \ e \ \phi) \in {\cal{C}}_t$ iff $\exists (s_k, e_k) \in \tau$ such that $s_k \models \phi$. % TODO il ne faut pas imposer aussi que e_k > e ?
+We denote by $\tau = \langle (s_0, e_0), \ldots, (s_n, e_n) \rangle$ the  temporal sequence of states produced by the execution of $\pi$ in $s_0$, ordered according to its happening events, with \mbox{$i \leq 0 \leq n$}. Decomposition $w$ satisfies a constraint $(\at \ e \ \phi) \in {\cal{C}}_t$ iff $\exists (s_k, e_k) \in \tau$ such that $s_k \models \phi$. % TODO il ne faut pas imposer aussi que e_k > e ?
 %
-Note that it is required that every temporal constraint of the form $(\at \ e_i \ \phi) \in {\cal{C}}_t$ to be defined for $0 \leq i \leq n$ so to avoid defining constraints that are out of the scope of the temporal task network $w$. Each decomposition constraint defined in HDDL~2.1 can be rewritten in terms of constraints of the form $(\at \ e\ \phi)$. The proposed HDDL extension distinguishes two types of decomposition constraints:
+Note that it is required that every temporal constraint of the form $(\at \ e_i \ \phi) \in {\cal{C}}_t$ to be defined for $0 \leq i \leq n$ so as to avoid defining constraints that are out of the scope of the temporal task network $w$. Each decomposition constraint defined in HDDL~2.1 can be rewritten in terms of constraints of the form $(\at \ e\ \phi)$. The proposed HDDL extension distinguishes two types of decomposition constraints:
 \begin{itemize}
-    \item the \emph{temporal decomposition constraints} that define the constraints that must hold at specific happening event whose semantics is based on the plan trajectory constraints from PDDL~3.0 \cite{gerevini05}.
+    \item the \emph{temporal decomposition constraints} that define the constraints that must hold at specific happening events whose semantics is based on the plan trajectory constraints from PDDL~3.0 \cite{gerevini05}.
     \item the \emph{classical decomposition constraints} ($\before$, $\after$, $\between$) used in HTN planning \citep{erol94} to represent constraints between tasks.
 \end{itemize}
 
@@ -505,18 +505,18 @@ For classical decomposition constraints, it can be shown that they can be expres
 %The generation of EOS mission plans is highly combinatorial as multiple activity types --- instrument operation, payload data download and maintenance --- are to be planned under strict resource and time constraints.
 %In order to reflect the temporal constraints present in satellite operations, we have adopted a problem formulation that includes elements of temporal planning, besides the usual HDDL 1.0 formulation for expressing hierarchical planning problems~\citep{holler:19}.
 
-We have introduced the main features of an HDDL version  for hierarchical temporal planning tasks.
+We have introduced the main features of a HDDL version  for hierarchical temporal planning tasks.
 This aims at bridging the gap between HTN planning and real world applications, where temporal features like concurrent actions, coordination, and hierarchical distribution of tasks, are prominent.
 %
-In our view, the absence of a unified language for temporal and numerical constraints in PDDL's evolution is an obstacle that  needs addressing. Although the community has developed various approaches to model complex planning problems, including temporal features and hierarchical task decomposition, but the variety of language solutions hinders the development of common tools and solvers.
+In our view, the absence of a unified language for temporal and numerical constraints in PDDL's evolution is an obstacle that  needs addressing. xxxAlthough the community has developed various approaches to model complex planning problems, including temporal features and hierarchical task decomposition, but the variety of language solutions hinders the development of common tools and solvers.
 
 
 %%%
 ANML  \citep{smith08} has an expressivity close to what we seek here.
 In ANML effects that happen at time intervals during an action duration can be specified. This  can also be represented in HDDL~2.1 by using constraint semantics and dividing actions with intermediate effects into separate durative actions.
 
-Some planners propose benchmarks where ordering constraints are delayed, e.g., FAPE \cite{dvorak2014}.%\footnote{E.g. \url{https://github.com/laas/fape/blob/master/planning/domains/rovers_ipc5-hier/rovers_ipc5-hier.dom.anml#L180}.}
-For instance in ANML it is possible to specify that an action must happen at least some amount of time after the end of a previous action. With the proposed syntax and semantics, such expressivity can be reached by using auxiliary tasks that decompose in a durative primitive task (of the desired duration) with no effects. % The syntax of HDDL 2.1.alpha can be extended to facilitate the expression of this type of constraints.
+Some planners propose benchmarks where ordering constraints are delayed, e.g., FAPE \cite{dvorak2014}. %\footnote{E.g. \url{https://github.com/laas/fape/blob/master/planning/domains/rovers_ipc5-hier/rovers_ipc5-hier.dom.anml#L180}.}
+ For instance in ANML it is possible to specify that an action must happen at least some amount of time after the end of a previous action. With the proposed syntax and semantics, such expressivity can be reached by using auxiliary tasks that decompose in a durative primitive task (of the desired duration) with no effects. % The syntax of HDDL 2.1.alpha can be extended to facilitate the expression of this type of constraints.
 
 Time sampling represents another open question for this extension of HDDL with time.
 Basically, two approaches exist. Sampling can be either constant ---when time is divided into regular-spaced discrete steps--- or with variable time steps instantiated when effects and preconditions are applied. The latter can benefit from the Simple Temporal Problem formalism to model the temporal features of the plan and to include timed initial effects, and Interval Temporal Logic can be used to define truth of formulas relative to time intervals, rather than time points \citep{BRESOLIN2014269}.
