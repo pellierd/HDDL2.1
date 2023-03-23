@@ -396,10 +396,10 @@ Two snap actions or more can be executed at the same time if they are pairwise n
   a state $s_i$ at date $e_i$ transitions to a new state $s_{i+1}$ s.t.: 
 \begin{itemize}
   % \item $t_i$ is achieved by a ground action $a_i$; %% Useless
-  \item given the set  $B_{e_i}$ of the snap actions executing at $e_i$xxx executed?:
+  \item given the set  $B_{e_i}$ of the snap actions being executed at $e_i$:
     \begin{multline*}
       B_{e_i} = \bigl\{ \tstart(a_j) \; | \;  (a_j, e_j, \delta_j) \in \pi \text{ and } e_j = e_i \}\\
-      \; \cup  \{\tend(a_k) \ | \ (a_k, e_k, \delta_k) \in \pi \text{ and } e_k + \delta_k = e_i\bigr\}xxxe_i + d_k?xxx
+      \; \cup  \{\tend(a_k) \ | \ (a_k, e_k, \delta_k) \in \pi \text{ and } e_i + \delta_k = e_k\bigr\}
     \end{multline*}
     
  and given the set $I_{e_i}$ of the invariants holding at $e_i$:
@@ -410,7 +410,7 @@ Two snap actions or more can be executed at the same time if they are pairwise n
     the transition of $s_i$ to  $s_{i+1}$, given that all the snap actions in $B_{e_i}$ are \emph{pairwise non-interfering}, is defined as   %transition function between two states
       \begin{align*}
        s_i& \models \pre(a) \text{ for every } a \in B_{e_i}\\
-       s_i& \models \tinv(a_i) \text{ for every }\tinv(a_i) \in I_{e_i}xxxx\\
+       s_i& \models \tinv(a) \text{ for every }\tinv(a) \in I_{e_i}\\
        s_{i+1}& = \left(s_i - \cup_{a \in B_{e_i}} \del(a)\right) \bigcup_{a \in B_{e_i}} \add(a)       
       \end{align*}
 \end{itemize}
@@ -508,7 +508,7 @@ For classical decomposition constraints, it can be shown that they can be expres
 We have introduced the main features of a HDDL version  for hierarchical temporal planning tasks.
 This aims at bridging the gap between HTN planning and real world applications, where temporal features like concurrent actions, coordination, and hierarchical distribution of tasks, are prominent.
 %
-In our view, the absence of a unified language for temporal and numerical constraints in PDDL's evolution is an obstacle that  needs addressing. xxxAlthough the community has developed various approaches to model complex planning problems, including temporal features and hierarchical task decomposition, but the variety of language solutions hinders the development of common tools and solvers.
+In our view, the absence of a unified language for temporal and numerical constraints in PDDL's evolution is an obstacle that  needs addressing. Although the community has developed various approaches to model complex planning problems, including temporal features and hierarchical task decomposition, the variety of language solutions hinders the development of common tools and solvers.
 
 
 %%%
