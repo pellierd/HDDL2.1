@@ -317,7 +317,7 @@ A \emph{temporal task network} $w = ({\cal{I}}, {\cal{C}})$ is given by: % is a 
 
       \item ${\cal{C}}_d$ is a set of durative constraints over the duration of the tasks in $\cal{I}$;
 
-      \item ${\cal{C}}_t$ is a set of temporal decomposition constraints of the form $(\at \ e \ \phi)$. This constraint expresses that some properties defined by the logical formula $\phi$ must hold in the state at date $e$. 
+      \item ${\cal{C}}_t$ is a set of temporal decomposition constraints of the form $(\at \ e \ \phi)$, expressing that some properties defined by the logical formula $\phi$ must hold in the state at \mbox{date $e$.} 
       \end{itemize}
 \end{itemize}
 The temporal task network $w$ implicitely defines a temporal ordered multi-set of tasks ${\cal{T}}' = \{ \alpha(i) \: | \: i \in {\cal{I}} \}$.
@@ -370,19 +370,44 @@ The \emph{duration} of a task $t$ is generally unbounded, as the bound would be 
 
 
 % Definition de l'executabilité d'une sequences de tâches dans un état
-It is now necessary to define under which conditions such a sequence is {\it executable}. A central notion for that is the notion of snap action {\it non-interference}, i.e. when preconditions and effects do not overlap.
-\begin{definition}[Non-Interference]
-Two snap actions $a$ and $b$ are \emph{not interfering} if and only if (i) $\pre(a) \cap \bigl(\add(b) \cup \del(b)\bigr) = \emptyset$, (ii) $\pre(b) \cap \bigl(\add(a) \cup \del(a)\bigr) = \emptyset$, (iii) $\add(a) \cap \del(b) = \emptyset$ and  $\add(b) \cap \del(a) = \emptyset$.
-\end{definition}
-Two snap actions or more can be executed at the same time if they are pairwise non-interfering. The execution semantics of snap actions are similar to the semantics of $\forall$-step parallel plans \cite{rintanen06}, and used in PDDL~2.1 \cite{fox03}. With this notion in mind, it is now possible to formally define what an executable temporal sequence of tasks is.
+%It is now necessary to define under which conditions such a sequence is {\it executable}.
+In order to guarantee the exutability of concurrent plans, in the sense of the ``required concurrency'' as in \citet{cushing2007temporal}, a central notion is {\it non-interference}, i.e. when preconditions and effects of snap actions do not overlap. 
+% \begin{definition}[Non-Interference]
+We consider that two snap actions $a$ and $b$ are \emph{not interfering} if and only if (i) $\pre(a) \cap \bigl(\add(b) \cup \del(b)\bigr) = \emptyset$, (ii) $\pre(b) \cap \bigl(\add(a) \cup \del(a)\bigr) = \emptyset$, (iii) $\add(a) \cap \del(b) = \emptyset$ and  $\add(b) \cap \del(a) = \emptyset$.
+%\end{definition}
+
+Two snap actions or more can be executed at the same time if they are pairwise non-interfering. The execution semantics of snap actions are similar to the semantics of $\forall$-step parallel plans \cite{rintanen06}, and used in PDDL~2.1 \cite{fox03}. With this notion in mind, we define an executable temporal sequence of tasks.
 
 \begin{definition}[Executable Temporal Sequence of Tasks]
-  A temporal sequence of tasks $\pi = \langle (t_0, e_0, \delta_0), \ldots,$ $(t_n, e_n, \delta_n) \rangle$ is executable in a state $s_0$ if and only if for every $(t, e, \delta) \in \pi$:
+  A temporal sequence of tasks $\pi = \langle (t_0, e_0, \delta_0), \ldots,$ $(t_n, e_n, \delta_n) \rangle$ is executable in a state $s_0$ if and only if for every $(t, e, \delta)\! \in \!\pi$:
   (i) $t$ is primitive;
-  (ii) $e$ is a happening event of $\pi$;
+  (ii) $e$ is an happening event of $\pi$;
   (iii) %given a tuple $(t_i, e_i, \delta_i) \in \pi$, with $0 \leq i \leq n$,
-  a state $s_i$ at date $e_i$ transitions to a new state $s_{i+1}$ s.t. : given the set  $B_{e_i}$ of the snap actions being executed at $e_i$: $B_{e_i} = \bigl\{ \tstart(a_j) \; | \;  (a_j, e_j, \delta_j) \in \pi \text{ and } e_j = e_i \} \; \cup  \{\tend(a_k) \ | \ (a_k, e_k, \delta_k) \in \pi \text{ and } e_i + \delta_k = e_k\bigr\}$ and given the set $I_{e_i}$ of the invariants holding at $e_i$:
-$I_{e_i} = \bigl\{ \tinv(a_j) \; | \; (a_j, e_j, \delta_j) \in \pi \wedge e_j < e_i < e_j + \delta_j\bigr\}$     the transition of $s_i$ to  $s_{i+1}$, given that all the snap actions in $B_{e_i}$ are \emph{pairwise non-interfering}, is defined between two states as $s_i \models \pre(a) \text{ for every } a \in B_{e_i}$, $s_i \models \tinv(a) \text{ for every }\tinv(a) \in I_{e_i}$, $s_{i+1} = \left(s_i - \cup_{a \in B_{e_i}} \del(a)\right) \bigcup_{a \in B_{e_i}} \add(a)$.       
+  state $s_i$ at date $e_i$ transitions to a new state $s_{i+1}$ s.t.: 
+\begin{itemize}
+  % \item $t_i$ is achieved by a ground action $a_i$; %% Useless
+  \item given the set $B_{e_i}$ of snap actions being executed at $e_i$:
+    \begin{multline*}
+      B_{e_i} = \bigl\{ \tstart(a_j) \; | \;  (a_j, e_j, \delta_j) \in \pi \text{ and } e_j = e_i \}\\
+      \; \cup  \{\tend(a_k) \ | \ (a_k, e_k, \delta_k) \in \pi \text{ and } e_i + \delta_k = e_k\bigr\}
+    \end{multline*}
+    
+ and given the set $I_{e_i}$ of the invariants holding at $e_i$:
+    \begin{equation*}
+      I_{e_i} = \bigl\{ \tinv(a_j) \; | \; (a_j, e_j, \delta_j) \in \pi \wedge e_j < e_i < e_j + \delta_j\bigr\}
+    \end{equation*}
+
+    the transition of $s_i$ to  $s_{i+1}$, given that all the snap actions in $B_{e_i}$ are \emph{pairwise non-interfering}, is defined as   %transition function between two states
+      \begin{align*}
+       s_i& \models \pre(a) \text{ for every } a \in B_{e_i}\\
+       s_i& \models \tinv(a) \text{ for every }\tinv(a) \in I_{e_i}\\
+       s_{i+1}& = \left(s_i - \cup_{a \in B_{e_i}} \del(a)\right) \bigcup_{a \in B_{e_i}} \add(a)       
+      \end{align*}
+\end{itemize}
+%
+%
+%  a state $s_i$ at date $e_i$ transitions to a new state $s_{i+1}$ s.t. : given the set  $B_{e_i}$ of the snap actions being executed at $e_i$: $B_{e_i} = \bigl\{ \tstart(a_j) \; | \;  (a_j, e_j, \delta_j) \in \pi \text{ and } e_j = e_i \} \; \cup  \{\tend(a_k) \ | \ (a_k, e_k, \delta_k) \in \pi \text{ and } e_i + \delta_k = e_k\bigr\}$ and given the set $I_{e_i}$ of the invariants holding at $e_i$:
+% $I_{e_i} = \bigl\{ \tinv(a_j) \; | \; (a_j, e_j, \delta_j) \in \pi \wedge e_j < e_i < e_j + \delta_j\bigr\}$     the transition of $s_i$ to  $s_{i+1}$, given that all the snap actions in $B_{e_i}$ are \emph{pairwise non-interfering}, is defined between two states as $s_i \models \pre(a) \text{ for every } a \in B_{e_i}$, $s_i \models \tinv(a) \text{ for every }\tinv(a) \in I_{e_i}$, $s_{i+1} = \left(s_i - \cup_{a \in B_{e_i}} \del(a)\right) \bigcup_{a \in B_{e_i}} \add(a)$.       
 \end{definition}
 %% Manque l'exécution par rapport au temps. The execution of a temporal sequence of tasks results in a sequence of states <s_i, e_i>
 
@@ -392,7 +417,8 @@ $I_{e_i} = \bigl\{ \tinv(a_j) \; | \; (a_j, e_j, \delta_j) \in \pi \wedge e_j < 
   \begin{definition}[Executable Temporal Task Network] A temporal task network $w = ({\cal{I}}, <\!{\cal{C}}_o, {\cal{C}}_v, {\cal{C}}_d, {\cal{C}}_t\!\!>)$ is executable in a state $s_0$ if and only if there exists an executable temporal sequence of tasks $\pi = \langle (\alpha(i_0), e_0, \delta_0), \ldots,$ $(\alpha(i_n), e_n, \delta_n)\rangle$  where $i_0, \ldots, i_n$ are task identifiers in $\cal{I}$ that matches the following conditions: (i) $\pi$ matches the temporal constraints ${\cal{C}}_o$, (ii) $\pi$ matches the duration constraints ${\cal{C}}_d$, and (iii) the sequence of states and their associated dates $\langle (s_0, e_0), \ldots,$ $(s_n, e_n) \rangle$ resulting from the execution of $\pi$ matches the constraints ${\cal{C}}_t$.
   \end{definition}
 
-  It remains to define how to transform a temporal task network into another one by using method decomposition in order to obtain an executable task network.
+  It remains to define how to transform a temporal task network into another one by using method decomposition in order to obtain an executable task network,
+  and what represents a temporal task network solution.
 %
 %  First, a method $m = \bigl(\name(m), \task(m), tn(m)\bigr)$
 %  refines a task $t = \task(m)$ in a subtasks multi-set  $\{\alpha(i)   \, | \, i \in {\cal{I}}^m \}$ with
@@ -405,11 +431,11 @@ $I_{e_i} = \bigl\{ \tinv(a_j) \; | \; (a_j, e_j, \delta_j) \in \pi \wedge e_j < 
   %
   A task network $w_1= ({\cal{I}}^1, {\cal{C}}^{1})$ is decomposed into a new task network
   $w_2= ({\cal{I}}^2, {\cal{C}}^{2})$ by refinement by a method $m = \bigl(\name(m),$ $\task(m), ({\cal{I}}^m, {\cal{C}}^{m})\bigr)$ 
-  if and only if exists an $i \in {\cal{I}}^1 \text{ such that } \alpha(i) = task(m)$ and
-\begin{equation*} \label{eq1}
+  if and only if exists \mbox{$i \in {\cal{I}}^1$} such that $\alpha(i) = task(m)\;$ and
+  $\;{\cal{I}}^2 = ({\cal{I}}^1 - \{i\}) \cup {\cal{I}}^m$, and 
+\begin{equation*} \label{eq1} 
 \begin{aligned}
-{\cal{I}}^2 = & ({\cal{I}}^1 - \{i\}) \cup {\cal{I}}^m\\
-{\cal{C}}^{2}_{o} = & {\cal{C}}^{1}_{o} \cup {\cal{C}}^{m}_{o} \\
+{\cal{C}}^{2}_{o} = & \:{\cal{C}}^{1}_{o} \cup {\cal{C}}^{m}_{o} \\
 & \cup \{ \tstart(t) \leq \tstart(t') \: | \: t'= \min\left(\tstart(i),\tstart(j)\right)\\
 &\quad t''= \max\left(\tstart(i),\tstart(j)\right), j \in {\cal{I}}^m \:  \}  \\
 & \cup \{ \tend(t) \geq \tend(t') \: | \: t'= \max\left(\tstart(i),\tstart(j)\right),\\
@@ -418,7 +444,7 @@ $I_{e_i} = \bigl\{ \tinv(a_j) \; | \; (a_j, e_j, \delta_j) \in \pi \wedge e_j < 
 %  & \cup \{ c \ | \ \forall j \in {\cal{I}}^m \ \tend(i) \geq \tend(j) \}  \\
 {\cal{C}}^{2}_{v}  = & {\cal{C}}^{1}_{v} \cup {\cal{C}}^{m}_{v}, 
 {\cal{C}}^{2}_{d}  =  {\cal{C}}^{1}_{d} \cup {\cal{C}}^{m}_{d}, 
-{\cal{C}}^{2}_{t}  =  {\cal{C}}^{1}_{t} \cup {\cal{C}}^{m}_{t} \\
+{\cal{C}}^{2}_{t}  =  {\cal{C}}^{1}_{t} \cup {\cal{C}}^{m}_{t}
 \end{aligned}
 \end{equation*}
 \end{definition}
@@ -440,7 +466,7 @@ Let $m = \bigl(\name(m),$ $\task(m), tn(m)\bigr)$ be a method with a task networ
 \end{definition}
 \end{comment}
 
-We now formally define a temporal task network solution.
+
 
 \begin{definition}[Temporal Task Network Solution]
   Let ${\cal{P}} = ({\cal{D}}, s_0, w_0, g)$ be a planning problem with $\cal{D} = ({\cal{L}}, {\cal{T}}, {\cal{A}}, {\cal{M}})$. A task network $w_s = ({\cal{I}}, {\cal{C}})$ is solution to a temporal HTN planning problem ${\cal{P}}$ \mbox{if and only if:}
