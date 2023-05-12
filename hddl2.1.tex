@@ -2,7 +2,7 @@
 %File: formatting-instructions-latex-2021.tex
 %release 2021.2
 \documentclass[letterpaper]{article} % DO NOT CHANGE THIS
-\usepackage[submission]{aaai23}  % DO NOT CHANGE THIS
+\usepackage[]{aaai23}  % DO NOT CHANGE THIS
 \usepackage{times}  % DO NOT CHANGE THIS
 \usepackage{helvet}  % DO NOT CHANGE THIS
 \usepackage{courier}  % DO NOT CHANGE THIS
@@ -130,15 +130,24 @@
 \setcounter{secnumdepth}{2}
 
 \setlength\titlebox{2.5in}
-\title{HDDL 2.1.alpha: The Challenge of Defining a HTN Formalism with Time}
-\author{
-Damien Pellier, Humbert Fiorino\\
-Univ. Grenoble Alpes, LIG\\
-38000 Grenoble, France\\
-\{Damien.Pellier, Humbert.Fiorino\}@univ-grenoble-alpes.fr}
 
-\title{HDDL 2.1.alpha: Towards Defining a HTN Formalism with Time}
-\author{Paper \# \vspace{-1cm}}
+\title{HDDL 2.1.alpha: The Challenge of Defining a HTN Formalism with Time}
+
+\author {
+    % Authors
+    Damien Pellier,\textsuperscript{\rm 1}
+    Alexandre Albore, \textsuperscript{\rm 2}
+    Humbert Fiorino \textsuperscript{\rm 1}
+    Rafael Bailon-Ruiz \textsuperscript{\rm 2}
+}
+\affiliations {
+    % Affiliations
+    \textsuperscript{\rm 1} Univ. Grenoble Alpes, LIG, Grenoble France \\
+      \{damien.pellier, humbert.fiorno\}@imag.fr\\
+    \textsuperscript{\rm 2} ONERA, DTIS, Toulouse, France\\
+    \{alexandre.albore, rafael.bailon\_ruiz\}@onera.fr
+}
+
 
 \sloppy
 
@@ -199,8 +208,8 @@ Without loss of generality, a formula (not necessarily ground) $\phi$ is true in
  A key concept in HTN planning and a fortiori in temporal HTN planning is the concept of {\it task}. Each task is given by a name and a list of parameters. We distinguish two kinds of tasks: the  primitive tasks (also called actions), and the abstract tasks (or compound tasks).
  Primitive tasks are carried out by  durative actions in the sense of classical temporal planning \cite{fox03}, while abstract tasks can be refined by applying methods that define the decomposition of the task into subtasks. The purpose of abstract tasks is not to induce a state transition. Instead, they refer to a predefined mapping to one or more tasks that can refine the abstract task. For instance, in the task of serving a dinner, {\it deliver-dinner(?food-style, ?place)} is the compound task consisting in performing first the task of serving the starters, then the main course, etc. In that sense,  {\it deliver-dinner(?food-style, ?place)} can be refined in: $\langle$ {\it serve-starters(?food-style, ?place)},  {\it serve-main-course(?food-style, ?place)}, etc.$\rangle$ This mapping between tasks is achieved by a set of decomposition methods, namely the methods (Def. \ref{def:met}) and the the Temporal Task Networks (Def. \ref{def:TNN}).%as defined below in Def.~\ref{def:decomp}.
 
- 
- %A {\it task} is defined as an atomic formula given by its name followed by a parameter sequence that could be either a typed variable in $V$ or typed constant in $C$. There are two kinds of tasks: 
+
+ %A {\it task} is defined as an atomic formula given by its name followed by a parameter sequence that could be either a typed variable in $V$ or typed constant in $C$. There are two kinds of tasks:
 
  We first define the planning domain and problem for Temporal HTN Planning.
  %
@@ -222,11 +231,11 @@ Without loss of generality, a formula (not necessarily ground) $\phi$ is true in
 
  %%% Tasks and Tasks networks
 
- 
+
 \begin{figure}
 \begin{adjustbox}{width=\columnwidth}
 \begin{tikzpicture}
-% draw horizontal line   
+% draw horizontal line
 \draw[thick, -Triangle] (0,0) -- (7cm,0) node[font=\scriptsize,below left=3pt and -8pt]{time};
 
 % draw vertical lines
@@ -250,7 +259,7 @@ Without loss of generality, a formula (not necessarily ground) $\phi$ is true in
 % colored bar down
 %\foreach \x/\perccol in
 %{3/100,4/75,5/0}
-%\draw[lightgray!\perccol!green, line width=4pt] 
+%\draw[lightgray!\perccol!green, line width=4pt]
 %(\x,-.7) -- +(1,0);
 \draw[>=latex, <->, dashed, teal] (1,-.5) --  +(5,0);
 \node[font=\scriptsize, text height=1.75ex,text depth=.5ex, teal] at (7/2,-.3) {$\delta$};
@@ -278,7 +287,7 @@ Without loss of generality, a formula (not necessarily ground) $\phi$ is true in
  between checking the preconditions and applying the effects. %% Using Greek letters to denote time
  %
  \begin{definition}[Snap Action]\label{def:snap} A \emph{snap action} $a$ is a tuple $\bigl(\name(a), \pre(a), \effect(a) \bigr)$, where $\name(a)$ is the name of $a$, the precondition $\pre(a)$ is a first-order formula, % $\phi$,
-   and the effects $\effect(a) = \add(a) \cup \del(a)$ ($\add(a) \cap \del(a) = \emptyset$), $\add(a)$ and $\del(a)$ are conjunctions of predicates. 
+   and the effects $\effect(a) = \add(a) \cup \del(a)$ ($\add(a) \cap \del(a) = \emptyset$), $\add(a)$ and $\del(a)$ are conjunctions of predicates.
 
  % The execution of $a$ in state $s$ is possible if   $s \models \phi$. The effects produced by the execution of $a$ is a state transition from $s$ to $s'$ s.t. $s' = \effect(a) = \add(a) \cup \del(a)$ ($\add(a) \cap \del(a) = \emptyset$), $\add(a)$ and $\del(a)$ are conjunctions of predicates, respectively true and false after the execution of $a$.
 \end{definition}
@@ -317,14 +326,14 @@ A \emph{temporal task network} $w = ({\cal{I}}, {\cal{C}})$ is given by: % is a 
 
       \item ${\cal{C}}_d$ is a set of durative constraints over the duration of the tasks in $\cal{I}$;
 
-      \item ${\cal{C}}_t$ is a set of temporal decomposition constraints of the form $(\at \ e \ \phi)$, expressing that some properties defined by the logical formula $\phi$ must hold in the state at \mbox{date $e$.} 
+      \item ${\cal{C}}_t$ is a set of temporal decomposition constraints of the form $(\at \ e \ \phi)$, expressing that some properties defined by the logical formula $\phi$ must hold in the state at \mbox{date $e$.}
       \end{itemize}
 \end{itemize}
 The temporal task network $w$ implicitely defines a temporal ordered multi-set of tasks ${\cal{T}}' = \{ \alpha(i) \: | \: i \in {\cal{I}} \}$.
 \end{definition}
 
 
-A temporal task network explicits the decomposition of abstract tasks into subtasks. %, i.e. to reference a predefined mapping to one or more tasks which that abstract task can be refined. 
+A temporal task network explicits the decomposition of abstract tasks into subtasks. %, i.e. to reference a predefined mapping to one or more tasks which that abstract task can be refined.
 Note that a temporal task network is ground if all its variables are bound to constants, and primitive if all its tasks ${\cal{T}}'$ are primitive.
 
 
@@ -335,7 +344,7 @@ Note that a temporal task network is ground if all its variables are bound to co
   \end{example}
 
 \begin{example}[${\cal{C}}_v$ constraints]
-\ldots 
+\ldots
   \end{example}
 
 \begin{example}[${\cal{C}}_d$ constraints]
@@ -371,7 +380,7 @@ The \emph{duration} of a task $t$ is generally unbounded, as the bound would be 
 
 % Definition de l'executabilité d'une sequences de tâches dans un état
 %It is now necessary to define under which conditions such a sequence is {\it executable}.
-In order to guarantee the exutability of concurrent plans, in the sense of the ``required concurrency'' as in \citet{cushing2007temporal}, a central notion is {\it non-interference}, i.e. when preconditions and effects of snap actions do not overlap. 
+In order to guarantee the exutability of concurrent plans, in the sense of the ``required concurrency'' as in \citet{cushing2007temporal}, a central notion is {\it non-interference}, i.e. when preconditions and effects of snap actions do not overlap.
 % \begin{definition}[Non-Interference]
 We consider that two snap actions $a$ and $b$ are \emph{not interfering} if and only if (i) $\pre(a) \cap \bigl(\add(b) \cup \del(b)\bigr) = \emptyset$, (ii) $\pre(b) \cap \bigl(\add(a) \cup \del(a)\bigr) = \emptyset$, (iii) $\add(a) \cap \del(b) = \emptyset$ and  $\add(b) \cap \del(a) = \emptyset$.
 %\end{definition}
@@ -383,7 +392,7 @@ Two snap actions or more can be executed at the same time if they are pairwise n
   (i) $t$ is primitive;
   (ii) $e$ is an happening event of $\pi$;
   (iii) %given a tuple $(t_i, e_i, \delta_i) \in \pi$, with $0 \leq i \leq n$,
-  state $s_i$ at date $e_i$ transitions to a new state $s_{i+1}$ s.t.: 
+  state $s_i$ at date $e_i$ transitions to a new state $s_{i+1}$ s.t.:
 \begin{itemize}
   % \item $t_i$ is achieved by a ground action $a_i$; %% Useless
   \item given the set $B_{e_i}$ of snap actions being executed at $e_i$:
@@ -391,7 +400,7 @@ Two snap actions or more can be executed at the same time if they are pairwise n
       B_{e_i} = \bigl\{ \tstart(a_j) \; | \;  (a_j, e_j, \delta_j) \in \pi \text{ and } e_j = e_i \}\\
       \; \cup  \{\tend(a_k) \ | \ (a_k, e_k, \delta_k) \in \pi \text{ and } e_i + \delta_k = e_k\bigr\}
     \end{multline*}
-    
+
  and given the set $I_{e_i}$ of the invariants holding at $e_i$:
     \begin{equation*}
       I_{e_i} = \bigl\{ \tinv(a_j) \; | \; (a_j, e_j, \delta_j) \in \pi \wedge e_j < e_i < e_j + \delta_j\bigr\}
@@ -401,13 +410,13 @@ Two snap actions or more can be executed at the same time if they are pairwise n
       \begin{align*}
        s_i& \models \pre(a) \text{ for every } a \in B_{e_i}\\
        s_i& \models \tinv(a) \text{ for every }\tinv(a) \in I_{e_i}\\
-       s_{i+1}& = \left(s_i - \cup_{a \in B_{e_i}} \del(a)\right) \bigcup_{a \in B_{e_i}} \add(a)       
+       s_{i+1}& = \left(s_i - \cup_{a \in B_{e_i}} \del(a)\right) \bigcup_{a \in B_{e_i}} \add(a)
       \end{align*}
 \end{itemize}
 %
 %
 %  a state $s_i$ at date $e_i$ transitions to a new state $s_{i+1}$ s.t. : given the set  $B_{e_i}$ of the snap actions being executed at $e_i$: $B_{e_i} = \bigl\{ \tstart(a_j) \; | \;  (a_j, e_j, \delta_j) \in \pi \text{ and } e_j = e_i \} \; \cup  \{\tend(a_k) \ | \ (a_k, e_k, \delta_k) \in \pi \text{ and } e_i + \delta_k = e_k\bigr\}$ and given the set $I_{e_i}$ of the invariants holding at $e_i$:
-% $I_{e_i} = \bigl\{ \tinv(a_j) \; | \; (a_j, e_j, \delta_j) \in \pi \wedge e_j < e_i < e_j + \delta_j\bigr\}$     the transition of $s_i$ to  $s_{i+1}$, given that all the snap actions in $B_{e_i}$ are \emph{pairwise non-interfering}, is defined between two states as $s_i \models \pre(a) \text{ for every } a \in B_{e_i}$, $s_i \models \tinv(a) \text{ for every }\tinv(a) \in I_{e_i}$, $s_{i+1} = \left(s_i - \cup_{a \in B_{e_i}} \del(a)\right) \bigcup_{a \in B_{e_i}} \add(a)$.       
+% $I_{e_i} = \bigl\{ \tinv(a_j) \; | \; (a_j, e_j, \delta_j) \in \pi \wedge e_j < e_i < e_j + \delta_j\bigr\}$     the transition of $s_i$ to  $s_{i+1}$, given that all the snap actions in $B_{e_i}$ are \emph{pairwise non-interfering}, is defined between two states as $s_i \models \pre(a) \text{ for every } a \in B_{e_i}$, $s_i \models \tinv(a) \text{ for every }\tinv(a) \in I_{e_i}$, $s_{i+1} = \left(s_i - \cup_{a \in B_{e_i}} \del(a)\right) \bigcup_{a \in B_{e_i}} \add(a)$.
 \end{definition}
 %% Manque l'exécution par rapport au temps. The execution of a temporal sequence of tasks results in a sequence of states <s_i, e_i>
 
@@ -430,10 +439,10 @@ Two snap actions or more can be executed at the same time if they are pairwise n
 % NB: en cas de pepin, la définition d'origine est copiée plus bas en {comment}
   %
   A task network $w_1= ({\cal{I}}^1, {\cal{C}}^{1})$ is decomposed into a new task network
-  $w_2= ({\cal{I}}^2, {\cal{C}}^{2})$ by refinement by a method $m = \bigl(\name(m),$ $\task(m), ({\cal{I}}^m, {\cal{C}}^{m})\bigr)$ 
+  $w_2= ({\cal{I}}^2, {\cal{C}}^{2})$ by refinement by a method $m = \bigl(\name(m),$ $\task(m), ({\cal{I}}^m, {\cal{C}}^{m})\bigr)$
   if and only if exists \mbox{$i \in {\cal{I}}^1$} such that $\alpha(i) = task(m)\;$ and
-  $\;{\cal{I}}^2 = ({\cal{I}}^1 - \{i\}) \cup {\cal{I}}^m$, and 
-\begin{equation*} \label{eq1} 
+  $\;{\cal{I}}^2 = ({\cal{I}}^1 - \{i\}) \cup {\cal{I}}^m$, and
+\begin{equation*} \label{eq1}
 \begin{aligned}
 {\cal{C}}^{2}_{o} = & \:{\cal{C}}^{1}_{o} \cup {\cal{C}}^{m}_{o} \\
 & \cup \{ \tstart(t) \leq \tstart(t') \: | \: t'= \min\left(\tstart(i),\tstart(j)\right)\\
@@ -442,8 +451,8 @@ Two snap actions or more can be executed at the same time if they are pairwise n
 & \quad t''= \min\left(\tstart(i),\tstart(j)\right), j \in {\cal{I}}^m \:  \}\\
 %  & \cup \{ c \ | \ \forall j \in {\cal{I}}^m \ \tstart(i) \leq \tstart(j) \}  \\
 %  & \cup \{ c \ | \ \forall j \in {\cal{I}}^m \ \tend(i) \geq \tend(j) \}  \\
-{\cal{C}}^{2}_{v}  = & {\cal{C}}^{1}_{v} \cup {\cal{C}}^{m}_{v}, 
-{\cal{C}}^{2}_{d}  =  {\cal{C}}^{1}_{d} \cup {\cal{C}}^{m}_{d}, 
+{\cal{C}}^{2}_{v}  = & {\cal{C}}^{1}_{v} \cup {\cal{C}}^{m}_{v},
+{\cal{C}}^{2}_{d}  =  {\cal{C}}^{1}_{d} \cup {\cal{C}}^{m}_{d},
 {\cal{C}}^{2}_{t}  =  {\cal{C}}^{1}_{t} \cup {\cal{C}}^{m}_{t}
 \end{aligned}
 \end{equation*}
