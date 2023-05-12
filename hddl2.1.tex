@@ -144,7 +144,7 @@
 }
 \affiliations {
     % Affiliations
-    \textsuperscript{\rm 1} Univ. Grenoble Alpes, LIG, Grenoble France \\
+    \textsuperscript{\rm 1} Univ. Grenoble Alpes, LIG, Grenoble France
       \{damien.pellier, humbert.fiorno\}@imag.fr\\
     \textsuperscript{\rm 2} ONERA, DTIS, Toulouse, France\\
     \{alexandre.albore, rafael.bailon\_ruiz\}@onera.fr
@@ -173,8 +173,8 @@ An extension of PDDL (Planning Domain Description Language)~\citep{mcdermott98},
 Our motivation is grounded on the compelling need to devise applications involving autonomous systems. % TODO if place=>, i.e. agents that must be coordinated to fulfil hierarchical tasks containing both numerical and temporal constraints.
 %As a matter of fact, action concurrency and agent coordination are needed in HTN problems to find solutions for nontrivial tasks in complex scenarios, like collaborative robotic missions \citep{weser2010htn}.
 % TODO Revoir la fin, si ça change en cours de route
-We propose to extend HDDL, by including elements of PDDL 2.1 and ANML \citep{smith08}, to express temporal and numerical constraints.
-This is intended to initiate discussions within HTN community on establishing a standard -- HDDL 2.1~-- aimed at filling the gaps between existing hierarchical-temporal planning approaches. To that end, we make this preliminary extension of HDDL an open source project with a public repository, where we propose a full syntax as well as a set of benchmarks based on this extension\footnote{\url{https://github.com/pellierd/HDDL2.1}} and a parser for it as part of the PDDL4J\footnote{\url{https://github.com/pellierd/pddl4j}} library \cite{Pellier18}.
+We propose to extend HDDL, by including elements of PDDL 2.1 and ANML ({\it Action Notation Modeling Language}) \citep{smith08}, to express temporal and numerical constraints.
+This is intended to initiate discussions within the HTN community on establishing a standard -- HDDL 2.1~-- aimed at filling the gaps between existing hierarchical-temporal planning approaches. To that end, we make this preliminary extension of HDDL an open source project with a public repository, where we propose a full syntax as well as a set of benchmarks based on this extension\footnote{\url{https://github.com/pellierd/HDDL2.1}} and a parser for it as part of the PDDL4J\footnote{\url{https://github.com/pellierd/pddl4j}} library \cite{Pellier18}.
 
 The rest of the paper is organised as follows. In Section 2 we define the basic concepts of the proposed extension. In Sections 3 and 4 we set down the semantics for Temporal HTN planning. We conclude on the central aspects of this planning paradigm, and on future work. %% TODO : Revoir dernière phrase
 % Section 5 describes our extension of the HDDL 1.0 syntax to deal with time, numeric and constraints in method declaration. The proposed syntax called HDDL 2.1 is illustrated on a commercial optical Earth Observing Satellite (EOS) study case, which delimits our requirements for this new language inspired from the International Planning Competition hierarchical satellite domain~\citep{schattenberg2020} with temporal features, as well as the orderings and the hierarchical constraints of the proposed language extension. Finally, we conclude by discussing the main features of the proposed language. % The full syntax of our HDDL dialect is presented in the appendix.
@@ -196,7 +196,7 @@ The rest of the paper is organised as follows. In Section 2 we define the basic 
 
 % Dire que pour des raisons de places les fonctions n'ont pas été inclues
 
-Throughout this section, we will use common notations from first-order logic, which we assume to be known. In the lifted formalism of HDDL 2.1, we assume for the sake of simplicity that all logical formulas are over a {\it function-free} first-order logic language ${\cal{L}} = (V, C, P)$. ${\cal{L}}$ consists of sufficiently many {\it constant} $c \in C$ representing the {\it objects} in the real world, {\it variables} $x \in V$ and {\it predicates} $p \in P$. Predicates have parameters that are either variables or constants. The predicate arity is the number of predicate parameters. For instance, $p(x, c)$ is a 2-arity predicate. We can now define {\it formulas} in a function-free first-order logic: (i) a predicate is a formula ; (ii) if ${\phi}$ and ${\psi}$ are formulas, then $\neg \phi$, $\phi \vee \psi$ and $\phi \wedge \psi$ are formulas ; (iii) if $\phi$ is a formula and $x$ is a variable, then $\forall x \phi$ is a formula. We define $\exists x \phi$ as $\neg \forall x \neg \phi$, and $\phi \rightarrow \psi$ as $\neg \phi \vee \psi$. $\forall$ and $\exists$ are respectively the universal and the existential quantifier. Conceptually, grounding a formula consists in generating a set of variable-free i.e. {\it ground} formulas \cite{helmert} as follows: a variable $x$ in a quantifier-free formula $\phi$ is eliminated by replacing $\phi$ with $|C|$ copies, one for each $c \in C$, where $x$ is substituted with $c$ in the respective copy. This substitution is denoted by $\phi[x/c]$. Regarding quantified formulas, $\forall x \phi$ is replaced by $\bigwedge_{c \in C} \phi[x/c]$ and $\exists x \phi$ by $\bigvee_{c \in C} \phi[x/c]$. We refer the reader to \cite{behnke20,ramoul17} for further details on grounding implementation. Note that it is always possible to transform a formula in function-free first-order logic into a finite set of ground formulas in propositional logic.
+Throughout this section, we will use common notations from first-order logic, which we assume to be known. In the lifted formalism of HDDL 2.1, we assume for the sake of simplicity that all logical formulas are over a {\it function-free} first-order logic language ${\cal{L}} = (V, C, P)$. ${\cal{L}}$ consists of sufficiently many {\it constant} $c \in C$ representing the {\it objects} in the real world, {\it variables} $x \in V$ and {\it predicates} $p \in P$. Predicates have parameters that are either variables or constants. The predicate arity is the number of predicate parameters. For instance, $p(x, c)$ is a 2-arity predicate. We can now define {\it formulas} in a function-free first-order logic: (i) a predicate is a formula ; (ii) if ${\phi}$ and ${\psi}$ are formulas, then $\neg \phi$, $\phi \vee \psi$ and $\phi \wedge \psi$ are formulas ; (iii) if $\phi$ is a formula and $x$ is a variable, then $\forall x \phi$ is a formula. We define $\exists x \phi$ as $\neg \forall x \neg \phi$, and $\phi \rightarrow \psi$ as $\neg \phi \vee \psi$. $\forall$ and $\exists$ are respectively the universal and the existential quantifier. Conceptually, grounding a formula consists in generating a set of variable-free i.e. {\it ground} formulas \cite{helmert} as follows: a variable $x$ in a quantifier-free formula $\phi$ is eliminated by replacing $\phi$ with $|C|$ copies, one for each $c \in C$, where $x$ is substituted with $c$ in the respective copy. This substitution is denoted by $\phi[x/c]$. Regarding quantified formulas, $\forall x \phi$ is replaced by $\bigwedge_{c \in C} \phi[x/c]$ and $\exists x \phi$ by $\bigvee_{c \in C} \phi[x/c]$. We refer the reader to \citet{behnke20,ramoul17} for further details on grounding implementation. Note that it is always possible to transform a formula in function-free first-order logic into a finite set of ground formulas in propositional logic.
 
 A {\it state} $s$ is a set of ground predicates. For the sake of conciseness, we will also consider $s$ as a Herbrand interpretation that assigns $true$ to all ground predicates in $s$, and $false$ to all ground predicates not in $s$. From this, a truth value can be computed for every {\it ground} formula from ${\cal{L}}$ by using the usual rules for logical composition.
 % For instance, we say that the formula $\phi \wedge \psi$ is true in $s$ if and only if both $\phi$ and $\psi$ are true in $s$.
@@ -208,7 +208,7 @@ Without loss of generality, a formula (not necessarily ground) $\phi$ is true in
 %% Domain def %%%
 
  A key concept in HTN planning and a fortiori in temporal HTN planning is the concept of {\it task}. Each task is given by a name and a list of parameters. We distinguish two kinds of tasks: the  primitive tasks (also called actions), and the abstract tasks (or compound tasks).
- Primitive tasks are carried out by  durative actions in the sense of classical temporal planning \cite{fox03}, while abstract tasks can be refined by applying methods that define the decomposition of the task into subtasks. The purpose of abstract tasks is not to induce a state transition. Instead, they refer to a predefined mapping to one or more tasks that can refine the abstract task. For instance, in the task of serving a dinner, {\it deliver-dinner(?food-style, ?place)} is the compound task consisting in performing first the task of serving the starters, then the main course, etc. In that sense,  {\it deliver-dinner(?food-style, ?place)} can be refined in: $\langle$ {\it serve-starters(?food-style, ?place)},  {\it serve-main-course(?food-style, ?place)}, etc.$\rangle$ This mapping between tasks is achieved by a set of decomposition methods, namely the methods (Def. \ref{def:met}) and the the Temporal Task Networks (Def. \ref{def:TNN}).%as defined below in Def.~\ref{def:decomp}.
+ Primitive tasks are carried out by  durative actions in the sense of classical temporal planning \cite{fox03}, while abstract tasks can be refined by applying methods that define the decomposition of the task into subtasks. The purpose of abstract tasks is not to induce a state transition. Instead, they refer to a predefined mapping to one or more tasks that can refine the abstract task. For instance, in the task of serving a dinner, {\it deliver-dinner(?food-style, ?place)} is the compound task consisting in performing first the task of serving the starters, then the main course, etc. In that sense,  {\it deliver-dinner(?food-style, ?place)} can be refined in: $\langle$ {\it serve-starters(?food-style, ?place)},  {\it serve-main-course(?food-style, ?place)}, etc.$\rangle$ This mapping between tasks is achieved by a set of decomposition methods, namely the methods (Def. \ref{def:met}) and the Temporal Task Networks (Def. \ref{def:TNN}).%as defined below in Def.~\ref{def:decomp}.
 
 
  %A {\it task} is defined as an atomic formula given by its name followed by a parameter sequence that could be either a typed variable in $V$ or typed constant in $C$. There are two kinds of tasks:
@@ -219,7 +219,7 @@ Without loss of generality, a formula (not necessarily ground) $\phi$ is true in
    A \emph{planning domain} $\cal{D}$ is a tuple $({\cal{L}}, {\cal{T}}, {\cal{J}}, \alpha, {\cal{A}}, {\cal{M}})$, where
    $\cal{L}$ is the first-order logic language,
    $\cal{T}$ is the set of tasks,
-   $\cal{J}$ is the set of task identifiers~\footnote{Task identifiers are arbitrary symbols, which serve as place holders for the actual tasks they represent. Identifiers are needed because tasks can occur multiple times within the same task network, as we will see below.},
+   $\cal{J}$ is the set of task identifiers\footnote{Task identifiers are arbitrary symbols, which serve as place holders for the actual tasks they represent. Identifiers are needed because tasks can occur multiple times within the same task network, as we will see below.},
    $\alpha: {\cal{J}} \rightarrow {\cal{T}}$ is the function that maps task identifiers to tasks,
    ${\cal{A}}$ is a set of actions constituted by \emph{snap} actions (Def. \ref{def:snap}) and \emph{durative} actions (Def. \ref{def:dur}),
    $\cal{M}$ is the set of methods (Def. \ref{def:met}). %We note ${\cal{T}}_p$ the set of primitive tasks and ${\cal{T}}_a$ the set of abstract tasks, s.t.  ${\cal{T}} = {\cal{T}}_p \cup {\cal{T}}_a$.
@@ -285,7 +285,7 @@ Without loss of generality, a formula (not necessarily ground) $\phi$ is true in
 \end{figure}
 
 
- Let us start by defining the concepts of {\it snap} and {\it durative actions}, which are the primitive tasks, based on the concepts of \cite{abdulaziz22}. A snap action is an action whose execution is instantaneous in the sense of classical planning, meaning that it has a null duration % $\epsilon = 0$  -- $\epsilon \ll \delta$
+ Let us start by defining the concepts of {\it snap} and {\it durative actions}, which are the primitive tasks, based on the concepts of \citet{abdulaziz22}. A snap action is an action whose execution is instantaneous in the sense of classical planning, meaning that it has a null duration % $\epsilon = 0$  -- $\epsilon \ll \delta$
  between checking the preconditions and applying the effects. %% Using Greek letters to denote time
  %
  \begin{definition}[Snap Action]\label{def:snap} A \emph{snap action} $a$ is a tuple $\bigl(\name(a), \pre(a), \effect(a) \bigr)$, where $\name(a)$ is the name of $a$, the precondition $\pre(a)$ is a first-order formula, % $\phi$,
@@ -299,7 +299,7 @@ Without loss of generality, a formula (not necessarily ground) $\phi$ is true in
   and $\delta$ is the duration of $a$. %% $start(a)$ and $end(a)$ are called time events.
 \end{definition}
 Actions do change the state of the world. Durative actions also change the time of the model, shifting it by a quantity $\delta$, as shown in Figure~\ref{fig:timeline}.
-States transition will be formally defined in Section \ref{THTN}.  % TODO Check
+State transitions will be formally defined in Section \ref{THTN}.  % TODO Check
 
 % Unlike a primitive task, % (i.e. a snap or durative action),
 % a {\it compound task} does not directly  change the world state.
@@ -360,7 +360,7 @@ Note that a temporal task network is ground if all its variables are bound to co
 \end{comment}
 
 %
- \section{Temporal HTN planning Semantics}
+ \section{Temporal HTN Planning Semantics}
  \label{THTN}
 
  The solution of a temporal HTN planning problem is an {\it executable} temporal task network that is obtained from the problem initial task network by applying method decomposition and constraint satisfaction.
@@ -370,14 +370,14 @@ Note that a temporal task network is ground if all its variables are bound to co
  % Definition d'un sequence temporel de tâches
 Let us start by defining a temporal sequence of tasks.
 \begin{definition}[Temporal Sequence of Tasks] % TODO e_i is an event and \delta is a date/time
-  A \emph{temporal sequence of tasks} $\pi$ over a planning domain $\cal{D}$, is a sequence of tuples $\langle (t_0, e_0, \delta_0), \ldots,$ $(t_n, e_n, \delta_n) \rangle$ where $t_0, \ldots, t_n$ are ground tasks defined over $\cal{T}$, and for $0 \ge i \le n$, $e_i \in \mathbb{N}_{\geq 0}$ and $\delta_i \in \mathbb{N}_{\geq 0}$ are natural numbers\footnote{
+  A \emph{temporal sequence of tasks} $\pi$ over a planning domain $\cal{D}$, is a sequence of tuples $\langle (t_0, e_0, \delta_0), \ldots,$ $(t_n, e_n, \delta_n) \rangle$ where $t_0, \ldots, t_n$ are ground tasks defined over $\cal{T}$, and for $0 \le i \le n$, $e_i \in \mathbb{N}_{\geq 0}$ and $\delta_i \in \mathbb{N}_{\geq 0}$ are natural numbers\footnote{
     Rational numbers are used in the definition from~\citet{fox03}. However, integers should be used for dates, because using rationals can yield to an undecidable planning problem.}
   to which refer as the starting date and the duration of the task $t_i$, respectively.
   For a temporal sequence of tasks $\pi$, the set of dates $\{e \ | \ (t, e, \delta) \in \pi\} \cup \{e + \delta \ | \ (t, e, \delta) \in \pi\}$  define a sorted sequence $<e_0, \ldots, e_n>$ of \emph{happening events} of $\pi$. % denoted $htps(\pi)$.  These are dates. TODO "ordered sequence" ?
 A temporal sequence of tasks  $\pi$ is primitive if and only if for every task  $(t, e, \delta) \in \pi$, $t$ is primitive, i.e. $t$ is carried out by an action (either snap or durative).
 \end{definition}
 
-The \emph{duration} of a task $t$ is generally unbounded, as the bound would be the sum of the durations of the tasks of which $t$ is coumpounded of. Only when a task $t$ is primitive, then $duration(t)$ is given by the duration $\delta$ of the action that refines $t$.
+The \emph{duration} of a task $t$ is generally unbounded, as the bound would be the sum of the durations of the tasks of which $t$ is compounded of. Only when a task $t$ is primitive, then $duration(t)$ is given by the duration $\delta$ of the action that achieves $t$.
 
 
 % Definition de l'executabilité d'une sequences de tâches dans un état
@@ -392,29 +392,28 @@ Two snap actions or more can be executed at the same time if they are pairwise n
 \begin{definition}[Executable Temporal Sequence of Tasks]
   A temporal sequence of tasks $\pi = \langle (t_0, e_0, \delta_0), \ldots,$ $(t_n, e_n, \delta_n) \rangle$ is executable in a state $s_0$ if and only if for every $(t, e, \delta)\! \in \!\pi$:
   (i) $t$ is primitive;
-  (ii) $e$ is an happening event of $\pi$;
+  (ii) $e$ is a happening event of $\pi$;
   (iii) %given a tuple $(t_i, e_i, \delta_i) \in \pi$, with $0 \leq i \leq n$,
   state $s_i$ at date $e_i$ transitions to a new state $s_{i+1}$ s.t.:
-\begin{itemize}
+%\begin{itemize}
   % \item $t_i$ is achieved by a ground action $a_i$; %% Useless
-  \item given the set $B_{e_i}$ of snap actions being executed at $e_i$:
-    \begin{multline*}
-      B_{e_i} = \bigl\{ \tstart(a_j) \; | \;  (a_j, e_j, \delta_j) \in \pi \text{ and } e_j = e_i \}\\
-      \; \cup  \{\tend(a_k) \ | \ (a_k, e_k, \delta_k) \in \pi \text{ and } e_i + \delta_k = e_k\bigr\}
-    \end{multline*}
-
- and given the set $I_{e_i}$ of the invariants holding at $e_i$:
-    \begin{equation*}
-      I_{e_i} = \bigl\{ \tinv(a_j) \; | \; (a_j, e_j, \delta_j) \in \pi \wedge e_j < e_i < e_j + \delta_j\bigr\}
-    \end{equation*}
-
+  %\item
+  given the set $B_{e_i}$ of snap actions being executed at $e_i$:
+    %\begin{multline*}
+      $B_{e_i} = \bigl\{ \tstart(a_j) \; | \;  (a_j, e_j, \delta_j) \in \pi \text{ and } e_j = e_i \}
+      \; \cup  \{\tend(a_k) \ | \ (a_k, e_k, \delta_k) \in \pi \text{ and } e_i + \delta_k = e_k\bigr\}$
+    %\end{multline*}
+and given the set $I_{e_i}$ of the invariants holding at $e_i$:
+    %\begin{equation*}
+      $I_{e_i} = \bigl\{ \tinv(a_j) \; | \; (a_j, e_j, \delta_j) \in \pi \wedge e_j < e_i < e_j + \delta_j\bigr\}$
+    %\end{equation*}
     the transition of $s_i$ to  $s_{i+1}$, given that all the snap actions in $B_{e_i}$ are \emph{pairwise non-interfering}, is defined as   %transition function between two states
-      \begin{align*}
-       s_i& \models \pre(a) \text{ for every } a \in B_{e_i}\\
-       s_i& \models \tinv(a) \text{ for every }\tinv(a) \in I_{e_i}\\
-       s_{i+1}& = \left(s_i - \cup_{a \in B_{e_i}} \del(a)\right) \bigcup_{a \in B_{e_i}} \add(a)
-      \end{align*}
-\end{itemize}
+      %\begin{align*}
+       $s_i \models \pre(a) \text{ for every } a \in B_{e_i}$,
+       $s_i \models \tinv(a) \text{ for every }\tinv(a) \in I_{e_i}$ and
+       $s_{i+1} = \left(s_i - \cup_{a \in B_{e_i}} \del(a)\right) \bigcup_{a \in B_{e_i}} \add(a)$.
+      %\end{align*}
+%\end{itemize}
 %
 %
 %  a state $s_i$ at date $e_i$ transitions to a new state $s_{i+1}$ s.t. : given the set  $B_{e_i}$ of the snap actions being executed at $e_i$: $B_{e_i} = \bigl\{ \tstart(a_j) \; | \;  (a_j, e_j, \delta_j) \in \pi \text{ and } e_j = e_i \} \; \cup  \{\tend(a_k) \ | \ (a_k, e_k, \delta_k) \in \pi \text{ and } e_i + \delta_k = e_k\bigr\}$ and given the set $I_{e_i}$ of the invariants holding at $e_i$:
@@ -442,7 +441,7 @@ Two snap actions or more can be executed at the same time if they are pairwise n
   %
   A task network $w_1= ({\cal{I}}^1, {\cal{C}}^{1})$ is decomposed into a new task network
   $w_2= ({\cal{I}}^2, {\cal{C}}^{2})$ by refinement by a method $m = \bigl(\name(m),$ $\task(m), ({\cal{I}}^m, {\cal{C}}^{m})\bigr)$
-  if and only if exists \mbox{$i \in {\cal{I}}^1$} such that $\alpha(i) = task(m)\;$ and
+  if and only if there exists \mbox{$i \in {\cal{I}}^1$} such that $\alpha(i) = task(m)\;$ and
   $\;{\cal{I}}^2 = ({\cal{I}}^1 - \{i\}) \cup {\cal{I}}^m$, and
 \begin{equation*} \label{eq1}
 \begin{aligned}
@@ -495,11 +494,7 @@ Decomposition constraints are conditions that must be satisfied by all the state
 % TODO Je n'ai pas bien compris pourquoi on a besoin des durées \delta dans (s_n, e_n, \delta_n)
 We denote by $\tau = \langle (s_0, e_0), \ldots, (s_n, e_n) \rangle$ the  temporal sequence of states produced by the execution of $\pi$ in $s_0$, ordered according to its happening events, with \mbox{$i \leq 0 \leq n$}. Decomposition $w$ satisfies a constraint $(\at \ e \ \phi) \in {\cal{C}}_t$ iff $\exists (s_k, e_k) \in \tau$ such that $s_k \models \phi$. % TODO il ne faut pas imposer aussi que e_k > e ?
 %
-Note that it is required that every temporal constraint of the form $(\at \ e_i \ \phi) \in {\cal{C}}_t$ to be defined for $0 \leq i \leq n$ so as to avoid defining constraints that are out of the scope of the temporal task network $w$. Each decomposition constraint defined in HDDL~2.1 can be rewritten in terms of constraints of the form $(\at \ e\ \phi)$. The proposed HDDL extension distinguishes two types of decomposition constraints:
-\begin{itemize}
-    \item the \emph{temporal decomposition constraints} that define the constraints that must hold at specific happening events whose semantics is based on the plan trajectory constraints from PDDL~3.0 \cite{gerevini05}.
-    \item the \emph{classical decomposition constraints} ($\before$, $\after$, $\between$) used in HTN planning \citep{erol94} to represent constraints between tasks.
-\end{itemize}
+Note that it is required that every temporal constraint of the form $(\at \ e_i \ \phi) \in {\cal{C}}_t$ to be defined for $0 \leq i \leq n$ so as to avoid defining constraints that are out of the scope of the temporal task network $w$. Each decomposition constraint defined in HDDL~2.1 can be rewritten in terms of constraints of the form $(\at \ e\ \phi)$. The proposed HDDL extension distinguishes two types of decomposition constraints: (1)the \emph{temporal decomposition constraints} that define the constraints that must hold at specific happening events whose semantics is based on the plan trajectory constraints from PDDL~3.0 \cite{gerevini05} and (2) the \emph{classical decomposition constraints} ($\before$, $\after$, $\between$) used in HTN planning \citep{erol94} to represent constraints between tasks.
 
 For the temporal decomposition constraints, we suggest to keep the same syntax and semantics as introduced in PDDL~3.0 to mantain a language consistency between different versions.
 For classical decomposition constraints, it can be shown that they can be expressed in terms of the former, as are method precondition semantics ($\atstart, \atend, \overall$).
@@ -532,7 +527,7 @@ Basically, two approaches exist. Sampling can be either constant ---when time is
 
 
 In order to be fully compatible with PDDL 3.0 features, the language HDDL 2.1 needs to include axioms and preferences, besides the associated parsing and validation tools. For this reason, the present work has to be seen as a baseline for the planning community to build upon.
-In fact, many applications require features that have been (on purpose) omitted in this paper. Most importantly, we did not explicitly reported a syntax, and we did not allow to define delays  with point algebra for ordering constraints. Other features are simply not detailed here, e.g. continuous effects.
+In fact, many applications require features that have been (on purpose) omitted in this paper. Most importantly, we did not explicitly reported a syntax, and we did not allow to define delays  with point algebra for ordering constraints. Other features are simply not detailed here, e.g., continuous effects.
 Such language elements are left as natural extension of this paper for future work.
 
 \bibliography{ref}
