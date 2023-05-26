@@ -157,17 +157,19 @@
 \maketitle
 
 \begin{abstract}
-Real world applications as in industry and robotics need modelling rich and diverse automated planning problems. Their resolution usually requires coordinated and concurrent action execution. In several cases, these problems are naturally decomposed in a hierarchical way and expressed by a Hierarchical Task Network (HTN) formalism. Recently, HDDL, a hierarchical extension of the Planning Domain Definition Language (PDDL) has been proposed. However, unlike PDDL 2.1, it does not allow to represent planning problems with numerical and temporal constraints, which are essential for real world applications. We propose to fill the gap between HDDL and these operational needs and to extend HDDL by taking inspiration from  PDDL 2.1 in order to express numerical and temporal expressions. This paper opens discussions on the semantics and the syntax needed for a future HDDL 2.1 extension.
+  Real world applications as in industry and robotics need modelling rich and diverse automated planning problems. Their resolution usually requires coordinated and concurrent action execution. In several cases, these problems are naturally decomposed in a hierarchical way and expressed by a Hierarchical Task Network (HTN) formalism.
+  HDDL, a hierarchical extension of the Planning Domain Definition Language (PDDL), unlike PDDL 2.1 does not allow to represent planning problems with numerical and temporal constraints, which are essential for real world applications. We propose to fill the gap between HDDL and these operational needs and to extend HDDL by taking inspiration from  PDDL 2.1 in order to express numerical and temporal expressions. This paper opens discussions on the semantics and the syntax needed for a future HDDL 2.1 extension.
 \end{abstract}
 
 
 \section{Introduction}
 
 Real world applications of Automated Planning, like in industry and robotics, require modelling rich and diverse scenarios.
-In several cases, such  planning problems are naturally decomposed in a hierarchical way, with compound tasks that refine in different ways their execution model.
+Such  planning problems are often naturally decomposed in a hierarchical way, with compound tasks that refine in different ways their execution model.
 These real world applications of planning use both numerical and temporal constraints to define the agents synchronisation on collaborative tasks, and sub-task decomposition. In fact, concurrency between actions, their duration, and agents coordination in HTN problems are needed to find solutions for nontrivial tasks in complex scenarios and require to make explicit the representation of time \citep{ghallabnautraverso2016}.
 
-The Hierarchical Task Network (HTN) formalism \citep{erol94} is used to express a wide variety of planning problems in many real-world applications, e.g., in task allocation for robot fleets \citep{Milot21}, video games \citep{Menif14} or industrial contexts such as software deployment \citep{Georgievski17}. Over the last years, much progress has been made in the field of hierarchical planning \citep{bercher19}. Novel systems based on the traditional, search-based techniques have been introduced~\citep{Bit-Monnot:16,ramoul17,Shivashankar17,Bercher17,Holler19,holler20,Holler21}, but also new techniques like the translation to STRIPS/ADL~\citep{Alford09,Alford16,behnke2022}, or revisited approaches like the translation to propositional logic~\citep{behnke2018totsat,Behnke2019orderchaos,Schreiber2019SAT,Schreiber21,behnke2021}. Despite these advances, not all planning systems use the same formalism to represent hierarchical task decomposition, making it difficult to compare approaches and promote HTN planning techniques. % even if some formalisms are more adopted than others.
+The Hierarchical Task Network (HTN) formalism \citep{erol94} is used to express a wide variety of planning problems in  real-world applications, e.g., in task allocation for robot fleets \citep{Milot21}, video games \citep{Menif14} or industrial contexts such as software deployment \citep{Georgievski17}. Over the last years, much progress has been made in the field of hierarchical planning \citep{bercher19}. Novel systems based on the traditional, search-based techniques have been introduced~\citep{Bit-Monnot:16,ramoul17,Shivashankar17,Bercher17,Holler19,holler20,Holler21}, but also new techniques like the translation to STRIPS/ADL~\citep{Alford09,Alford16,behnke2022}, or revisited approaches like the translation to propositional logic~\citep{behnke2018totsat,Behnke2019orderchaos,Schreiber2019SAT,Schreiber21,behnke2021}. Despite these advances, not all planning systems use the same formalism to represent hierarchical task decomposition, making it difficult to compare approaches and promote HTN planning techniques. % even if some formalisms are more adopted than others.
+
 An extension of PDDL (Planning Domain Description Language)~\citep{mcdermott98}, called HDDL (Hierarchical Planning Domain Description Language) \citep{holler20}, has been proposed to address this issue. HDDL is based on PDDL 2.1 \citep{fox03} and is the result of several discussions within the planning community \citep{Holler19b} to fill the need of a standard language for the first Hierarchical Planning track of International Planning Competitions (IPC) in 2020. However, it was decided that the first version of HDDL would not include any of the temporal or numerical features of PDDL due to efforts to develop the language and related tools. In this paper, we illustrate the challenge of defining the semantics for a temporal extension of HDDL to meet the needs of the planning community and planning applications. % This work was accomplished collectively after the ICAPS workshop HPlan in 2022.
 
 \looseness=-1
@@ -196,7 +198,7 @@ The rest of the paper is organised as follows. In Section 2 we define the basic 
 \section{Lifted Temporal HTN planning}
 
 % Dire que pour des raisons de places les fonctions n'ont pas été inclues
-\looseness=-1
+
 Throughout this section, we will use common notations from first-order logic, which we assume to be known. In the lifted formalism of HDDL 2.1, we assume for the sake of simplicity that all logical formulas are over a {\it function-free} first-order logic language ${\cal{L}} = (V, C, P)$. ${\cal{L}}$ consists of sufficiently many {\it constant} $c \in C$ representing the {\it objects} in the real world, {\it variables} $x \in V$ and {\it predicates} $p \in P$. Predicates have parameters that are either variables or constants. The predicate arity is the number of predicate parameters. For instance, $p(x, c)$ is a 2-arity predicate. We can now define {\it formulas} in a function-free first-order logic: (i) a predicate is a formula ; (ii) if ${\phi}$ and ${\psi}$ are formulas, then $\neg \phi$, $\phi \vee \psi$ and $\phi \wedge \psi$ are formulas ; (iii) if $\phi$ is a formula and $x$ is a variable, then $\forall x \phi$ is a formula. We define $\exists x \phi$ as $\neg \forall x \neg \phi$, and $\phi \rightarrow \psi$ as $\neg \phi \vee \psi$. $\forall$ and $\exists$ are respectively the universal and the existential quantifier. Conceptually, grounding a formula consists in generating a set of variable-free i.e. {\it ground} formulas \cite{helmert} as follows: a variable $x$ in a quantifier-free formula $\phi$ is eliminated by replacing $\phi$ with $|C|$ copies, one for each $c \in C$, where $x$ is substituted with $c$ in the respective copy. This substitution is denoted by $\phi[x/c]$. Regarding quantified formulas, $\forall x \phi$ is replaced by $\bigwedge_{c \in C} \phi[x/c]$ and $\exists x \phi$ by $\bigvee_{c \in C} \phi[x/c]$. We refer the reader to the work of by \citet{behnke20,ramoul17} for further details on grounding implementation. Note that it is always possible to transform a formula in function-free first-order logic into a finite set of ground formulas in propositional logic.
 
 A {\it state} $s$ is a set of ground predicates. For the sake of conciseness, we will also consider $s$ as a Herbrand interpretation that assigns $true$ to all ground predicates in $s$, and $false$ to all ground predicates not in $s$. From this, a truth value can be computed for every {\it ground} formula from ${\cal{L}}$ by using the usual rules for logical composition.
@@ -216,7 +218,7 @@ Without loss of generality, a formula (not necessarily ground) $\phi$ is true in
 
  We first define the planning domain and problem for Temporal HTN Planning.
  %
- \begin{definition}\looseness=-1
+ \begin{definition}
    A \emph{planning domain} $\cal{D}$ is a tuple $({\cal{L}}, {\cal{T}}, {\cal{J}}, \alpha, {\cal{A}}, {\cal{M}})$, where
    $\cal{L}$ is the first-order logic language,
    $\cal{T}$ is the set of tasks,
@@ -302,8 +304,8 @@ Without loss of generality, a formula (not necessarily ground) $\phi$ is true in
 Actions do change the state of the world. Durative actions also change the time of the model, shifting it by a quantity $\delta$, as shown in Figure~\ref{fig:timeline}.
 State transitions will be formally defined in Section \ref{THTN}.  % TODO Check
 
-% Unlike a primitive task, % (i.e. a snap or durative action),
-% a {\it compound task} does not directly  change the world state.
+Unlike a primitive task, % (i.e. a snap or durative action),
+ a {\it compound task} does not directly  change the world state.
 A compound task is identified by a name and defines the way other --possibly ordered-- tasks (either primitive or compound) must be achieved with respect to some constraints in order to refine it.
  Like primitive tasks, compound tasks have also a start event and an end event, which will be associated to dates in Section \ref{THTN}. % time points  =  dates
 In this sense, methods allow to refer tasks to temporal task networks.
@@ -329,7 +331,8 @@ A \emph{temporal task network} $w = ({\cal{I}}, {\cal{C}})$ is given by: % is a 
 
       \item ${\cal{C}}_d$ is a set of durative constraints over the duration of the tasks in $\cal{I}$;
 
-      \item ${\cal{C}}_t$ is a set of temporal decomposition constraints of the form $(\at \ e \ \phi)$, expressing that some properties defined by the logical formula $\phi$ must hold in the state at \mbox{date $e$.}
+      \item ${\cal{C}}_t$ is a set of temporal decomposition constraints of the form $(\at \ e \ \phi)$, expressing that some properties defined by the %logical
+        formula $\phi$ must hold in the state at \mbox{date $e$.}
       \end{itemize}
 \end{itemize}
 The temporal task network $w$ implicitely defines a temporal ordered multi-set of tasks ${\cal{T}}' = \{ \alpha(i) \: | \: i \in {\cal{I}} \}$.
@@ -371,9 +374,9 @@ Note that a temporal task network is ground if all its variables are bound to co
  % Definition d'un sequence temporel de tâches
 Let us start by defining a temporal sequence of tasks.
 \begin{definition}[Temporal Sequence of Tasks] % TODO e_i is an event and \delta is a date/time
-  A \emph{temporal sequence of tasks} $\pi$ over a planning domain $\cal{D}$, is a sequence of tuples $\langle (t_0, e_0, \delta_0), \ldots,$ $(t_n, e_n, \delta_n) \rangle$ where $t_0, \ldots, t_n$ are ground tasks defined over $\cal{T}$, and for $0 \le i \le n$, $e_i \in \mathbb{N}_{\geq 0}$ and $\delta_i \in \mathbb{N}_{\geq 0}$ are natural numbers\footnote{
+  A \emph{temporal sequence of tasks} $\pi$ over a planning domain $\cal{D}$, is a sequence of tuples $\langle (t_0, e_0, \delta_0), \ldots,$ $(t_n, e_n, \delta_n) \rangle$ where $t_0, \ldots, t_n$ are ground tasks defined over $\cal{T}$, and for $0 \le i \le n$,  the natural numbers\footnote{
     Rational numbers are used in the definition from~\citet{fox03}. However, integers should be used for dates, because using rationals can yield to an undecidable planning problem.}
-  to which refer as the starting date and the duration of the task $t_i$, respectively.
+  $e_i \in \mathbb{N}_{\geq 0}$ and $\delta_i \in \mathbb{N}_{\geq 0}$ are the starting date and the duration of the task $t_i$, respectively.
   For a temporal sequence of tasks $\pi$, the set of dates $\{e \ | \ (t, e, \delta) \in \pi\} \cup \{e + \delta \ | \ (t, e, \delta) \in \pi\}$ induces a sorted sequence $<e_0, \ldots, e_n>$ of \emph{happening events} of $\pi$. % denoted $htps(\pi)$.  These are dates. TODO "ordered sequence" ?
 A temporal sequence of tasks  $\pi$ is primitive if and only if for every task  $(t, e, \delta) \in \pi$, $t$ is primitive, i.e. $t$ is carried out by an action (either snap or durative).
 \end{definition}
@@ -448,15 +451,17 @@ Definition~\ref{def:exTST} can be extended to a temporal task network.
   $\;{\cal{I}}^2 = ({\cal{I}}^1 - \{i\}) \cup {\cal{I}}^m$, and
 \begin{equation*} \label{eq1}
 \begin{aligned}
-{\cal{C}}^{2}_{o} = & \:{\cal{C}}^{1}_{o} \cup {\cal{C}}^{m}_{o} \\
-& \cup \{ \tstart(t) \leq \tstart(t') \: | \: t'= \min\left(\tstart(i),\tstart(j)\right)\\
-&\quad t''= \max\left(\tstart(i),\tstart(j)\right), j \in {\cal{I}}^m \:  \}  \\
-& \cup \{ \tend(t) \geq \tend(t') \: | \: t'= \max\left(\tstart(i),\tstart(j)\right),\\
-& \quad t''= \min\left(\tstart(i),\tstart(j)\right), j \in {\cal{I}}^m \:  \}\\
+{\cal{C}}^{2}_{o} &= \:{\cal{C}}^{1}_{o} \cup {\cal{C}}^{m}_{o} \\
+%& \cup \{ \tstart(t) \leq \tstart(t') \: | \: \forall j \in {\cal{I}}^m t= \min\left(\tstart(i),\tstart(j)\right)\\
+& \cup \{ \tstart(t) \leq \tstart(t') \: | \: t= \min\left(e_{\tstart(\alpha(i))},e_{\tstart(\alpha(j))}\right),\\
+&\quad t'= \max\left(e_{\tstart(\alpha(i))},e_{\tstart(\alpha(j))}\right), \: j \in {\cal{I}}^m \}  \\
+& \cup \{ \tend(t) \geq \tend(t') \: | \: t= \max\left(\tstart(i),\tstart(j)\right),\\
+& \quad t'= \min\left(\tstart(i),\tstart(j)\right), j \in {\cal{I}}^m \:  \}\\
 %  & \cup \{ c \ | \ \forall j \in {\cal{I}}^m \ \tstart(i) \leq \tstart(j) \}  \\
 %  & \cup \{ c \ | \ \forall j \in {\cal{I}}^m \ \tend(i) \geq \tend(j) \}  \\
-{\cal{C}}^{2}_{v}  = & {\cal{C}}^{1}_{v} \cup {\cal{C}}^{m}_{v},
-{\cal{C}}^{2}_{d}  =  {\cal{C}}^{1}_{d} \cup {\cal{C}}^{m}_{d},
+\text{with } &e_{\tstart(\alpha(k))} \text{ the start date of } \alpha(k) \text{ for } k \in {\cal{I}}^1 \cup  {\cal{I}}^2.\\
+{\cal{C}}^{2}_{v}  &=  {\cal{C}}^{1}_{v} \cup {\cal{C}}^{m}_{v},\;
+{\cal{C}}^{2}_{d}  =  {\cal{C}}^{1}_{d} \cup {\cal{C}}^{m}_{d},\;
 {\cal{C}}^{2}_{t}  =  {\cal{C}}^{1}_{t} \cup {\cal{C}}^{m}_{t}
 \end{aligned}
 \end{equation*}
