@@ -455,8 +455,8 @@ Definition~\ref{def:exTST} can be extended to a temporal task network.
 %& \cup \{ \tstart(t) \leq \tstart(t') \: | \: \forall j \in {\cal{I}}^m t= \min\left(\tstart(i),\tstart(j)\right)\\
 & \cup \{ \tstart(t) \leq \tstart(t') \: | \: t= \min\left(e_{\tstart(\alpha(i))},e_{\tstart(\alpha(j))}\right),\\
 &\quad t'= \max\left(e_{\tstart(\alpha(i))},e_{\tstart(\alpha(j))}\right), \: j \in {\cal{I}}^m \}  \\
-& \cup \{ \tend(t) \geq \tend(t') \: | \: t= \max\left(\tstart(i),\tstart(j)\right),\\
-& \quad t'= \min\left(\tstart(i),\tstart(j)\right), j \in {\cal{I}}^m \:  \}\\
+& \cup \{ \tend(t) \geq \tend(t') \: | \: t=\max\left(e_{\tstart(\alpha(i))},e_{\tstart(\alpha(j))}\right),\\
+& \quad t'= \min\left(e_{\tstart(\alpha(i))},e_{\tstart(\alpha(j))}\right), j \in {\cal{I}}^m \:  \}\\
 %  & \cup \{ c \ | \ \forall j \in {\cal{I}}^m \ \tstart(i) \leq \tstart(j) \}  \\
 %  & \cup \{ c \ | \ \forall j \in {\cal{I}}^m \ \tend(i) \geq \tend(j) \}  \\
 \text{with } &e_{\tstart(\alpha(k))} \text{ the start date of } \alpha(k) \text{ for } k \in {\cal{I}}^1 \cup  {\cal{I}}^2.\\
