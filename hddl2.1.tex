@@ -83,7 +83,7 @@
 
 % Don't use commands within pdfinfo
 \pdfinfo{
-/Title (HDDL 2.1: Towards Defining an HTN Formalism with Time)
+/Title (HDDL 2.1: Towards Defining a Formalism and a Semantics for Temporal HTN Planning)
 /Author (Damien Pellier, Alexandre Albore, Humbert Fiorino, Rafael Bailon-Ruiz)
 /TemplateVersion (2023.1)
 }
@@ -129,7 +129,7 @@
 
 \nocopyright
 
-\title{HDDL 2.1: Towards Defining an HTN Formalism with Time}
+\title{HDDL 2.1: Towards Defining a Formalism and a Semantics \\for Temporal HTN Planning}
 
 \author {
     % Authors
@@ -371,7 +371,7 @@ Note that a temporal task network is ground if all its variables are bound to co
 Let us start by defining a temporal sequence of tasks.
 \begin{definition}[Temporal Sequence of Tasks] % TODO e_i is an event and \delta is a date/time
   A \emph{temporal sequence of tasks} $\pi$ over a planning domain $\cal{D}$, is a sequence of tuples $\langle (t_0, e_0, \delta_0), \ldots,$ $(t_n, e_n, \delta_n) \rangle$ where $t_0, \ldots, t_n$ are ground tasks defined over $\cal{T}$, and for $0 \le i \le n$,  the natural numbers\footnote{
-    Rational numbers are used in the definition from~\citet{fox03}. However, integers should be used for dates, because using rationals without adding further conditions can yield to an undecidable planning problem~\cite{barringer1986}.} % 
+    Rational numbers are used in the definition from~\citet{fox03}. However, integers should be used for dates, because using rationals without adding further conditions can yield to an undecidable planning problem~\cite{barringer1986}.} %
   $e_i \in \mathbb{N}_{\geq 0}$ and $\delta_i \in \mathbb{N}_{\geq 0}$ are the starting date and the duration of the task $t_i$, respectively.
   For a temporal sequence of tasks $\pi$, the set of dates $\{e \ | \ (t, e, \delta) \in \pi\} \cup \{e + \delta \ | \ (t, e, \delta) \in \pi\}$ induces a sorted sequence $<e_0, \ldots, e_n>$ of \emph{happening events} of $\pi$. % denoted $htps(\pi)$.  These are dates. TODO "ordered sequence" ?
 A temporal sequence of tasks  $\pi$ is primitive if and only if for every task  $(t, e, \delta) \in \pi$, $t$ is primitive, i.e. $t$ is carried out by an action (either snap or durative).
